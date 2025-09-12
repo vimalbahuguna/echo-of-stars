@@ -14,16 +14,571 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cities: {
+        Row: {
+          created_at: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          population: number | null
+          state_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          population?: number | null
+          state_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          population?: number | null
+          state_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cities_state_id_fkey"
+            columns: ["state_id"]
+            isOneToOne: false
+            referencedRelation: "states"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      continents: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      countries: {
+        Row: {
+          code: string
+          continent_id: string | null
+          created_at: string | null
+          currency_code: string | null
+          id: string
+          iso_code: string
+          name: string
+          timezone_offset: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          continent_id?: string | null
+          created_at?: string | null
+          currency_code?: string | null
+          id?: string
+          iso_code: string
+          name: string
+          timezone_offset?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          continent_id?: string | null
+          created_at?: string | null
+          currency_code?: string | null
+          id?: string
+          iso_code?: string
+          name?: string
+          timezone_offset?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "countries_continent_id_fkey"
+            columns: ["continent_id"]
+            isOneToOne: false
+            referencedRelation: "continents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          address: string | null
+          city_id: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          country_id: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          parent_organization_id: string | null
+          settings: Json | null
+          state_id: string | null
+          tenant_id: string | null
+          type: Database["public"]["Enums"]["organization_type"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          city_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          parent_organization_id?: string | null
+          settings?: Json | null
+          state_id?: string | null
+          tenant_id?: string | null
+          type?: Database["public"]["Enums"]["organization_type"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          city_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          parent_organization_id?: string | null
+          settings?: Json | null
+          state_id?: string | null
+          tenant_id?: string | null
+          type?: Database["public"]["Enums"]["organization_type"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizations_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizations_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizations_parent_organization_id_fkey"
+            columns: ["parent_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizations_state_id_fkey"
+            columns: ["state_id"]
+            isOneToOne: false
+            referencedRelation: "states"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          birth_city_id: string | null
+          birth_date: string | null
+          birth_time: string | null
+          city_id: string | null
+          country_id: string | null
+          created_at: string | null
+          email: string
+          first_name: string | null
+          id: string
+          is_active: boolean | null
+          last_login_at: string | null
+          last_name: string | null
+          metadata: Json | null
+          organization_id: string | null
+          phone: string | null
+          preferences: Json | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          state_id: string | null
+          tenant_id: string | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          birth_city_id?: string | null
+          birth_date?: string | null
+          birth_time?: string | null
+          city_id?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          email: string
+          first_name?: string | null
+          id: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name?: string | null
+          metadata?: Json | null
+          organization_id?: string | null
+          phone?: string | null
+          preferences?: Json | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          state_id?: string | null
+          tenant_id?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          birth_city_id?: string | null
+          birth_date?: string | null
+          birth_time?: string | null
+          city_id?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          email?: string
+          first_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name?: string | null
+          metadata?: Json | null
+          organization_id?: string | null
+          phone?: string | null
+          preferences?: Json | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          state_id?: string | null
+          tenant_id?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_birth_city_id_fkey"
+            columns: ["birth_city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_state_id_fkey"
+            columns: ["state_id"]
+            isOneToOne: false
+            referencedRelation: "states"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      role_permissions: {
+        Row: {
+          actions: string[]
+          conditions: Json | null
+          created_at: string | null
+          id: string
+          resource: string
+          role: Database["public"]["Enums"]["user_role"] | null
+          tenant_id: string | null
+        }
+        Insert: {
+          actions: string[]
+          conditions?: Json | null
+          created_at?: string | null
+          id?: string
+          resource: string
+          role?: Database["public"]["Enums"]["user_role"] | null
+          tenant_id?: string | null
+        }
+        Update: {
+          actions?: string[]
+          conditions?: Json | null
+          created_at?: string | null
+          id?: string
+          resource?: string
+          role?: Database["public"]["Enums"]["user_role"] | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      states: {
+        Row: {
+          code: string
+          country_id: string | null
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          country_id?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "states_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          address: string | null
+          billing_config: Json | null
+          branding_config: Json | null
+          city_id: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          country_id: string | null
+          created_at: string | null
+          domain: string | null
+          feature_config: Json | null
+          id: string
+          max_organizations: number | null
+          max_users: number | null
+          name: string
+          slug: string
+          status: Database["public"]["Enums"]["tenant_status"] | null
+          subscription_tier:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
+          trial_ends_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          billing_config?: Json | null
+          branding_config?: Json | null
+          city_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          domain?: string | null
+          feature_config?: Json | null
+          id?: string
+          max_organizations?: number | null
+          max_users?: number | null
+          name: string
+          slug: string
+          status?: Database["public"]["Enums"]["tenant_status"] | null
+          subscription_tier?:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          billing_config?: Json | null
+          branding_config?: Json | null
+          city_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          country_id?: string | null
+          created_at?: string | null
+          domain?: string | null
+          feature_config?: Json | null
+          id?: string
+          max_organizations?: number | null
+          max_users?: number | null
+          name?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["tenant_status"] | null
+          subscription_tier?:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenants_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenants_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_sessions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          location: Json | null
+          session_token: string
+          tenant_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: Json | null
+          session_token: string
+          tenant_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: Json | null
+          session_token?: string
+          tenant_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_organization_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      get_current_user_tenant_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      has_permission: {
+        Args: { action: string; resource: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      organization_type: "headquarters" | "franchise" | "branch" | "partner"
+      subscription_tier: "basic" | "professional" | "enterprise" | "custom"
+      tenant_status: "active" | "suspended" | "inactive" | "trial"
+      user_role:
+        | "super_admin"
+        | "tenant_admin"
+        | "organization_admin"
+        | "franchise_admin"
+        | "manager"
+        | "customer"
+        | "end_user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +705,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      organization_type: ["headquarters", "franchise", "branch", "partner"],
+      subscription_tier: ["basic", "professional", "enterprise", "custom"],
+      tenant_status: ["active", "suspended", "inactive", "trial"],
+      user_role: [
+        "super_admin",
+        "tenant_admin",
+        "organization_admin",
+        "franchise_admin",
+        "manager",
+        "customer",
+        "end_user",
+      ],
+    },
   },
 } as const
