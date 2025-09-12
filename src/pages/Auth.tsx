@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Star, Building, Globe, Users } from "lucide-react";
+import { Loader2, Star, Building, Globe, Users, Shield } from "lucide-react";
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -152,7 +152,8 @@ const Auth = () => {
     { value: "end_user", label: "End User", icon: Users, description: "Basic user access" },
     { value: "customer", label: "Customer", icon: Star, description: "Customer access" },
     { value: "manager", label: "Manager", icon: Building, description: "Team management" },
-    { value: "organization_admin", label: "Organization Admin", icon: Globe, description: "Organization management" }
+    { value: "organization_admin", label: "Organization Admin", icon: Globe, description: "Organization management" },
+    { value: "super_admin", label: "Super Admin", icon: Shield, description: "System administrator" }
   ];
 
   return (
