@@ -15,6 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        cosmic: "bg-gradient-cosmic text-white hover:shadow-stellar border-0 transition-all duration-300",
+        stellar: "bg-gradient-stellar text-white hover:shadow-glow border-0 transition-all duration-300",
+        nebula: "bg-gradient-nebula text-white hover:shadow-glow-accent border-0 transition-all duration-300",
+        hero: "bg-gradient-cosmic text-white border border-primary/30 hover:shadow-stellar hover:scale-105 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",

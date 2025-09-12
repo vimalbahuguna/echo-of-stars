@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -47,16 +48,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +71,50 @@ export default {
             height: "0",
           },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "var(--glow-primary)" },
+          "50%": { boxShadow: "var(--glow-accent)" },
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "twinkle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.3" },
+        },
+        "orbit": {
+          "0%": { transform: "rotate(0deg) translateX(20px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateX(20px) rotate(-360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 3s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "shimmer": "shimmer 2s linear infinite",
+        "twinkle": "twinkle 2s ease-in-out infinite",
+        "orbit": "orbit 10s linear infinite",
+      },
+      backgroundImage: {
+        "gradient-cosmic": "var(--gradient-cosmic)",
+        "gradient-stellar": "var(--gradient-stellar)",
+        "gradient-nebula": "var(--gradient-nebula)",
+      },
+      boxShadow: {
+        "stellar": "var(--shadow-stellar)",
+        "cosmic": "var(--shadow-cosmic)",
+        "glow": "var(--glow-primary)",
+        "glow-accent": "var(--glow-accent)",
+      },
+      transitionProperty: {
+        "cosmic": "var(--transition-cosmic)",
+        "glow": "var(--transition-glow)",
       },
     },
   },
