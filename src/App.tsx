@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import BirthChartCalculator from "./components/BirthChartCalculator";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,11 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/contact-us" element={<Contact />} />
+            <Route path="/birth-chart" element={
+              <ProtectedRoute>
+                <BirthChartCalculator />
+              </ProtectedRoute>
+            } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

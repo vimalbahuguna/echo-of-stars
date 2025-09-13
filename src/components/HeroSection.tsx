@@ -10,8 +10,10 @@ import {
   MessageSquare
 } from "lucide-react";
 import cosmicHero from "@/assets/cosmic-hero.jpg";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative py-20 overflow-hidden">
       {/* Hero Background Image */}
@@ -61,7 +63,7 @@ const HeroSection = () => {
             <Card className="px-4 py-2 bg-card/50 border-primary/20 hover:border-primary/40 transition-all hover:shadow-glow">
               <div className="flex items-center gap-2 text-sm">
                 <Brain className="w-4 h-4 text-primary" />
-                <span>AI Oracle</span>
+                <span>SOS Oracle</span>
               </div>
             </Card>
             <Card className="px-4 py-2 bg-card/50 border-accent/20 hover:border-accent/40 transition-all hover:shadow-glow-accent">
@@ -83,6 +85,7 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-gradient-cosmic hover:shadow-stellar text-lg px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
+              onClick={() => navigate("/birth-chart")}
             >
               <Stars className="w-5 h-5 mr-2" />
               Start Your Reading
@@ -93,7 +96,7 @@ const HeroSection = () => {
               className="border-primary/50 hover:bg-primary/10 text-lg px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
             >
               <MessageSquare className="w-5 h-5 mr-2" />
-              Chat with AI Oracle
+              Chat with SOS Oracle
             </Button>
           </div>
 

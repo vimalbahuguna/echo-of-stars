@@ -54,7 +54,7 @@ const CosmicFooter = () => {
             <h4 className="font-semibold text-foreground">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="hover:text-primary transition-colors cursor-pointer">Birth Chart Analysis</li>
-              <li className="hover:text-accent transition-colors cursor-pointer">AI Oracle Consultations</li>
+              <li className="hover:text-accent transition-colors cursor-pointer">SOS Oracle Consultations</li>
               <li className="hover:text-secondary transition-colors cursor-pointer">Predictive Readings</li>
               <li className="hover:text-primary transition-colors cursor-pointer">Compatibility Reports</li>
               <li className="hover:text-accent transition-colors cursor-pointer">Transit Forecasts</li>

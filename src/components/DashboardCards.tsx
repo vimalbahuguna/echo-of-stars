@@ -116,7 +116,7 @@ const DashboardCards = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-secondary animate-float" />
-            AI Oracle
+            SOS Oracle
           </CardTitle>
           <CardDescription>24/7 cosmic guidance</CardDescription>
         </CardHeader>
