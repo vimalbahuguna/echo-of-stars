@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CosmicHeader from "@/components/CosmicHeader";
 import HeroSection from "@/components/HeroSection";
 import BirthChartCalculator from "@/components/BirthChartCalculator";
-import AIOracle from "@/components/AIOracle";
+import SOSOracle from "@/components/SOSOracle";
 import DashboardCards from "@/components/DashboardCards";
 import CosmicFooter from "@/components/CosmicFooter";
 import { Button } from "@/components/ui/button";
@@ -86,13 +86,13 @@ const Index = () => {
           <TabsContent value="oracle" className="space-y-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold bg-gradient-nebula bg-clip-text text-transparent mb-4">
-                AI Oracle Consultation
+                SOS Oracle Consultation
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Have real-time conversations with our advanced AI astrologer. Ask about love, career, future predictions, or spiritual guidance.
+                Have real-time conversations with our advanced AI astrologer. Get personalized insights based on your birth chart, current transits, and cosmic influences.
               </p>
             </div>
-            <AIOracle />
+            <SOSOracle />
           </TabsContent>
 
           <TabsContent value="readings" className="space-y-8">

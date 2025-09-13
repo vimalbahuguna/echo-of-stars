@@ -1,1 +1,16 @@
 project_id = "rxrcvowwztaxobuihygj"
+
+[auth]
+enabled = true
+site_url = "https://rxrcvowwztaxobuihygj.supabase.co"
+additional_redirect_urls = ["https://lovable.dev"]
+jwt_expiry = 3600
+
+[functions.calculate-birth-chart]
+verify_jwt = true
+
+[functions.ai-chat]
+verify_jwt = true
+
+[functions.generate-chart-interpretation]
+verify_jwt = true

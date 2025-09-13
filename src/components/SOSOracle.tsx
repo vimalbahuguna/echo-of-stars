@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { 
   MessageSquare,
   Mic,
@@ -11,7 +13,8 @@ import {
   Brain,
   Sparkles,
   Bot,
-  User
+  User,
+  Loader2
 } from "lucide-react";
 
 interface Message {
@@ -21,11 +24,12 @@ interface Message {
   timestamp: Date;
 }
 
-const AIOracle = () => {
+const SOSOracle = () => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Welcome to the AI Oracle! I'm here to provide cosmic insights and guidance. Ask me about your future, relationships, career, or any astrological questions.",
+      content: "Welcome to SOS Oracle! I'm your advanced AI astrologer and cosmic guide. I have deep knowledge of both Western and Vedic astrology. Ask me about your birth chart, planetary transits, relationships, career, or any spiritual guidance you seek.",
       sender: 'ai',
       timestamp: new Date()
     }
@@ -33,6 +37,7 @@ const AIOracle = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -45,32 +50,109 @@ const AIOracle = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentMessage = inputMessage;
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      console.log('Sending message to AI chat...');
+      
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: {
+          message: currentMessage,
+          conversationId: conversationId
+        }
+      });
+
+      if (error) {
+        console.error('Error calling AI chat:', error);
+        throw new Error(error.message || 'Failed to get AI response');
+      }
+
+      console.log('AI chat response:', data);
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: generateAIResponse(inputMessage),
+        content: data.response,
         sender: 'ai',
         timestamp: new Date()
       };
+
       setMessages(prev => [...prev, aiResponse]);
+      
+      // Set conversation ID for future messages
+      if (data.conversationId && !conversationId) {
+        setConversationId(data.conversationId);
+      }
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 2).toString(),
+        content: "I apologize, but I'm having trouble connecting to the cosmic energies right now. Please try again in a moment.",
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+      
+      toast({
+        title: "Connection Error",
+        description: "Unable to reach SOS Oracle. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
-  const generateAIResponse = (question: string): string => {
-    const responses = [
-      "The stars whisper that great opportunities await you. Venus is aligned in your favor, bringing harmony to your relationships and creative endeavors. Trust your intuition this week.",
-      "Your cosmic energy suggests a period of transformation. Mars is activating your career sector, indicating bold moves and leadership opportunities are on the horizon.",
-      "The lunar cycles indicate emotional clarity is coming. Your intuitive powers are heightened now - pay attention to your dreams and synchronicities.",
-      "Jupiter's influence brings expansion and growth to your path. This is an excellent time for learning, travel, or expanding your horizons in meaningful ways.",
-      "Mercury retrograde suggests slowing down to reflect. Review your goals and communication patterns - clarity will emerge after this introspective period."
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
+  // Load conversation history when component mounts
+  useEffect(() => {
+    const loadConversationHistory = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Get most recent conversation
+        const { data: conversations } = await supabase
+          .from('chat_conversations')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .order('updated_at', { ascending: false })
+          .limit(1);
+
+        if (conversations && conversations[0]) {
+          const conversationId = conversations[0].id;
+          setConversationId(conversationId);
+
+          // Load recent messages
+          const { data: chatMessages } = await supabase
+            .from('chat_messages')
+            .select('*')
+            .eq('conversation_id', conversationId)
+            .order('created_at', { ascending: true })
+            .limit(20);
+
+          if (chatMessages && chatMessages.length > 0) {
+            const loadedMessages: Message[] = chatMessages.map(msg => ({
+              id: msg.id,
+              content: msg.message_content,
+              sender: msg.sender_type as 'user' | 'ai',
+              timestamp: new Date(msg.created_at)
+            }));
+
+            setMessages(prev => [prev[0], ...loadedMessages]); // Keep welcome message
+          }
+        }
+      } catch (error) {
+        console.error('Error loading conversation history:', error);
+      }
+    };
+
+    loadConversationHistory();
+  }, []);
 
   const toggleVoiceInput = () => {
     setIsListening(!isListening);
@@ -94,9 +176,9 @@ const AIOracle = () => {
             </div>
             <div>
               <CardTitle className="text-xl bg-gradient-nebula bg-clip-text text-transparent">
-                AI Oracle
+                SOS Oracle
               </CardTitle>
-              <p className="text-sm text-muted-foreground">Your cosmic AI companion</p>
+              <p className="text-sm text-muted-foreground">Your advanced AI astrologer</p>
             </div>
           </div>
           <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20">
@@ -142,14 +224,13 @@ const AIOracle = () => {
             
             {isTyping && (
               <div className="flex gap-3 justify-start">
-                <div className="flex-shrink-0 w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 w-8 bg-accent/10 rounded-full flex items-center justify-center">
                   <Bot className="w-4 h-4 text-accent" />
                 </div>
                 <div className="bg-muted/50 text-muted-foreground p-3 rounded-lg">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-accent" />
+                    <span className="text-sm">SOS Oracle is consulting the cosmos...</span>
                   </div>
                 </div>
               </div>
@@ -172,24 +253,29 @@ const AIOracle = () => {
             </Button>
             <div className="flex-1 relative">
               <Input
-                placeholder="Ask the Oracle anything about your cosmic destiny..."
+                placeholder="Ask SOS Oracle about your chart, relationships, career, or spiritual guidance..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="bg-input/50 border-border/50 focus:border-accent/50 focus:ring-accent/20 pr-12"
+                onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleSendMessage()}
+                disabled={isTyping}
+                className="bg-input/50 border-border/50 focus:border-accent/50 focus:ring-accent/20 pr-12 disabled:opacity-50"
               />
               <Button
                 onClick={handleSendMessage}
-                disabled={!inputMessage.trim()}
+                disabled={!inputMessage.trim() || isTyping}
                 size="sm"
-                className="absolute right-1 top-1 bg-gradient-nebula hover:shadow-glow-accent"
+                className="absolute right-1 top-1 bg-gradient-nebula hover:shadow-glow-accent disabled:opacity-50"
               >
-                <Send className="w-4 h-4" />
+                {isTyping ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </Button>
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            Ask about love, career, future predictions, or spiritual guidance
+            Ask about astrological insights, birth chart analysis, or cosmic guidance
           </p>
         </div>
       </CardContent>
@@ -197,4 +283,4 @@ const AIOracle = () => {
   );
 };
 
-export default AIOracle;
+export default SOSOracle;

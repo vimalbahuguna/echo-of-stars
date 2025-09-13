@@ -152,8 +152,7 @@ const Auth = () => {
     { value: "end_user", label: "End User", icon: Users, description: "Basic user access" },
     { value: "customer", label: "Customer", icon: Star, description: "Customer access" },
     { value: "manager", label: "Manager", icon: Building, description: "Team management" },
-    { value: "organization_admin", label: "Organization Admin", icon: Globe, description: "Organization management" },
-    { value: "super_admin", label: "Super Admin", icon: Shield, description: "System administrator" }
+    { value: "organization_admin", label: "Organization Admin", icon: Globe, description: "Organization management" }
   ];
 
   return (

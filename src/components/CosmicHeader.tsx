@@ -75,7 +75,7 @@ const CosmicHeader = () => {
       </Button>
       <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent">
         <MessageCircle className="w-4 h-4 mr-2" />
-        AI Oracle
+        SOS Oracle
       </Button>
       <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground">
         <Moon className="w-4 h-4 mr-2" />

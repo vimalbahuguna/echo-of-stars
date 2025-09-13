@@ -4,30 +4,111 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Calendar,
   MapPin,
   Clock,
   Sparkles,
   Zap,
-  Star
+  Star,
+  Loader2,
+  CheckCircle,
+  Brain
 } from "lucide-react";
 
 const BirthChartCalculator = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     date: '',
     time: '',
-    location: ''
+    location: '',
+    astrologicalSystem: 'western'
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedChart, setGeneratedChart] = useState<any>(null);
 
   const handleGenerate = async () => {
+    if (!formData.name || !formData.date || !formData.location) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields to generate your chart.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsGenerating(true);
-    // Simulate chart generation
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsGenerating(false);
+    setGeneratedChart(null);
+
+    try {
+      console.log('Generating birth chart with data:', formData);
+
+      // Use default time if not provided
+      const birthTime = formData.time || '12:00';
+
+      const { data, error } = await supabase.functions.invoke('calculate-birth-chart', {
+        body: {
+          name: formData.name,
+          date: formData.date,
+          time: birthTime,
+          location: formData.location,
+          astrologicalSystem: formData.astrologicalSystem
+        }
+      });
+
+      if (error) {
+        console.error('Error generating chart:', error);
+        throw new Error(error.message || 'Failed to generate birth chart');
+      }
+
+      console.log('Chart generated successfully:', data);
+      setGeneratedChart(data.chart);
+
+      toast({
+        title: "Chart Generated Successfully!",
+        description: `Your ${formData.astrologicalSystem} birth chart has been calculated and saved.`,
+      });
+
+      // Generate AI interpretation
+      if (data.chart?.id) {
+        try {
+          console.log('Generating AI interpretation...');
+          const { data: interpretationData, error: interpretationError } = await supabase.functions.invoke('generate-chart-interpretation', {
+            body: {
+              chartId: data.chart.id,
+              interpretationType: 'full'
+            }
+          });
+
+          if (interpretationError) {
+            console.error('Error generating interpretation:', interpretationError);
+          } else {
+            console.log('Interpretation generated:', interpretationData);
+            toast({
+              title: "AI Interpretation Ready!",
+              description: "Your personalized astrological analysis has been generated.",
+            });
+          }
+        } catch (interpretationError) {
+          console.error('Failed to generate interpretation:', interpretationError);
+        }
+      }
+
+    } catch (error) {
+      console.error('Error generating birth chart:', error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate birth chart. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -100,11 +181,31 @@ const BirthChartCalculator = () => {
           </Label>
           <Input
             id="location"
-            placeholder="City, Country"
+            placeholder="City, Country (e.g., New York, USA)"
             value={formData.location}
             onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
             className="bg-input/50 border-border/50 focus:border-secondary/50 focus:ring-secondary/20"
           />
+        </div>
+
+        {/* Astrological System */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-foreground flex items-center gap-2">
+            <Brain className="w-4 h-4 text-primary" />
+            Astrological System
+          </Label>
+          <Select
+            value={formData.astrologicalSystem}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, astrologicalSystem: value }))}
+          >
+            <SelectTrigger className="bg-input/50 border-border/50 focus:border-primary/50 focus:ring-primary/20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="western">Western Astrology</SelectItem>
+              <SelectItem value="vedic">Vedic (Hindu) Astrology</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Features */}
@@ -126,15 +227,13 @@ const BirthChartCalculator = () => {
         {/* Generate Button */}
         <Button 
           onClick={handleGenerate}
-          disabled={!formData.name || !formData.date || !formData.time || !formData.location || isGenerating}
+          disabled={!formData.name || !formData.date || !formData.location || isGenerating}
           className="w-full bg-gradient-cosmic hover:shadow-stellar text-white font-semibold py-6 text-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {isGenerating ? (
             <>
-              <div className="animate-spin mr-2">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              Generating Your Chart...
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Calculating Cosmic Positions...
             </>
           ) : (
             <>
@@ -144,9 +243,22 @@ const BirthChartCalculator = () => {
           )}
         </Button>
 
+        {/* Success Message */}
+        {generatedChart && (
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mt-4">
+            <div className="flex items-center gap-2 text-green-600">
+              <CheckCircle className="w-5 h-5" />
+              <span className="font-medium">Chart Generated Successfully!</span>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your birth chart has been calculated and saved. Check the SOS Oracle for personalized insights!
+            </p>
+          </div>
+        )}
+
         {/* Disclaimer */}
         <p className="text-xs text-muted-foreground text-center mt-4">
-          Your birth time is crucial for accurate chart calculations. If unknown, we'll use noon.
+          Birth time is optional but recommended for accuracy. Without it, we'll use noon as default.
         </p>
       </CardContent>
     </Card>
