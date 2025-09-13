@@ -14,6 +14,291 @@ export type Database = {
   }
   public: {
     Tables: {
+      birth_charts: {
+        Row: {
+          astrological_system: string
+          birth_city_id: string | null
+          birth_date: string
+          birth_latitude: number | null
+          birth_longitude: number | null
+          birth_time: string | null
+          chart_data: Json
+          chart_name: string
+          chart_type: string
+          created_at: string
+          id: string
+          is_public: boolean | null
+          metadata: Json | null
+          tenant_id: string
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          astrological_system?: string
+          birth_city_id?: string | null
+          birth_date: string
+          birth_latitude?: number | null
+          birth_longitude?: number | null
+          birth_time?: string | null
+          chart_data?: Json
+          chart_name: string
+          chart_type?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          tenant_id: string
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          astrological_system?: string
+          birth_city_id?: string | null
+          birth_date?: string
+          birth_latitude?: number | null
+          birth_longitude?: number | null
+          birth_time?: string | null
+          chart_data?: Json
+          chart_name?: string
+          chart_type?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          tenant_id?: string
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "birth_charts_birth_city_id_fkey"
+            columns: ["birth_city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "birth_charts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chart_interpretations: {
+        Row: {
+          ai_model: string
+          chart_id: string
+          confidence_score: number | null
+          created_at: string
+          feedback_rating: number | null
+          feedback_text: string | null
+          generated_at: string
+          id: string
+          interpretation_text: string
+          interpretation_type: string
+          tenant_id: string
+          updated_at: string
+          user_id: string
+          version: number | null
+        }
+        Insert: {
+          ai_model?: string
+          chart_id: string
+          confidence_score?: number | null
+          created_at?: string
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          generated_at?: string
+          id?: string
+          interpretation_text: string
+          interpretation_type: string
+          tenant_id: string
+          updated_at?: string
+          user_id: string
+          version?: number | null
+        }
+        Update: {
+          ai_model?: string
+          chart_id?: string
+          confidence_score?: number | null
+          created_at?: string
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          generated_at?: string
+          id?: string
+          interpretation_text?: string
+          interpretation_type?: string
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chart_interpretations_chart_id_fkey"
+            columns: ["chart_id"]
+            isOneToOne: false
+            referencedRelation: "birth_charts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chart_interpretations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chart_shares: {
+        Row: {
+          access_count: number | null
+          chart_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          last_accessed_at: string | null
+          permissions: Json | null
+          share_token: string
+          share_type: string
+          shared_by_user_id: string
+          shared_with_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_count?: number | null
+          chart_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_accessed_at?: string | null
+          permissions?: Json | null
+          share_token?: string
+          share_type?: string
+          shared_by_user_id: string
+          shared_with_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_count?: number | null
+          chart_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_accessed_at?: string | null
+          permissions?: Json | null
+          share_token?: string
+          share_type?: string
+          shared_by_user_id?: string
+          shared_with_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chart_shares_chart_id_fkey"
+            columns: ["chart_id"]
+            isOneToOne: false
+            referencedRelation: "birth_charts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_conversations: {
+        Row: {
+          context_data: Json | null
+          conversation_title: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          tenant_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          context_data?: Json | null
+          conversation_title?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          tenant_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          context_data?: Json | null
+          conversation_title?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_conversations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          ai_model: string | null
+          confidence_score: number | null
+          context_used: Json | null
+          conversation_id: string
+          created_at: string
+          id: string
+          message_content: string
+          sender_type: string
+          tokens_used: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_model?: string | null
+          confidence_score?: number | null
+          context_used?: Json | null
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_content: string
+          sender_type: string
+          tokens_used?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_model?: string | null
+          confidence_score?: number | null
+          context_used?: Json | null
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_content?: string
+          sender_type?: string
+          tokens_used?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cities: {
         Row: {
           created_at: string | null
@@ -209,6 +494,56 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planetary_positions: {
+        Row: {
+          chart_id: string
+          created_at: string
+          house_number: number | null
+          id: string
+          is_retrograde: boolean | null
+          latitude: number | null
+          longitude: number
+          planet_name: string
+          sign_degrees: number
+          sign_name: string
+          speed: number | null
+        }
+        Insert: {
+          chart_id: string
+          created_at?: string
+          house_number?: number | null
+          id?: string
+          is_retrograde?: boolean | null
+          latitude?: number | null
+          longitude: number
+          planet_name: string
+          sign_degrees: number
+          sign_name: string
+          speed?: number | null
+        }
+        Update: {
+          chart_id?: string
+          created_at?: string
+          house_number?: number | null
+          id?: string
+          is_retrograde?: boolean | null
+          latitude?: number | null
+          longitude?: number
+          planet_name?: string
+          sign_degrees?: number
+          sign_name?: string
+          speed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planetary_positions_chart_id_fkey"
+            columns: ["chart_id"]
+            isOneToOne: false
+            referencedRelation: "birth_charts"
             referencedColumns: ["id"]
           },
         ]
