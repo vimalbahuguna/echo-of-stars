@@ -48,7 +48,7 @@ const Index = () => {
               className="flex items-center gap-2 data-[state=active]:bg-secondary/10 data-[state=active]:text-secondary"
             >
               <MessageSquare className="w-4 h-4" />
-              <span className="hidden sm:inline">Oracle</span>
+              <span className="hidden sm:inline">SOS Oracle</span>
             </TabsTrigger>
             <TabsTrigger 
               value="readings" 

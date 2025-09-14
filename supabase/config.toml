@@ -12,5 +12,5 @@ verify_jwt = true
 [functions.ai-chat]
 verify_jwt = true
 
-[functions.generate-chart-interpretation]
-verify_jwt = true
+[functions.seed-sample-data]
+verify_jwt = false

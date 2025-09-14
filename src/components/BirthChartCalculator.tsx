@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import ChartPreview from "@/components/charts/ChartPreview";
 import { 
   Calendar,
   MapPin,
@@ -16,10 +18,13 @@ import {
   Star,
   Loader2,
   CheckCircle,
-  Brain
+  Brain,
+  UserPlus,
+  Eye
 } from "lucide-react";
 
 const BirthChartCalculator = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -31,12 +36,89 @@ const BirthChartCalculator = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedChart, setGeneratedChart] = useState<any>(null);
+  const [showSample, setShowSample] = useState(false);
+  const [sampleChart, setSampleChart] = useState<any>(null);
+
+  const loadSampleChart = async () => {
+    try {
+      setIsGenerating(true);
+      console.log('Loading sample chart...');
+      
+      // First seed sample data
+      const { data: seedResult, error: seedError } = await supabase.functions.invoke('seed-sample-data');
+      
+      if (seedError) {
+        console.error('Error seeding sample data:', seedError);
+        throw seedError;
+      }
+      
+      console.log('Sample data seeded:', seedResult);
+      
+      // Load the sample chart
+      const { data: charts } = await supabase
+        .from('birth_charts')
+        .select(`
+          *,
+          planetary_positions(*),
+          chart_interpretations(*)
+        `)
+        .eq('is_public', true)
+        .eq('metadata->>sample', 'true')
+        .limit(1);
+
+      if (charts && charts[0]) {
+        const chart = charts[0];
+        setSampleChart({
+          chartData: chart.chart_data,
+          planets: chart.planetary_positions,
+          interpretation: chart.chart_interpretations?.[0]?.content
+        });
+        setShowSample(true);
+        toast({
+          title: "Sample Chart Loaded",
+          description: "Viewing Jane Doe's birth chart as an example.",
+        });
+      }
+    } catch (error) {
+      console.error('Error loading sample chart:', error);
+      toast({
+        title: "Error Loading Sample",
+        description: "Failed to load sample chart. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const fillSampleData = () => {
+    setFormData({
+      name: 'Jane Doe',
+      date: '1990-05-15',
+      time: '14:30',
+      location: 'New York, NY, USA',
+      astrologicalSystem: 'western'
+    });
+    toast({
+      title: "Sample Data Filled",
+      description: "Form filled with sample birth information.",
+    });
+  };
 
   const handleGenerate = async () => {
     if (!formData.name || !formData.date || !formData.location) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields to generate your chart.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to generate your personalized birth chart.",
         variant: "destructive"
       });
       return;
@@ -63,6 +145,9 @@ const BirthChartCalculator = () => {
 
       if (error) {
         console.error('Error generating chart:', error);
+        if (error.message?.includes('Unauthorized') || error.message?.includes('JWT')) {
+          throw new Error('Please sign in to generate your birth chart');
+        }
         throw new Error(error.message || 'Failed to generate birth chart');
       }
 
@@ -89,6 +174,11 @@ const BirthChartCalculator = () => {
             console.error('Error generating interpretation:', interpretationError);
           } else {
             console.log('Interpretation generated:', interpretationData);
+            // Update the generated chart with interpretation
+            setGeneratedChart(prev => ({
+              ...prev,
+              interpretation: interpretationData.interpretation?.content
+            }));
             toast({
               title: "AI Interpretation Ready!",
               description: "Your personalized astrological analysis has been generated.",
@@ -112,7 +202,71 @@ const BirthChartCalculator = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
+    <div className="space-y-6">
+      {/* Auth Status and Sample Options */}
+      {!user && (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="font-medium">Sign in for personalized charts</p>
+                  <p className="text-sm text-muted-foreground">Get AI-powered interpretations and save your charts</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={loadSampleChart}
+                  disabled={isGenerating}
+                  className="border-secondary/50"
+                >
+                  {isGenerating ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                  ) : (
+                    <Eye className="w-4 h-4 mr-1" />
+                  )}
+                  View Sample Chart
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Sign In
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Show Sample Chart */}
+      {showSample && sampleChart && (
+        <div className="space-y-4">
+          <ChartPreview chartData={sampleChart} isDemo={true} />
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowSample(false)}
+              className="mr-2"
+            >
+              Hide Sample
+            </Button>
+            <Button 
+              variant="default"
+              onClick={() => window.location.href = '/auth'}
+            >
+              Sign In to Generate Your Chart
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {!showSample && (
+        <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
       <CardHeader className="text-center pb-6">
         <div className="flex justify-center mb-4">
           <div className="relative">
@@ -224,44 +378,69 @@ const BirthChartCalculator = () => {
           </Badge>
         </div>
 
-        {/* Generate Button */}
-        <Button 
-          onClick={handleGenerate}
-          disabled={!formData.name || !formData.date || !formData.location || isGenerating}
-          className="w-full bg-gradient-cosmic hover:shadow-stellar text-white font-semibold py-6 text-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Calculating Cosmic Positions...
-            </>
-          ) : (
-            <>
-              <Star className="w-5 h-5 mr-2" />
-              Generate Birth Chart
-            </>
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          {!user && (
+            <Button 
+              variant="outline"
+              onClick={fillSampleData}
+              className="flex-1 border-accent/50"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Use Sample Data
+            </Button>
           )}
-        </Button>
+          
+          <Button 
+            onClick={user ? handleGenerate : () => window.location.href = '/auth'}
+            disabled={(!user && !formData.name) || (user && (!formData.name || !formData.date || !formData.location)) || isGenerating}
+            className={`${user ? 'w-full' : 'flex-1'} bg-gradient-cosmic hover:shadow-stellar text-white font-semibold py-6 text-lg hover:scale-105 transition-transform disabled:opacity-50`}
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Calculating Cosmic Positions...
+              </>
+            ) : user ? (
+              <>
+                <Star className="w-5 h-5 mr-2" />
+                Generate Birth Chart
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-5 h-5 mr-2" />
+                Sign In to Generate
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Generated Chart Display */}
+        {generatedChart && (
+          <ChartPreview chartData={generatedChart} />
+        )}
 
         {/* Success Message */}
         {generatedChart && (
-          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mt-4">
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
             <div className="flex items-center gap-2 text-green-600">
               <CheckCircle className="w-5 h-5" />
               <span className="font-medium">Chart Generated Successfully!</span>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
-              Your birth chart has been calculated and saved. Check the SOS Oracle for personalized insights!
+              Your personalized birth chart with AI interpretation is ready!
             </p>
           </div>
         )}
 
         {/* Disclaimer */}
-        <p className="text-xs text-muted-foreground text-center mt-4">
+        <p className="text-xs text-muted-foreground text-center">
           Birth time is optional but recommended for accuracy. Without it, we'll use noon as default.
         </p>
       </CardContent>
     </Card>
+      )}
+    </div>
   );
 };
 
