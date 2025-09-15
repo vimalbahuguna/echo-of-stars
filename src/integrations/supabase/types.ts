@@ -829,6 +829,36 @@ export type Database = {
           },
         ]
       }
+      user_birth_data: {
+        Row: {
+          created_at: string
+          date: string
+          id: number
+          location: string
+          name: string
+          time: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: number
+          location: string
+          name: string
+          time: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: number
+          location?: string
+          name?: string
+          time?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_sessions: {
         Row: {
           created_at: string | null
