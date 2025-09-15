@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': '*', 
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -68,13 +68,24 @@ Chart Information:
 - Birth Date: ${chart.birth_date}
 - Birth Time: ${chart.birth_time}
 - Location: ${chart.metadata?.location || 'Unknown'}
+- House System: ${chart.chart_data?.houseSystem || 'Placidus'} // Default to Placidus if not specified
 
-Planetary Positions:
+Planetary Positions (Tropical Zodiac):
 ${chart.planetary_positions?.map((p: any) => 
-  `${p.planet_name}: ${p.sign_name} ${p.sign_degrees.toFixed(2)}° (House ${p.house_number})${p.is_retrograde ? ' Retrograde' : ''}`
-).join('\n')}
+  `${p.planet_name}: ${p.sign_name} ${p.sign_degrees.toFixed(2)}° in House ${p.house_number}${p.is_retrograde ? ' Retrograde' : ''} (Longitude: ${p.longitude.toFixed(2)}°)`
+).join(' \n')}
 
-Chart Data: ${JSON.stringify(chart.chart_data, null, 2)}
+House Cusps:
+Ascendant (1st House Cusp): ${chart.chart_data?.ascendant?.toFixed(2)}°
+Midheaven (10th House Cusp): ${chart.chart_data?.midheaven?.toFixed(2)}°
+${chart.chart_data?.houses?.map((cusp: number, index: number) => 
+  `House ${index + 1} Cusp: ${cusp.toFixed(2)}°`
+).join(' \n')}
+
+Major Aspects:
+${chart.chart_data?.aspects?.map((a: any) => 
+  `${a.from} ${a.aspect} ${a.to} (Orb: ${a.orb.toFixed(2)}°)`
+).join(' \n')}
 
 Please provide a comprehensive, insightful, and personalized astrological interpretation. Include:
 1. Overall personality insights

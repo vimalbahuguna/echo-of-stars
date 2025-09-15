@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CosmicHeader from "@/components/CosmicHeader";
 import HeroSection from "@/components/HeroSection";
@@ -17,6 +18,17 @@ import {
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const location = useLocation();
+
+  useEffect(() => {
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      const validTabs = ['dashboard', 'chart', 'oracle', 'readings'];
+      if (validTabs.includes(hash)) {
+        setActiveTab(hash);
+      }
+    }
+  }, [location]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,7 +80,7 @@ const Index = () => {
                 Track your astrological insights, upcoming transits, and personalized predictions all in one place.
               </p>
             </div>
-            <DashboardCards />
+            <DashboardCards setActiveTab={setActiveTab} />
           </TabsContent>
 
           <TabsContent value="chart" className="space-y-8">

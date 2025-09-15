@@ -18,7 +18,10 @@ import {
   LogOut,
   Shield,
   Building,
-  Mail
+  Mail,
+  Home,
+  HeartHandshake,
+  Globe // New import
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -70,15 +73,32 @@ const CosmicHeader = () => {
 
   const NavigationItems = () => (
     <>
-      <Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary">
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className="hover:bg-primary/10 hover:text-primary"
+        onClick={() => navigate("/")}
+      >
+        <Home className="w-4 h-4 mr-2" />
+        Home
+      </Button>
+      <Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary" onClick={() => navigate("/birth-chart")}> 
         <Calendar className="w-4 h-4 mr-2" />
         Charts
       </Button>
-      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent">
+      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/compatibility")}> 
+        <HeartHandshake className="w-4 h-4 mr-2" />
+        Compatibility
+      </Button>
+      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/ephemeris")}> {/* New Button */}
+        <Globe className="w-4 h-4 mr-2" />
+        Ephemeris
+      </Button>
+      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/#oracle")}>
         <MessageCircle className="w-4 h-4 mr-2" />
         SOS Oracle
       </Button>
-      <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground">
+      <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground" onClick={() => navigate("/#readings")}>
         <Moon className="w-4 h-4 mr-2" />
         Readings
       </Button>

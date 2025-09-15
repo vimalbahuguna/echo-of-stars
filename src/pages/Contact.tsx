@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -121,6 +122,13 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <CosmicHeader />
+      <div className="container py-4 flex justify-end">
+        <Link to="/">
+          <Button variant="outline">
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
       
       {/* Hero Section */}
       <div className="relative py-20 bg-gradient-to-br from-background via-primary/5 to-accent/10">

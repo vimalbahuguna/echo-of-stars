@@ -14,10 +14,15 @@ import {
   Users,
   Globe,
   BookOpen,
-  Sparkles
+  Sparkles,
+  MessageSquare
 } from "lucide-react";
 
-const DashboardCards = () => {
+interface DashboardCardsProps {
+  setActiveTab: (tab: string) => void;
+}
+
+const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
   const todaysInsights = [
     {
       type: "Love",
@@ -104,7 +109,7 @@ const DashboardCards = () => {
               <h3 className="font-semibold">Chart Generated</h3>
               <p className="text-sm text-muted-foreground">Last updated: Today</p>
             </div>
-            <Button variant="outline" size="sm" className="w-full border-accent/50 hover:bg-accent/10">
+            <Button variant="outline" size="sm" className="w-full border-accent/50 hover:bg-accent/10" onClick={() => setActiveTab('chart')}>
               View Full Chart
             </Button>
           </div>
@@ -115,8 +120,8 @@ const DashboardCards = () => {
       <Card className="bg-card/50 border-secondary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-secondary animate-float" />
-            SOS Oracle
+            <MessageSquare className="w-5 h-5 text-secondary animate-float" />
+            Chat With SOS Oracle
           </CardTitle>
           <CardDescription>24/7 cosmic guidance</CardDescription>
         </CardHeader>
@@ -132,7 +137,7 @@ const DashboardCards = () => {
                 </div>
               </div>
             </div>
-            <Button className="w-full bg-gradient-stellar hover:shadow-glow">
+            <Button className="w-full bg-gradient-stellar hover:shadow-glow" onClick={() => setActiveTab('oracle')}>
               Start Conversation
             </Button>
           </div>
@@ -173,7 +178,7 @@ const DashboardCards = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-accent" />
-            Cosmic Learning
+            Start Your Reading
           </CardTitle>
           <CardDescription>Expand your astrological knowledge</CardDescription>
         </CardHeader>
@@ -187,7 +192,7 @@ const DashboardCards = () => {
               <Progress value={65} className="h-2" />
               <p className="text-xs text-muted-foreground">65% complete</p>
             </div>
-            <Button variant="outline" size="sm" className="w-full">
+            <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab('readings')}>
               Continue Learning
             </Button>
           </div>

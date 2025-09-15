@@ -11,6 +11,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import BirthChartCalculator from "./components/BirthChartCalculator";
+import CompatibilityAnalyzer from "./components/CompatibilityAnalyzer";
+import EphemerisViewer from "./components/EphemerisViewer"; // New import
+import SOSOracle from "./components/SOSOracle"; // New import for SOSOracle
 
 const queryClient = new QueryClient();
 
@@ -36,6 +39,21 @@ const App = () => (
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/compatibility" element={ // New Route
+              <ProtectedRoute>
+                <CompatibilityAnalyzer />
+              </ProtectedRoute>
+            } />
+            <Route path="/ephemeris" element={ // New Route for Ephemeris
+              <ProtectedRoute>
+                <EphemerisViewer />
+              </ProtectedRoute>
+            } />
+            <Route path="/oracle" element={ // New Route for SOS Oracle
+              <ProtectedRoute>
+                <SOSOracle />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

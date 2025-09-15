@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { CircularNatalHoroscope } from 'https://esm.sh/circular-natal-horoscope-js@latest';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,6 +17,7 @@ interface BirthData {
   longitude?: number;
   timezone?: string;
   astrologicalSystem: 'western' | 'vedic';
+  houseSystem?: string; // Add house system
 }
 
 interface Planet {
@@ -66,16 +68,63 @@ serve(async (req) => {
     console.log('Calculating birth chart for:', birthData);
 
     // Basic astronomical calculations (simplified for demonstration)
-    const planets = calculatePlanetPositions(birthData);
-    const houses = calculateHouses(birthData);
-    const aspects = calculateAspects(planets);
+    // const planets = calculatePlanetPositions(birthData);
+    // const houses = calculateHouses(birthData);
+    // const aspects = calculateAspects(planets);
+
+    // Use CircularNatalHoroscopeJS for accurate calculations
+    const birthDate = new Date(`${birthData.date}T${birthData.time}`);
+    
+    if (!birthData.latitude || !birthData.longitude || !birthData.timezone) {
+      throw new Error('Latitude, longitude, and timezone are required for accurate birth chart calculation.');
+    }
+
+    const horoscope = new CircularNatalHoroscope({
+      year: birthDate.getFullYear(),
+      month: birthDate.getMonth() + 1, // Month is 0-indexed in JS Date
+      day: birthDate.getDate(),
+      hour: birthDate.getHours(),
+      minute: birthDate.getMinutes(),
+      latitude: birthData.latitude,
+      longitude: birthData.longitude,
+      timezone: birthData.timezone,
+      houseSystem: birthData.houseSystem || 'Placidus', // Default to Placidus
+    });
+
+    const planetsData = horoscope.getPlanets();
+    const housesData = horoscope.getHouses();
+    const aspectsData = horoscope.getAspects();
+    const ascendantData = horoscope.getAscendant();
+    const midheavenData = horoscope.getMidheaven();
+
+    const planets: Planet[] = planetsData.map((p: any) => ({
+      name: p.label,
+      longitude: p.longitude,
+      latitude: p.latitude,
+      speed: p.speed,
+      sign: p.Sign.label,
+      degrees: p.Sign.degree,
+      house: p.House.houseNumber,
+      isRetrograde: p.isRetrograde,
+    }));
+
+    const houses: number[] = housesData.map((h: any) => h.cusp);
+    const aspects: Array<{from: string, to: string, aspect: string, orb: number}> = aspectsData.map((a: any) => ({
+      from: a.planet1.label,
+      to: a.planet2.label,
+      aspect: a.aspect.label,
+      orb: a.aspect.orb,
+    }));
+    const ascendant = ascendantData.longitude;
+    const midheaven = midheavenData.longitude;
+
 
     const chartData = {
       planets,
       houses,
       aspects,
-      ascendant: houses[0],
-      midheaven: houses[9],
+      ascendant: ascendant,
+      midheaven: midheaven,
       system: birthData.astrologicalSystem
     };
 
@@ -147,7 +196,8 @@ serve(async (req) => {
   }
 });
 
-// Simplified astronomical calculations
+// --- Original Simplified astronomical calculations (commented out for replacement) ---
+/*
 function calculatePlanetPositions(birthData: BirthData): Planet[] {
   const date = new Date(birthData.date + 'T' + birthData.time);
   const daysSinceEpoch = (date.getTime() - new Date('2000-01-01').getTime()) / (1000 * 60 * 60 * 24);
@@ -187,7 +237,66 @@ function calculatePlanetPositions(birthData: BirthData): Planet[] {
       house: 0,
       isRetrograde: Math.sin(daysSinceEpoch * 0.01) < -0.5
     },
-    // Add more planets...
+    {
+      name: 'Venus',
+      longitude: (daysSinceEpoch * 1.602 + 50) % 360,
+      latitude: 3.39 * Math.sin(daysSinceEpoch * 0.005),
+      speed: 1.602,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: Math.sin(daysSinceEpoch * 0.005) < -0.3
+    },
+    {
+      name: 'Mars',
+      longitude: (daysSinceEpoch * 0.524 + 355) % 360,
+      latitude: 1.85 * Math.sin(daysSinceEpoch * 0.002),
+      speed: 0.524,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: Math.sin(daysSinceEpoch * 0.002) < -0.2
+    },
+    {
+      name: 'Jupiter',
+      longitude: (daysSinceEpoch * 0.083 + 34) % 360,
+      latitude: 1.3 * Math.sin(daysSinceEpoch * 0.0005),
+      speed: 0.083,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: Math.sin(daysSinceEpoch * 0.0005) < -0.1
+    },
+    {
+      name: 'Saturn',
+      longitude: (daysSinceEpoch * 0.033 + 25) % 360,
+      latitude: 2.49 * Math.sin(daysSinceEpoch * 0.0002),
+      speed: 0.033,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: Math.sin(daysSinceEpoch * 0.0002) < -0.05
+    },
+    {
+      name: 'Rahu', // North Node
+      longitude: (360 - (daysSinceEpoch * 0.0529)) % 360,
+      latitude: 0,
+      speed: -0.0529,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: true
+    },
+    {
+      name: 'Ketu', // South Node
+      longitude: (180 - (daysSinceEpoch * 0.0529)) % 360,
+      latitude: 0,
+      speed: -0.0529,
+      sign: '',
+      degrees: 0,
+      house: 0,
+      isRetrograde: true
+    }
   ];
 
   // Calculate sign and house positions

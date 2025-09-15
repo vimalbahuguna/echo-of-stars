@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -80,16 +81,6 @@ const SOSOracle = () => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
-    // Check if user is authenticated
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to chat with SOS Oracle.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputMessage,
@@ -112,15 +103,27 @@ const SOSOracle = () => {
         }
       });
 
+      // Detailed logging
+      console.log('Supabase function response:', { data, error });
+
       if (error) {
         console.error('Error calling AI chat:', error);
         if (error.message?.includes('Unauthorized') || error.message?.includes('JWT')) {
-          throw new Error('Please sign in to continue chatting with SOS Oracle');
+          throw new Error('Authentication error. Please sign in again to continue.');
         }
-        throw new Error(error.message || 'Failed to get AI response');
+        // Check for function-specific errors from the backend
+        if (data && data.success === false) {
+          throw new Error(data.error || 'An unknown error occurred in the AI function.');
+        }
+        throw new Error(error.message || 'Failed to get AI response from the server.');
       }
 
-      console.log('AI chat response:', data);
+      console.log('AI chat response data:', data);
+
+      if (!data || !data.response) {
+        console.error('Invalid data structure from AI chat function', data);
+        throw new Error('The AI returned an invalid or empty response. The function may be misconfigured.');
+      }
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -139,9 +142,26 @@ const SOSOracle = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       
+      let errorMessageContent = "I apologize, but I'm having trouble connecting to the cosmic energies right now. Please try again in a moment.";
+      let errorDescription = "Unable to reach SOS Oracle. Please try again.";
+
+      if (error instanceof Error) {
+        errorMessageContent = error.message;
+        errorDescription = error.message;
+
+        if (error.message.includes('Failed to fetch') || error.message.includes('500')) {
+          errorMessageContent = "It seems there is a configuration issue with the AI Oracle backend. Please ensure the Supabase function has the correct environment variables (like OPENAI_API_KEY) set up.";
+          errorDescription = "Backend configuration error. Check Supabase function environment variables.";
+        } else if (error.message.includes('misconfigured')) {
+          errorMessageContent = error.message;
+          errorDescription = "The AI Oracle function is misconfigured. Please check the server logs.";
+
+        }
+      }
+
       const errorMessage: Message = {
         id: (Date.now() + 2).toString(),
-        content: error instanceof Error ? error.message : "I apologize, but I'm having trouble connecting to the cosmic energies right now. Please try again in a moment.",
+        content: errorMessageContent,
         sender: 'ai',
         timestamp: new Date()
       };
@@ -149,9 +169,10 @@ const SOSOracle = () => {
       setMessages(prev => [...prev, errorMessage]);
       
       toast({
-        title: "Connection Error",
-        description: error instanceof Error ? error.message : "Unable to reach SOS Oracle. Please try again.",
-        variant: "destructive"
+        title: "Oracle Connection Error",
+        description: errorDescription,
+        variant: "destructive",
+        duration: 10000, // Show for longer
       });
     } finally {
       setIsTyping(false);
@@ -232,6 +253,13 @@ const SOSOracle = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end mb-4">
+        <Link to="/">
+          <Button variant="outline">
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
       {/* Auth Status and Demo Toggle */}
       {!user && (
         <Card className="bg-primary/5 border-primary/20">
