@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ChartPreview from "@/components/charts/ChartPreview";
+import { geocodeLocation } from "@/components/GeocodingService";
 import { 
   Calendar,
   MapPin,
@@ -177,6 +178,9 @@ const BirthChartCalculator = () => {
     try {
       const birthTime = formData.time || '12:00';
       
+      // Get coordinates for the location
+      const geocodingResult = await geocodeLocation(formData.location);
+      
       // Save birth data
       const { error: saveError } = await supabase.from('user_birth_data').upsert({ 
         user_id: user.id,
@@ -189,7 +193,13 @@ const BirthChartCalculator = () => {
       if (saveError) console.error('Error saving birth data:', saveError);
 
       const { data, error } = await supabase.functions.invoke('calculate-birth-chart', {
-        body: { ...formData, time: birthTime }
+        body: { 
+          ...formData, 
+          time: birthTime,
+          latitude: geocodingResult.latitude,
+          longitude: geocodingResult.longitude,
+          timezone: 'UTC' // Default timezone - in production this would be calculated from location
+        }
       });
 
       if (error) throw new Error(error.message || 'Failed to generate birth chart');
@@ -205,7 +215,10 @@ const BirthChartCalculator = () => {
       });
       setShowChart(true);
 
-      toast({ title: "Chart Generated Successfully!" });
+      toast({ 
+        title: "Chart Generated Successfully!",
+        description: !geocodingResult.found ? "Used approximate coordinates for location." : "Your birth chart has been calculated."
+      });
 
       if (data.chart?.id) {
         const { data: interpretationData, error: interpretationError } = await supabase.functions.invoke('generate-chart-interpretation', {
@@ -213,7 +226,7 @@ const BirthChartCalculator = () => {
         });
 
         if (!interpretationError) {
-          setGeneratedChart(prev => ({ ...prev, interpretation: interpretationData.interpretation?.content }));
+          setGeneratedChart(prev => ({ ...prev, interpretation: interpretationData.interpretation?.interpretation_text }));
           toast({ title: "AI Interpretation Ready!" });
         }
       }

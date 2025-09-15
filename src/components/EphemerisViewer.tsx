@@ -174,7 +174,7 @@ const EphemerisViewer = () => {
                         id="latitude"
                         type="number"
                         value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}S
+                        onChange={(e) => setLatitude(e.target.value)}
                         placeholder="e.g., 34.0522"
                         className="bg-input/50 border-border/50"
                       />

@@ -94,11 +94,11 @@ const CosmicHeader = () => {
         <Globe className="w-4 h-4 mr-2" />
         Ephemeris
       </Button>
-      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/#oracle")}>
+      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "oracle", 100); }}>
         <MessageCircle className="w-4 h-4 mr-2" />
         SOS Oracle
       </Button>
-      <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground" onClick={() => navigate("/#readings")}>
+      <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "readings", 100); }}>
         <Moon className="w-4 h-4 mr-2" />
         Readings
       </Button>
