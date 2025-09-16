@@ -218,7 +218,12 @@ const BirthChartCalculator = () => {
       setGeneratedChart({
         name: formData.name,
         astrologicalSystem: formData.astrologicalSystem,
-        planets: data.chart.chartData.planets
+        planets: data.chart.chartData.planets.map((planet: any) => ({
+          ...planet,
+          degree: planet.degrees || planet.degree || 0,
+          house: planet.house_number || planet.house || 1,
+          retrograde: planet.isRetrograde || planet.retrograde || false,
+        }))
       });
       setShowChart(true);
 

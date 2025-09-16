@@ -836,6 +836,7 @@ export type Database = {
           id: number
           location: string
           name: string
+          relationship: string | null
           time: string
           user_id: string
         }
@@ -845,6 +846,7 @@ export type Database = {
           id?: number
           location: string
           name: string
+          relationship?: string | null
           time: string
           user_id: string
         }
@@ -854,6 +856,7 @@ export type Database = {
           id?: number
           location?: string
           name?: string
+          relationship?: string | null
           time?: string
           user_id?: string
         }
