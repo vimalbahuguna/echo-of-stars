@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { 
   MessageSquare,
   Mic,
@@ -17,14 +18,25 @@ import {
   Bot,
   User,
   Loader2,
-  UserPlus
+  UserPlus,
+  Copy
 } from "lucide-react";
+
+interface BirthData {
+  id?: string; // Optional ID for existing records
+  birthDate: string;
+  birthTime: string;
+  birthPlace: string;
+  latitude: number;
+  longitude: number;
+}
 
 interface Message {
   id: string;
   content: string;
   sender: 'user' | 'ai';
   timestamp: Date;
+  isError?: boolean;
 }
 
 const SOSOracle = () => {
@@ -163,7 +175,8 @@ const SOSOracle = () => {
         id: (Date.now() + 2).toString(),
         content: errorMessageContent,
         sender: 'ai',
-        timestamp: new Date()
+        timestamp: new Date(),
+        isError: true
       };
       
       setMessages(prev => [...prev, errorMessage]);
@@ -173,6 +186,14 @@ const SOSOracle = () => {
         description: errorDescription,
         variant: "destructive",
         duration: 10000, // Show for longer
+        action: (
+          <ToastAction
+            altText="Copy error message"
+            onClick={() => navigator.clipboard.writeText(errorMessageContent)}
+          >
+            <Copy className="h-4 w-4" />
+          </ToastAction>
+        ),
       });
     } finally {
       setIsTyping(false);
@@ -326,21 +347,33 @@ const SOSOracle = () => {
                 className={`flex gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {message.sender === 'ai' && (
-                  <div className="flex-shrink-0 w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
-                    <Bot className="w-4 h-4 text-accent" />
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${message.isError ? 'bg-destructive/20' : 'bg-accent/10'}`}>
+                    <Bot className={`w-4 h-4 ${message.isError ? 'text-destructive' : 'text-accent'}`} />
                   </div>
                 )}
                 <div
                   className={`max-w-[70%] p-3 rounded-lg ${
                     message.sender === 'user'
                       ? 'bg-primary/10 text-primary-foreground ml-auto'
-                      : 'bg-muted/50 text-muted-foreground'
+                      : message.isError ? 'bg-destructive/10 text-destructive-foreground' : 'bg-muted/50 text-muted-foreground'
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-xs opacity-70">
+                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                    {message.isError && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-destructive-foreground/70 hover:text-destructive-foreground"
+                        onClick={() => navigator.clipboard.writeText(message.content)}
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 {message.sender === 'user' && (
                   <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">

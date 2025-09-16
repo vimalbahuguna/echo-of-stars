@@ -3,7 +3,7 @@ import CosmicFooter from "@/components/CosmicFooter";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,9 @@ import {
   Eye,
   ChevronDown,
   ChevronUp,
-  Save
+  Save,
+  Search,
+  Users
 } from "lucide-react";
 
 const BirthChartCalculator = () => {
@@ -38,45 +40,59 @@ const BirthChartCalculator = () => {
     date: '',
     time: '',
     location: '',
+    relationship: 'Self',
     astrologicalSystem: 'western'
   });
-  const [savedData, setSavedData] = useState<any>(null);
+  const [savedCharts, setSavedCharts] = useState<any[]>([]);
+  const [editingChartId, setEditingChartId] = useState<number | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedChart, setGeneratedChart] = useState<any>(null);
   const [showChart, setShowChart] = useState(false);
   const [showSample, setShowSample] = useState(false);
   const [sampleChart, setSampleChart] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const fetchSavedCharts = async () => {
+    if (user) {
+      const { data, error } = await supabase
+        .from('user_birth_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (data) {
+        setSavedCharts(data);
+      }
+      if (error) {
+        console.error("Error fetching saved charts:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchSavedData = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('user_birth_data')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-        if (data) {
-          setSavedData(data);
-        }
-      }
-    };
-    fetchSavedData();
+    fetchSavedCharts();
   }, [user]);
 
-  const loadSavedDataForEdit = () => {
-    if (savedData) {
-      setFormData({
-        name: savedData.name,
-        date: savedData.date,
-        time: savedData.time,
-        location: savedData.location,
-        astrologicalSystem: formData.astrologicalSystem, // Keep the current selection
-      });
-      toast({
-        title: "Saved Data Loaded",
-        description: "Your saved birth information has been loaded into the form for editing.",
-      });
-    }
+  const filteredCharts = savedCharts.filter(chart =>
+    chart.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    chart.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (chart.location && chart.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (chart.relationship && chart.relationship.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const loadChartForEdit = (chart: any) => {
+    setEditingChartId(chart.id);
+    setFormData({
+      name: chart.name,
+      date: chart.date,
+      time: chart.time,
+      location: chart.location,
+      relationship: chart.relationship || 'Self',
+      astrologicalSystem: formData.astrologicalSystem, // Keep current selection
+    });
+    toast({
+      title: "Chart Loaded",
+      description: `Chart "${chart.name}" has been loaded for editing.`,
+    });
   };
 
   const handleSave = async () => {
@@ -89,34 +105,45 @@ const BirthChartCalculator = () => {
       return;
     }
 
-    setIsGenerating(true); // Use isGenerating to disable buttons during save
+    setIsGenerating(true);
     try {
       const birthTime = formData.time || '12:00';
-      const { error: saveError } = await supabase.from('user_birth_data').upsert({ 
+      const chartData = {
         user_id: user.id,
         name: formData.name,
         date: formData.date,
         time: birthTime,
         location: formData.location,
-      }, { onConflict: 'user_id' });
+        relationship: formData.relationship,
+      };
 
-      if (saveError) {
-        console.error('Error saving birth data:', saveError);
-        throw new Error(saveError.message);
+      let error;
+      if (editingChartId) {
+        // Update existing chart
+        const { error: updateError } = await supabase
+          .from('user_birth_data')
+          .update(chartData)
+          .eq('id', editingChartId)
+          .eq('user_id', user.id);
+        error = updateError;
+      } else {
+        // Create new chart
+        const { error: insertError } = await supabase
+          .from('user_birth_data')
+          .insert(chartData);
+        error = insertError;
       }
 
-      // Re-fetch saved data to update the display
-      const { data, error } = await supabase
-        .from('user_birth_data')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-      if (data) {
-        setSavedData(data);
+      if (error) {
+        console.error('Error saving birth data:', error);
+        throw new Error(error.message);
       }
-      if (error) console.error('Error re-fetching saved data:', error);
 
-      toast({ title: "Birth Data Saved!", description: "Your birth information has been successfully saved." });
+      await fetchSavedCharts(); // Refresh the list
+      setEditingChartId(null); // Reset editing state
+      setFormData({ name: '', date: '', time: '', location: '', relationship: 'Self', astrologicalSystem: 'western' }); // Clear form
+
+      toast({ title: "Birth Data Saved!", description: `Chart "${formData.name}" has been successfully saved.` });
     } catch (error) {
       toast({ title: "Save Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
     } finally {
@@ -124,17 +151,18 @@ const BirthChartCalculator = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (chartId: number) => {
     if (!user) {
       toast({ title: "Sign in required", description: "Please sign in to delete your birth data.", variant: "destructive" });
       return;
     }
 
-    setIsGenerating(true); // Use isGenerating to disable buttons during delete
+    setIsGenerating(true);
     try {
       const { error } = await supabase
         .from('user_birth_data')
         .delete()
+        .eq('id', chartId)
         .eq('user_id', user.id);
 
       if (error) {
@@ -142,18 +170,8 @@ const BirthChartCalculator = () => {
         throw new Error(error.message);
       }
 
-      setSavedData(null);
-      setFormData({
-        name: '',
-        date: '',
-        time: '',
-        location: '',
-        astrologicalSystem: 'western'
-      });
-      setGeneratedChart(null);
-      setShowChart(false);
-
-      toast({ title: "Birth Data Deleted!", description: "Your birth information has been successfully deleted." });
+      await fetchSavedCharts(); // Refresh the list
+      toast({ title: "Birth Data Deleted!", description: "The selected chart has been deleted." });
     } catch (error) {
       toast({ title: "Delete Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
     } finally {
@@ -177,28 +195,17 @@ const BirthChartCalculator = () => {
 
     try {
       const birthTime = formData.time || '12:00';
-      
-      // Get coordinates for the location
       const geocodingResult = await geocodeLocation(formData.location);
-      
-      // Save birth data
-      const { error: saveError } = await supabase.from('user_birth_data').upsert({ 
-        user_id: user.id,
-        name: formData.name,
-        date: formData.date,
-        time: birthTime,
-        location: formData.location,
-      }, { onConflict: 'user_id' });
 
-      if (saveError) console.error('Error saving birth data:', saveError);
+      // Don't auto-save on generate, let the user explicitly save.
 
       const { data, error } = await supabase.functions.invoke('calculate-birth-chart', {
-        body: { 
-          ...formData, 
+        body: {
+          ...formData,
           time: birthTime,
           latitude: geocodingResult.latitude,
           longitude: geocodingResult.longitude,
-          timezone: 'UTC' // Default timezone - in production this would be calculated from location
+          timezone: 'UTC'
         }
       });
 
@@ -208,14 +215,14 @@ const BirthChartCalculator = () => {
         throw new Error('Invalid chart data received from the server. Please check the input and try again.');
       }
 
-      setGeneratedChart({ 
-        name: formData.name, 
-        astrologicalSystem: formData.astrologicalSystem, 
-        planets: data.chart.chartData.planets 
+      setGeneratedChart({
+        name: formData.name,
+        astrologicalSystem: formData.astrologicalSystem,
+        planets: data.chart.chartData.planets
       });
       setShowChart(true);
 
-      toast({ 
+      toast({
         title: "Chart Generated Successfully!",
         description: !geocodingResult.found ? "Used approximate coordinates for location." : "Your birth chart has been calculated."
       });
@@ -253,44 +260,94 @@ const BirthChartCalculator = () => {
           {!showSample && (
             <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
               <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl font-bold bg-gradient-stellar bg-clip-text text-transparent">Birth Chart Calculator</CardTitle>
-                <CardDescription className="text-muted-foreground">Enter your birth details for a personalized cosmic blueprint</CardDescription>
+                <CardTitle className="text-2xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
+                  {editingChartId ? 'Edit Birth Chart' : 'Birth Chart Calculator'}
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {editingChartId ? 'Update the details for your saved chart.' : 'Enter birth details for a personalized cosmic blueprint.'}
+                </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-6">
-                {user && savedData && (
+                {user && (
                   <Card className="mb-6 bg-secondary/10 border-secondary/30 shadow-inner-glow">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="pb-3 space-y-3">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <Star className="w-5 h-5 text-secondary" /> Your Saved Birth Details
+                        <Star className="w-5 h-5 text-secondary" /> Your Saved Charts
                       </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground space-y-2">
-                      <p><strong>Name:</strong> {savedData.name}</p>
-                      <p><strong>Date:</strong> {savedData.date}</p>
-                      <p><strong>Time:</strong> {savedData.time}</p>
-                      <p><strong>Location:</strong> {savedData.location}</p>
-                      <div className="flex gap-2 mt-4">
-                        <Button variant="outline" size="sm" onClick={loadSavedDataForEdit} disabled={isGenerating}>
-                          <Eye className="w-4 h-4 mr-2" /> Edit Saved Data
-                        </Button>
-                        <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isGenerating}>
-                          <Zap className="w-4 h-4 mr-2" /> Delete Saved Data
-                        </Button>
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search charts by name, date, or location..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-8 w-full bg-background/50"
+                        />
                       </div>
+                    </CardHeader>
+                    <CardContent>
+                      {filteredCharts.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {filteredCharts.map(chart => (
+                            <Card key={chart.id} className="bg-background/60 border-border/30">
+                              <CardHeader>
+                                <CardTitle className="text-base font-semibold">{chart.name}</CardTitle>
+                                <CardDescription className="text-xs">{new Date(chart.date).toLocaleDateString()}</CardDescription>
+                              </CardHeader>
+                              <CardContent className="text-sm space-y-1">
+                                <p className="text-muted-foreground flex items-center"><Users className="inline w-4 h-4 mr-2"/>{chart.relationship || 'Not specified'}</p>
+                                <p className="text-muted-foreground flex items-center truncate"><MapPin className="inline w-4 h-4 mr-2"/>{chart.location}</p>
+                              </CardContent>
+                              <CardFooter className="flex gap-2">
+                                <Button variant="outline" size="sm" onClick={() => loadChartForEdit(chart)} disabled={isGenerating} className="w-full">
+                                  <Eye className="w-4 h-4 mr-2" /> Select
+                                </Button>
+                                <Button variant="destructive" size="sm" onClick={() => handleDelete(chart.id)} disabled={isGenerating}>
+                                  <Zap className="w-4 h-4" />
+                                </Button>
+                              </CardFooter>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-center text-muted-foreground py-4">{savedCharts.length > 0 ? 'No charts found matching your search.' : 'You have no saved charts yet.'}</p>
+                      )}
                     </CardContent>
                   </Card>
                 )}
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Your Name"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="e.g., My Chart, Partner's Chart"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="relationship">Relationship</Label>
+                      <Select
+                        value={formData.relationship}
+                        onValueChange={(value) => setFormData({ ...formData, relationship: value })}
+                      >
+                        <SelectTrigger id="relationship">
+                          <SelectValue placeholder="Select relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Self">Self</SelectItem>
+                          <SelectItem value="Partner">Partner</SelectItem>
+                          <SelectItem value="Mother">Mother</SelectItem>
+                          <SelectItem value="Father">Father</SelectItem>
+                          <SelectItem value="Sibling">Sibling</SelectItem>
+                          <SelectItem value="Child">Child</SelectItem>
+                          <SelectItem value="Friend">Friend</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
