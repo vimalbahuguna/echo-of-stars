@@ -1,0 +1,1 @@
+ALTER TABLE public.user_birth_data DROP CONSTRAINT IF EXISTS unique_user_birth_data;

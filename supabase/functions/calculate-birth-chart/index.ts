@@ -118,7 +118,6 @@ serve(async (req) => {
 
     const housesData = horoscope.Houses;
     const aspectsData = horoscope.Aspects.all;
-    console.log('Full Aspects Data:', JSON.stringify(aspectsData, null, 2)); // New log statement
     const ascendantData = horoscope.Ascendant;
     const midheavenData = horoscope.Midheaven;
 

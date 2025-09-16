@@ -14,6 +14,7 @@ import BirthChartCalculator from "./components/BirthChartCalculator";
 import CompatibilityAnalyzer from "./components/CompatibilityAnalyzer";
 import EphemerisViewer from "./components/EphemerisViewer"; // New import
 import SOSOracle from "./components/SOSOracle"; // New import for SOSOracle
+import SettingsPage from "./pages/SettingsPage"; // New import for SettingsPage
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,11 @@ const App = () => (
             <Route path="/oracle" element={ // New Route for SOS Oracle
               <ProtectedRoute>
                 <SOSOracle />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={ // New Route for Settings
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

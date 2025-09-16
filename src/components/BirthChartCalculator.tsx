@@ -108,18 +108,17 @@ const BirthChartCalculator = () => {
     setIsGenerating(true);
     try {
       const birthTime = formData.time || '12:00';
-      const chartData = {
-        user_id: user.id,
-        name: formData.name,
-        date: formData.date,
-        time: birthTime,
-        location: formData.location,
-        relationship: formData.relationship,
-      };
-
+      
       let error;
       if (editingChartId) {
         // Update existing chart
+        const chartData = {
+            name: formData.name,
+            date: formData.date,
+            time: birthTime,
+            location: formData.location,
+            relationship: formData.relationship,
+        };
         const { error: updateError } = await supabase
           .from('user_birth_data')
           .update(chartData)
@@ -128,6 +127,14 @@ const BirthChartCalculator = () => {
         error = updateError;
       } else {
         // Create new chart
+        const chartData = {
+            user_id: user.id,
+            name: formData.name,
+            date: formData.date,
+            time: birthTime,
+            location: formData.location,
+            relationship: formData.relationship,
+        };
         const { error: insertError } = await supabase
           .from('user_birth_data')
           .insert(chartData);
@@ -346,9 +353,12 @@ const BirthChartCalculator = () => {
                           <SelectItem value="Partner">Partner</SelectItem>
                           <SelectItem value="Mother">Mother</SelectItem>
                           <SelectItem value="Father">Father</SelectItem>
-                          <SelectItem value="Sibling">Sibling</SelectItem>
-                          <SelectItem value="Child">Child</SelectItem>
+                          <SelectItem value="Brother">Brother</SelectItem>
+                          <SelectItem value="Sister">Sister</SelectItem>
+                          <SelectItem value="Son">Son</SelectItem>
+                          <SelectItem value="Daughter">Daughter</SelectItem>
                           <SelectItem value="Friend">Friend</SelectItem>
+                          <SelectItem value="Relative">Relative</SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
