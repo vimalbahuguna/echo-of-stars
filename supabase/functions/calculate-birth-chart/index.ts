@@ -123,39 +123,24 @@ serve(async (req) => {
     const midheavenData = horoscope.Midheaven;
 
     const planets: Planet[] = planetsData.map((p: any) => ({
-      name: p.key,
-      longitude: p.longitude,
-      latitude: p.latitude,
-      speed: p.speed,
+      name: p.key || p.label,
+      longitude: p.ChartPosition?.Ecliptic?.DecimalDegrees || 0,
+      latitude: p.latitude || 0,
+      speed: p.speed || 0,
       sign: p.Sign?.label || 'Unknown',
-      degrees: p.Sign?.degree || 0,
-      house: p.House?.houseNumber || 0,
-      isRetrograde: p.isRetrograde,
+      degrees: p.ChartPosition?.Ecliptic?.ArcDegrees?.degrees || 0,
+      house: p.House?.id || 0,
+      isRetrograde: p.isRetrograde || false,
     }));
 
-    const houses: number[] = housesData.map((h: any) => h.cusp);
-    console.log('Aspects Data:', JSON.stringify(aspectsData, null, 2));
-    const aspects: Array<{from: string, to: string, aspect: string, orb: number}> = aspectsData.map((a: any) => {
-      console.log('a.planet1:', JSON.stringify(a.planet1, null, 2));
-      console.log('a.planet2:', JSON.stringify(a.planet2, null, 2));
-
-      let fromLabel = 'Unknown';
-      if (a.planet1 && typeof a.planet1 === 'object' && 'label' in a.planet1) {
-        fromLabel = a.planet1.label;
-      }
-
-      let toLabel = 'Unknown';
-      if (a.planet2 && typeof a.planet2 === 'object' && 'label' in a.planet2) {
-        toLabel = a.planet2.label;
-      }
-
-      return {
-        from: fromLabel,
-        to: toLabel,
-        aspect: a.aspect.label,
-        orb: a.aspect.orb,
-      };
-    });
+    const houses: number[] = housesData.map((h: any) => h.ChartPosition?.StartPosition?.Ecliptic?.DecimalDegrees || 0);
+    
+    const aspects: Array<{from: string, to: string, aspect: string, orb: number}> = aspectsData.map((a: any) => ({
+      from: a.point1Label || 'Unknown',
+      to: a.point2Label || 'Unknown', 
+      aspect: a.label || 'Unknown',
+      orb: a.orb || 0,
+    }));
     const ascendant = ascendantData.longitude;
     const midheaven = midheavenData.longitude;
 
