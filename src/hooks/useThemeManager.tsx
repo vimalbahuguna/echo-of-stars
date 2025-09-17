@@ -58,7 +58,7 @@ export const useThemeManager = () => {
     }
 
     const { data, error } = await supabase
-      .from('user_themes')
+      .from('user_themes' as any)
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -69,7 +69,12 @@ export const useThemeManager = () => {
       setThemes([SYSTEM_DEFAULT_THEME]);
       applyThemeToDOM(SYSTEM_DEFAULT_THEME);
     } else {
-      const userThemes = data as Theme[];
+      const userThemes = (data as any[]).map((theme: any) => ({
+        id: theme.id,
+        name: theme.name,
+        is_default: theme.is_default,
+        colors: theme.colors as ThemeColors
+      })) as Theme[];
       const allThemes = [SYSTEM_DEFAULT_THEME, ...userThemes];
       setThemes(allThemes);
 
@@ -95,16 +100,22 @@ export const useThemeManager = () => {
     if (theme.id) {
       // Update existing theme
       const { error: updateError } = await supabase
-        .from('user_themes')
-        .update(themeData)
+        .from('user_themes' as any)
+        .update({
+          ...themeData,
+          colors: theme.colors as any
+        })
         .eq('id', theme.id)
         .eq('user_id', user.id);
       error = updateError;
     } else {
       // Add new theme
       const { error: insertError } = await supabase
-        .from('user_themes')
-        .insert(themeData);
+        .from('user_themes' as any)
+        .insert({
+          ...themeData,
+          colors: theme.colors as any
+        });
       error = insertError;
     }
 
@@ -126,7 +137,7 @@ export const useThemeManager = () => {
     }
 
     const { error } = await supabase
-      .from('user_themes')
+      .from('user_themes' as any)
       .delete()
       .eq('id', themeId)
       .eq('user_id', user.id);

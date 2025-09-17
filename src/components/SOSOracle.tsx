@@ -61,7 +61,7 @@ const SOSOracle = () => {
 
   // Birth Data Management States
   const [savedCharts, setSavedCharts] = useState<BirthData[]>([]);
-  const [editingChartId, setEditingChartId] = useState<string | null>(null);
+  const [editingChartId, setEditingChartId] = useState<number | null>(null);
   const [birthFormData, setBirthFormData] = useState({
     name: '',
     date: '',
@@ -214,7 +214,7 @@ const SOSOracle = () => {
     }
   };
 
-  const handleDeleteBirthData = async (chartId: string) => {
+  const handleDeleteBirthData = async (chartId: number) => {
     if (!user) {
       toast({ title: "Sign in required", description: "Please sign in to delete your birth data.", variant: "destructive" });
       return;
@@ -235,7 +235,7 @@ const SOSOracle = () => {
 
       await fetchSavedCharts(); // Refresh the list
       clearBirthForm(); // Clear form if the deleted chart was being edited
-      toast({ title: "Delete Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
+      toast({ title: "Birth Data Deleted!", description: "The selected chart has been deleted." });
     } finally {
       setIsSavingOrDeleting(false);
     }

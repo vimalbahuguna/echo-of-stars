@@ -913,6 +913,33 @@ export type Database = {
           },
         ]
       }
+      user_themes: {
+        Row: {
+          colors: Json
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          colors: Json
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          colors?: Json
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

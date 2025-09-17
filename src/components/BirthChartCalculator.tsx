@@ -109,6 +109,32 @@ const BirthChartCalculator = () => {
     try {
       const birthTime = formData.time || '12:00';
       
+      // Check for duplicates before saving/updating
+      const existingQuery = supabase
+        .from('user_birth_data')
+        .select('id')
+        .eq('user_id', user?.id || '')
+        .ilike('name', formData.name.toLowerCase())
+        .eq('date', formData.date)
+        .eq('time', birthTime)
+        .ilike('location', formData.location.toLowerCase());
+
+      if (editingChartId) {
+        existingQuery.neq('id', editingChartId);
+      }
+
+      const { data: duplicates } = await existingQuery;
+
+      if (duplicates && duplicates.length > 0) {
+        toast({
+          title: "Duplicate Entry",
+          description: "A birth record with identical details already exists.",
+          variant: "destructive",
+        });
+        setIsGenerating(false);
+        return;
+      }
+      
       let error;
       if (editingChartId) {
         // Update existing chart
