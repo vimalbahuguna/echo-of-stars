@@ -12,72 +12,80 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import BirthChartCalculator from "./components/BirthChartCalculator";
 import CompatibilityAnalyzer from "./components/CompatibilityAnalyzer";
-import EphemerisViewer from "./components/EphemerisViewer"; // New import
-import SOSOracle from "./components/SOSOracle"; // New import for SOSOracle
-import SettingsPage from "./pages/SettingsPage"; // New import for SettingsPage
-import SpiritualPractices from "./pages/SpiritualPractices"; // New import for SpiritualPractices
-import PranayamaPractice from "./components/PranayamaPractice"; // New import for PranayamaPractice
+import EphemerisViewer from "./components/EphemerisViewer";
+import SOSOracle from "./components/SOSOracle";
+import SettingsPage from "./pages/SettingsPage";
+import SpiritualPractices from "./pages/SpiritualPractices";
+import PranayamaPractice from "./components/PranayamaPractice";
+import { MobilePushService } from "./services/mobileServices";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<Index />} />
-            <Route path="/admin" element={
-              <ProtectedRoute adminOnly>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/contact-us" element={<Contact />} />
-            <Route path="/birth-chart" element={
-              <ProtectedRoute>
-                <BirthChartCalculator />
-              </ProtectedRoute>
-            } />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="/compatibility" element={ // New Route
-              <ProtectedRoute>
-                <CompatibilityAnalyzer />
-              </ProtectedRoute>
-            } />
-            <Route path="/ephemeris" element={ // New Route for Ephemeris
-              <ProtectedRoute>
-                <EphemerisViewer />
-              </ProtectedRoute>
-            } />
-            <Route path="/oracle" element={ // New Route for SOS Oracle
-              <ProtectedRoute>
-                <SOSOracle />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={ // New Route for Settings
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/spiritual-practices" element={ // New Route for Spiritual Practices
-              <ProtectedRoute>
-                <SpiritualPractices />
-              </ProtectedRoute>
-            } />
-            <Route path="/spiritual-practices/pranayama" element={ // New Route for Pranayama Practice
-              <ProtectedRoute>
-                <PranayamaPractice />
-              </ProtectedRoute>
-            } />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  useEffect(() => {
+    // Initialize mobile services
+    MobilePushService.initializePushNotifications();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/" element={<Index />} />
+              <Route path="/admin" element={
+                <ProtectedRoute adminOnly>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/contact-us" element={<Contact />} />
+              <Route path="/birth-chart" element={
+                <ProtectedRoute>
+                  <BirthChartCalculator />
+                </ProtectedRoute>
+              } />
+              <Route path="/compatibility" element={
+                <ProtectedRoute>
+                  <CompatibilityAnalyzer />
+                </ProtectedRoute>
+              } />
+              <Route path="/ephemeris" element={
+                <ProtectedRoute>
+                  <EphemerisViewer />
+                </ProtectedRoute>
+              } />
+              <Route path="/oracle" element={
+                <ProtectedRoute>
+                  <SOSOracle />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices" element={
+                <ProtectedRoute>
+                  <SpiritualPractices />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/pranayama" element={
+                <ProtectedRoute>
+                  <PranayamaPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

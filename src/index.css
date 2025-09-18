@@ -58,6 +58,16 @@ All colors MUST be HSL. */
     --glow-primary: 0 0 20px hsl(var(--primary) / 0.6);
     --glow-accent: 0 0 30px hsl(var(--accent) / 0.5);
     
+    /* Mobile-specific variables */
+    --mobile-header-height: 4rem;
+    --mobile-nav-height: 5rem;
+    --mobile-safe-area-bottom: env(safe-area-inset-bottom);
+    --mobile-safe-area-top: env(safe-area-inset-top);
+    
+    /* Touch target sizes */
+    --touch-target-min: 44px;
+    --touch-spacing: 12px;
+    
     /* Animation Properties */
     --transition-cosmic: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-glow: box-shadow 0.3s ease-in-out;
@@ -108,5 +118,89 @@ All colors MUST be HSL. */
   @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
+  }
+}
+
+/* Mobile-specific utilities */
+@layer utilities {
+  .safe-area-pb {
+    padding-bottom: calc(var(--mobile-safe-area-bottom) + 1rem);
+  }
+  
+  .safe-area-pt {
+    padding-top: calc(var(--mobile-safe-area-top) + 1rem);
+  }
+  
+  .touch-target {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+  
+  .mobile-header-height {
+    height: var(--mobile-header-height);
+  }
+  
+  .mobile-nav-height {
+    height: var(--mobile-nav-height);
+  }
+  
+  .bg-gradient-cosmic {
+    background: var(--gradient-cosmic);
+  }
+  
+  .bg-gradient-stellar {
+    background: var(--gradient-stellar);
+  }
+  
+  .bg-gradient-nebula {
+    background: var(--gradient-nebula);
+  }
+  
+  .shadow-stellar {
+    box-shadow: var(--shadow-stellar);
+  }
+  
+  .shadow-cosmic {
+    box-shadow: var(--shadow-cosmic);
+  }
+  
+  .glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+  
+  .glow-accent {
+    box-shadow: var(--glow-accent);
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+  
+  .transition-cosmic {
+    transition: var(--transition-cosmic);
+  }
+  
+  .transition-glow {
+    transition: var(--transition-glow);
+  }
+  
+  /* Mobile touch improvements */
+  @media (hover: none) and (pointer: coarse) {
+    .hover\:scale-105:hover {
+      transform: none;
+    }
+    
+    .touch-feedback:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-in-out;
+    }
   }
 }
