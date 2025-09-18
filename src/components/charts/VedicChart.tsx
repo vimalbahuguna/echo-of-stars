@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Planet {
   name: string;
@@ -9,32 +10,30 @@ interface VedicChartProps {
   planets: Planet[];
 }
 
-const planetAbbreviations: { [key: string]: string } = {
-  Sun: 'Su',
-  Moon: 'Mo',
-  Mars: 'Ma',
-  Mercury: 'Me',
-  Jupiter: 'Ju',
-  Venus: 'Ve',
-  Saturn: 'Sa',
-  Rahu: 'Ra',
-  Ketu: 'Ke',
-  Uranus: 'Ur',
-  Neptune: 'Ne',
-  Pluto: 'Pl',
-};
-
 const houseColors = [
     '#FFC3A0', '#FFD700', '#C8A2C8', '#87CEEB', '#98FB98', '#F0E68C',
     '#DDA0DD', '#87CEFA', '#F08080', '#90EE90', '#FFB6C1', '#E6E6FA'
 ];
 
 const VedicChart: React.FC<VedicChartProps> = ({ planets }) => {
+  const { t, i18n } = useTranslation();
+
+  if (!i18n.isInitialized) {
+    return <div>Loading...</div>;
+  }
+
+  const houseNumerals = t('houseNumerals', { returnObjects: true });
 
   const getPlanetsInHouse = (house: number) => {
     return planets
       .filter((p) => p.house === house)
-      .map((p) => planetAbbreviations[p.name] || p.name.substring(0, 2))
+      .map((p) => {
+        if (typeof p.name !== 'string' || p.name.length === 0) {
+          return '';
+        }
+        const capitalizedName = p.name.charAt(0).toUpperCase() + p.name.slice(1).toLowerCase();
+        return t(`planetAbbreviations.${capitalizedName}`, { defaultValue: p.name.substring(0, 2) });
+      })
       .join(' ');
   };
 
@@ -76,7 +75,7 @@ const VedicChart: React.FC<VedicChartProps> = ({ planets }) => {
 
             {houseCoords.map(({ x, y, number }) => (
                 <React.Fragment key={number}>
-                    <text x={x} y={y - 10} textAnchor="middle" dominantBaseline="middle" fontSize="12" fill={houseColors[number-1]}>{number}</text>
+                    <text x={x} y={y - 10} textAnchor="middle" dominantBaseline="middle" fontSize="12" fill={houseColors[number-1]}>{Array.isArray(houseNumerals) ? houseNumerals[number-1] : number}</text>
                     <text x={x} y={y + 10} textAnchor="middle" dominantBaseline="middle" fontSize="10" fill="#FFFFFF">{getPlanetsInHouse(number)}</text>
                 </React.Fragment>
             ))}

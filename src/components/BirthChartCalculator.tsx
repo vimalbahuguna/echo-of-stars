@@ -8,6 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -31,8 +42,10 @@ import {
   Search,
   Users
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const BirthChartCalculator = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -90,18 +103,18 @@ const BirthChartCalculator = () => {
       astrologicalSystem: formData.astrologicalSystem, // Keep current selection
     });
     toast({
-      title: "Chart Loaded",
-      description: `Chart "${chart.name}" has been loaded for editing.`,
+      title: t('birthChartCalculator.toasts.chartLoaded'),
+      description: t('birthChartCalculator.toasts.chartLoadedDescription', { chartName: chart.name }),
     });
   };
 
   const handleSave = async () => {
     if (!user) {
-      toast({ title: "Sign in required", description: "Please sign in to save your birth data.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.signInRequired'), description: t('birthChartCalculator.toasts.signInToSave'), variant: "destructive" });
       return;
     }
     if (!formData.name || !formData.date || !formData.location) {
-      toast({ title: "Missing Information", description: "Please fill in name, date, and location to save.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.missingInfo'), description: t('birthChartCalculator.toasts.missingInfoToSave'), variant: "destructive" });
       return;
     }
 
@@ -109,7 +122,6 @@ const BirthChartCalculator = () => {
     try {
       const birthTime = formData.time || '12:00';
       
-      // Check for duplicates before saving/updating
       const existingQuery = supabase
         .from('user_birth_data')
         .select('id')
@@ -127,8 +139,8 @@ const BirthChartCalculator = () => {
 
       if (duplicates && duplicates.length > 0) {
         toast({
-          title: "Duplicate Entry",
-          description: "A birth record with identical details already exists.",
+          title: t('birthChartCalculator.toasts.duplicateEntry'),
+          description: t('birthChartCalculator.toasts.duplicateEntryDescription'),
           variant: "destructive",
         });
         setIsGenerating(false);
@@ -137,7 +149,6 @@ const BirthChartCalculator = () => {
       
       let error;
       if (editingChartId) {
-        // Update existing chart
         const chartData = {
             name: formData.name,
             date: formData.date,
@@ -152,7 +163,6 @@ const BirthChartCalculator = () => {
           .eq('user_id', user.id);
         error = updateError;
       } else {
-        // Create new chart
         const chartData = {
             user_id: user.id,
             name: formData.name,
@@ -172,13 +182,13 @@ const BirthChartCalculator = () => {
         throw new Error(error.message);
       }
 
-      await fetchSavedCharts(); // Refresh the list
-      setEditingChartId(null); // Reset editing state
-      setFormData({ name: '', date: '', time: '', location: '', relationship: 'Self', astrologicalSystem: 'western' }); // Clear form
+      await fetchSavedCharts();
+      setEditingChartId(null);
+      setFormData({ name: '', date: '', time: '', location: '', relationship: 'Self', astrologicalSystem: 'western' });
 
-      toast({ title: "Birth Data Saved!", description: `Chart "${formData.name}" has been successfully saved.` });
+      toast({ title: t('birthChartCalculator.toasts.saveSuccess'), description: t('birthChartCalculator.toasts.saveSuccessDescription', { chartName: formData.name }) });
     } catch (error) {
-      toast({ title: "Save Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.saveFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }
@@ -186,7 +196,7 @@ const BirthChartCalculator = () => {
 
   const handleDelete = async (chartId: number) => {
     if (!user) {
-      toast({ title: "Sign in required", description: "Please sign in to delete your birth data.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.signInRequired'), description: t('birthChartCalculator.toasts.signInToSave'), variant: "destructive" });
       return;
     }
 
@@ -203,10 +213,10 @@ const BirthChartCalculator = () => {
         throw new Error(error.message);
       }
 
-      await fetchSavedCharts(); // Refresh the list
-      toast({ title: "Birth Data Deleted!", description: "The selected chart has been deleted." });
+      await fetchSavedCharts();
+      toast({ title: t('birthChartCalculator.toasts.deleteSuccess'), description: t('birthChartCalculator.toasts.deleteSuccessDescription') });
     } catch (error) {
-      toast({ title: "Delete Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.deleteFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }
@@ -214,11 +224,11 @@ const BirthChartCalculator = () => {
 
   const handleGenerate = async () => {
     if (!formData.name || !formData.date || !formData.location || !formData.astrologicalSystem) {
-      toast({ title: "Missing Information", description: "Please fill in all required fields.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.missingInfo'), description: t('birthChartCalculator.toasts.missingFields'), variant: "destructive" });
       return;
     }
     if (!user) {
-      toast({ title: "Sign in required", description: "Please sign in to generate your chart.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.signInRequired'), description: t('birthChartCalculator.toasts.signInToGenerate'), variant: "destructive" });
       return;
     }
 
@@ -230,22 +240,23 @@ const BirthChartCalculator = () => {
       const birthTime = formData.time || '12:00';
       const geocodingResult = await geocodeLocation(formData.location);
 
-      // Don't auto-save on generate, let the user explicitly save.
-
-      const { data, error } = await supabase.functions.invoke('calculate-birth-chart', {
+      const { data, error } = await supabase.functions.invoke('astrology-service', {
         body: {
-          ...formData,
-          time: birthTime,
-          latitude: geocodingResult.latitude,
-          longitude: geocodingResult.longitude,
-          timezone: 'UTC'
+          command: 'calculateChart',
+          data: {
+            ...formData,
+            time: birthTime,
+            latitude: geocodingResult.latitude,
+            longitude: geocodingResult.longitude,
+            timezone: 'UTC'
+          }
         }
       });
 
       if (error) throw new Error(error.message || 'Failed to generate birth chart');
 
       if (!data || !data.chart || !data.chart.chartData || !data.chart.chartData.planets) {
-        throw new Error('Invalid chart data received from the server. Please check the input and try again.');
+        throw new Error(t('birthChartCalculator.toasts.invalidChartData'));
       }
 
       setGeneratedChart({
@@ -261,8 +272,8 @@ const BirthChartCalculator = () => {
       setShowChart(true);
 
       toast({
-        title: "Chart Generated Successfully!",
-        description: !geocodingResult.found ? "Used approximate coordinates for location." : "Your birth chart has been calculated."
+        title: t('birthChartCalculator.toasts.generateSuccess'),
+        description: !geocodingResult.found ? t('birthChartCalculator.toasts.approximateCoordinates') : t('birthChartCalculator.toasts.chartCalculated')
       });
 
       if (data.chart?.id) {
@@ -272,15 +283,18 @@ const BirthChartCalculator = () => {
 
         if (!interpretationError) {
           setGeneratedChart(prev => ({ ...prev, interpretation: interpretationData.interpretation?.interpretation_text }));
-          toast({ title: "AI Interpretation Ready!" });
+          toast({ title: t('birthChartCalculator.toasts.aiInterpretationReady') });
         }
       }
     } catch (error) {
-      toast({ title: "Generation Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
+      toast({ title: t('birthChartCalculator.toasts.generationFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }
   };
+
+  const relationships = t('birthChartCalculator.relationships', { returnObjects: true }) as Record<string, string>;
+  const systems = t('birthChartCalculator.systems', { returnObjects: true }) as Record<string, string>;
 
   return (
     <div className="min-h-screen bg-background">
@@ -290,19 +304,18 @@ const BirthChartCalculator = () => {
           <div className="flex justify-end mb-4">
             <Link to="/">
               <Button variant="outline">
-                Back to Dashboard
+                {t('birthChartCalculator.backToDashboard')}
               </Button>
             </Link>
           </div>
-          {/* Other components... */}
           {!showSample && (
             <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
               <CardHeader className="text-center pb-6">
                 <CardTitle className="text-2xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
-                  {editingChartId ? 'Edit Birth Chart' : 'Birth Chart Calculator'}
+                  {editingChartId ? t('birthChartCalculator.editTitle') : t('birthChartCalculator.title')}
                 </CardTitle>
                 <CardDescription className="text-muted-foreground">
-                  {editingChartId ? 'Update the details for your saved chart.' : 'Enter birth details for a personalized cosmic blueprint.'}
+                  {editingChartId ? t('birthChartCalculator.editDescription') : t('birthChartCalculator.description')}
                 </CardDescription>
               </CardHeader>
 
@@ -311,12 +324,12 @@ const BirthChartCalculator = () => {
                   <Card className="mb-6 bg-secondary/10 border-secondary/30 shadow-inner-glow">
                     <CardHeader className="pb-3 space-y-3">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <Star className="w-5 h-5 text-secondary" /> Your Saved Charts
+                        <Star className="w-5 h-5 text-secondary" /> {t('birthChartCalculator.yourSavedCharts')}
                       </CardTitle>
                       <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
-                          placeholder="Search charts by name, date, or location..."
+                          placeholder={t('birthChartCalculator.searchPlaceholder')}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="pl-8 w-full bg-background/50"
@@ -338,17 +351,35 @@ const BirthChartCalculator = () => {
                               </CardContent>
                               <CardFooter className="flex gap-2">
                                 <Button variant="outline" size="sm" onClick={() => loadChartForEdit(chart)} disabled={isGenerating} className="w-full">
-                                  <Eye className="w-4 h-4 mr-2" /> Select
+                                  <Eye className="w-4 h-4 mr-2" /> {t('birthChartCalculator.selectButton')}
                                 </Button>
-                                <Button variant="destructive" size="sm" onClick={() => handleDelete(chart.id)} disabled={isGenerating}>
-                                  <Zap className="w-4 h-4" />
-                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="sm" disabled={isGenerating}>
+                                      <Zap className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>{t('birthChartCalculator.areYouSure')}</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        {t('birthChartCalculator.deleteChartConfirmation', { chartName: chart.name })}
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>{t('birthChartCalculator.cancel')}</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDelete(chart.id)}>
+                                        {t('birthChartCalculator.delete')}
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </CardFooter>
                             </Card>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-center text-muted-foreground py-4">{savedCharts.length > 0 ? 'No charts found matching your search.' : 'You have no saved charts yet.'}</p>
+                        <p className="text-center text-muted-foreground py-4">{savedCharts.length > 0 ? t('birthChartCalculator.noChartsFound') : t('birthChartCalculator.noSavedCharts')}</p>
                       )}
                     </CardContent>
                   </Card>
@@ -356,43 +387,35 @@ const BirthChartCalculator = () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
+                      <Label htmlFor="name">{t('birthChartCalculator.nameLabel')}</Label>
                       <Input
                         id="name"
                         name="name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="e.g., My Chart, Partner's Chart"
+                        placeholder={t('birthChartCalculator.namePlaceholder')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="relationship">Relationship</Label>
+                      <Label htmlFor="relationship">{t('birthChartCalculator.relationshipLabel')}</Label>
                       <Select
                         value={formData.relationship}
                         onValueChange={(value) => setFormData({ ...formData, relationship: value })}
                       >
                         <SelectTrigger id="relationship">
-                          <SelectValue placeholder="Select relationship" />
+                          <SelectValue placeholder={t('birthChartCalculator.relationshipPlaceholder')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Self">Self</SelectItem>
-                          <SelectItem value="Partner">Partner</SelectItem>
-                          <SelectItem value="Mother">Mother</SelectItem>
-                          <SelectItem value="Father">Father</SelectItem>
-                          <SelectItem value="Brother">Brother</SelectItem>
-                          <SelectItem value="Sister">Sister</SelectItem>
-                          <SelectItem value="Son">Son</SelectItem>
-                          <SelectItem value="Daughter">Daughter</SelectItem>
-                          <SelectItem value="Friend">Friend</SelectItem>
-                          <SelectItem value="Relative">Relative</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          {Object.entries(relationships).map(([key, value]) => (
+                            <SelectItem key={key} value={key}>{value}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="date">Date of Birth</Label>
+                      <Label htmlFor="date">{t('birthChartCalculator.dateOfBirthLabel')}</Label>
                       <Input
                         id="date"
                         name="date"
@@ -402,7 +425,7 @@ const BirthChartCalculator = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="time">Time of Birth (Optional)</Label>
+                      <Label htmlFor="time">{t('birthChartCalculator.timeOfBirthLabel')}</Label>
                       <Input
                         id="time"
                         name="time"
@@ -413,38 +436,39 @@ const BirthChartCalculator = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location of Birth (City, State/Country)</Label>
+                    <Label htmlFor="location">{t('birthChartCalculator.locationOfBirthLabel')}</Label>
                     <Input
                       id="location"
                       name="location"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="e.g., New York, NY, USA"
+                      placeholder={t('birthChartCalculator.locationPlaceholder')}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="astrologicalSystem">Astrological System</Label>
+                    <Label htmlFor="astrologicalSystem">{t('birthChartCalculator.astrologicalSystemLabel')}</Label>
                     <Select
                       value={formData.astrologicalSystem}
                       onValueChange={(value) => setFormData({ ...formData, astrologicalSystem: value as 'western' | 'vedic' })}
                     >
                       <SelectTrigger id="astrologicalSystem">
-                        <SelectValue placeholder="Select system" />
+                        <SelectValue placeholder={t('birthChartCalculator.astrologicalSystemPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="western">Western</SelectItem>
-                        <SelectItem value="vedic">Vedic</SelectItem>
+                        {Object.entries(systems).map(([key, value]) => (
+                          <SelectItem key={key} value={key}>{value}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <div className="flex gap-3 pt-4">
                   <Button onClick={user ? handleGenerate : () => window.location.href = '/auth'} disabled={isGenerating || (user && (!formData.name || !formData.date || !formData.location)) } className="flex-1 bg-gradient-cosmic text-white font-semibold py-6 text-lg">
-                    {isGenerating ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Generating...</> : (user ? <><Star className="w-5 h-5 mr-2" />Generate Chart</> : <><UserPlus className="w-5 h-5 mr-2" />Sign In to Generate</>)}
+                    {isGenerating ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />{t('birthChartCalculator.generatingButton')}</> : (user ? <><Star className="w-5 h-5 mr-2" />{t('birthChartCalculator.generateButton')}</> : <><UserPlus className="w-5 h-5 mr-2" />{t('birthChartCalculator.signInToGenerateButton')}</>)}
                   </Button>
                   {user && (
                     <Button onClick={handleSave} disabled={isGenerating || (!formData.name || !formData.date || !formData.location)} className="flex-1 bg-gradient-celestial text-white font-semibold py-6 text-lg">
-                      {isGenerating ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Saving...</> : <><Save className="w-5 h-5 mr-2" />Save Details</>}
+                      {isGenerating ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" />{t('birthChartCalculator.savingButton')}</> : <><Save className="w-5 h-5 mr-2" />{t('birthChartCalculator.saveButton')}</>}
                     </Button>
                   )}
                 </div>
@@ -458,8 +482,8 @@ const BirthChartCalculator = () => {
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <div>
-                                <CardTitle className="text-xl">Your Generated Birth Chart</CardTitle>
-                                <CardDescription>View, download, or share your chart below.</CardDescription>
+                                <CardTitle className="text-xl">{t('birthChartCalculator.generatedChartTitle')}</CardTitle>
+                                <CardDescription>{t('birthChartCalculator.generatedChartDescription')}</CardDescription>
                             </div>
                             <Button variant="ghost" onClick={() => setShowChart(!showChart)}>
                                 {showChart ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}

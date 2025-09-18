@@ -15,6 +15,8 @@ import CompatibilityAnalyzer from "./components/CompatibilityAnalyzer";
 import EphemerisViewer from "./components/EphemerisViewer"; // New import
 import SOSOracle from "./components/SOSOracle"; // New import for SOSOracle
 import SettingsPage from "./pages/SettingsPage"; // New import for SettingsPage
+import SpiritualPractices from "./pages/SpiritualPractices"; // New import for SpiritualPractices
+import PranayamaPractice from "./components/PranayamaPractice"; // New import for PranayamaPractice
 
 const queryClient = new QueryClient();
 
@@ -58,6 +60,16 @@ const App = () => (
             <Route path="/settings" element={ // New Route for Settings
               <ProtectedRoute>
                 <SettingsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/spiritual-practices" element={ // New Route for Spiritual Practices
+              <ProtectedRoute>
+                <SpiritualPractices />
+              </ProtectedRoute>
+            } />
+            <Route path="/spiritual-practices/pranayama" element={ // New Route for Pranayama Practice
+              <ProtectedRoute>
+                <PranayamaPractice />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

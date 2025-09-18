@@ -14,3 +14,24 @@ verify_jwt = true
 
 [functions.seed-sample-data]
 verify_jwt = false
+[functions.astrology-service]
+enabled = true
+verify_jwt = true
+import_map = "./functions/astrology-service/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/astrology-service/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/astrology-service/*.html" ]
+
+[functions.spiritual-practice-service]
+enabled = true
+verify_jwt = true
+import_map = "./functions/spiritual-practice-service/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/spiritual-practice-service/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/spiritual-practice-service/*.html" ]

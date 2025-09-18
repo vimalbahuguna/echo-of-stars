@@ -21,13 +21,16 @@ import {
   Mail,
   Home,
   HeartHandshake,
-  Globe // New import
+  Globe,
+  Leaf
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 const CosmicHeader = () => {
+  const { i18n } = useTranslation();
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -98,6 +101,10 @@ const CosmicHeader = () => {
         <MessageCircle className="w-4 h-4 mr-2" />
         SOS Oracle
       </Button>
+      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/spiritual-practices")}>
+        <Leaf className="w-4 h-4 mr-2" />
+        Spiritual Practices
+      </Button>
       <Button variant="ghost" size="sm" className="hover:bg-secondary/20 hover:text-secondary-foreground" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "readings", 100); }}>
         <Moon className="w-4 h-4 mr-2" />
         Readings
@@ -151,6 +158,23 @@ const CosmicHeader = () => {
 
         {/* User Section */}
         <div className="flex items-center gap-3">
+          {/* Language Switcher */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Globe className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => i18n.changeLanguage('en')}>
+                English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => i18n.changeLanguage('hi')}>
+                हिन्दी
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {/* Role Badge */}
           {profile && (
             <Badge 
@@ -214,7 +238,7 @@ const CosmicHeader = () => {
               variant="outline" 
               size="sm" 
               className="border-primary/50 hover:bg-primary/10"
-              onClick={() => navigate("/auth")}
+              onClick={() => window.location.href = '/auth'}
             >
               <User className="w-4 h-4 mr-2" />
               Sign In

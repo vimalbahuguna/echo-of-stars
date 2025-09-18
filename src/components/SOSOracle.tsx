@@ -58,6 +58,8 @@ const SOSOracle = () => {
   const [isListening, setIsListening] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [showDemo, setShowDemo] = useState(false);
+  const [selectedChart, setSelectedChart] = useState<BirthData | null>(null);
+  const [selectedSystem, setSelectedSystem] = useState('western');
 
   // Birth Data Management States
   const [savedCharts, setSavedCharts] = useState<BirthData[]>([]);
@@ -262,7 +264,14 @@ const SOSOracle = () => {
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: {
           message: currentMessage,
-          conversationId: conversationId
+          conversationId: conversationId,
+          birthData: selectedChart ? {
+            name: selectedChart.name,
+            date: selectedChart.date,
+            time: selectedChart.time,
+            location: selectedChart.location,
+          } : null,
+          astrologicalSystem: selectedSystem
         }
       });
 
@@ -485,10 +494,49 @@ const SOSOracle = () => {
               <p className="text-sm text-muted-foreground">Your advanced AI astrologer</p>
             </div>
           </div>
-          <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20">
-            <div className="w-2 h-2 bg-accent rounded-full animate-pulse mr-2" />
-            Online
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Select onValueChange={(value) => setSelectedSystem(value)} defaultValue="western">
+              <SelectTrigger className="w-[180px] bg-background/70">
+                <SelectValue placeholder="Select Astrological System" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="western">Western</SelectItem>
+                <SelectItem value="vedic">Vedic</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select onValueChange={(value) => {
+              if (value === 'general') {
+                setSelectedChart(null);
+              } else {
+                const chart = savedCharts.find(c => c.id === parseInt(value));
+                setSelectedChart(chart || null);
+              }
+            }}>
+              <SelectTrigger className="w-[220px] bg-background/70">
+                <SelectValue placeholder="Select a chart for consultation..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="general">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    <span>General Inquiry</span>
+                  </div>
+                </SelectItem>
+                {savedCharts.map(chart => (
+                  <SelectItem key={chart.id} value={chart.id!.toString()}>
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                      <span>{chart.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse mr-2" />
+              Online
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 

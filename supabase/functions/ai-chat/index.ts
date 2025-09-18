@@ -4,7 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 import { OpenAI } from "https://deno.land/x/openai@v4.52.7/mod.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': '*', 
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
@@ -57,7 +57,7 @@ serve(async (req) => {
     }
     const tenantId = profile.tenant_id;
 
-    const { message, conversationId: currentConversationId } = await req.json();
+    const { message, conversationId: currentConversationId, birthData, astrologicalSystem } = await req.json();
 
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message is required' }), {
@@ -108,10 +108,23 @@ serve(async (req) => {
 
     if (historyError) throw historyError;
 
+    const systemName = astrologicalSystem === 'vedic' ? 'Vedic' : 'Western';
+
+    let systemPrompt = `You are SOS Oracle, an advanced AI astrologer and cosmic guide. For this consultation, please focus on the principles of ${systemName} astrology. Your goal is to provide insightful, empathetic, and clear guidance. Be conversational and supportive.`;
+
+    if (birthData) {
+      systemPrompt = `You are SOS Oracle, an advanced AI astrologer. For this consultation, please use the ${systemName} astrological system. The user has provided their birth chart details:
+      - Name: ${birthData.name}
+      - Date of Birth: ${birthData.date}
+      - Time of Birth: ${birthData.time || 'Not specified'}
+      - Location of Birth: ${birthData.location}
+      Please use this information to provide personalized and specific astrological insights, predictions, suggestions, and remedies based on the selected astrological system. Your tone should be insightful, empathetic, and clear.`;
+    }
+
     const messages = [
       {
         role: 'system',
-        content: "You are SOS Oracle, an advanced AI astrologer and cosmic guide with deep knowledge of both Western and Vedic astrology. Your goal is to provide insightful, empathetic, and clear guidance based on astrological principles. When asked about personal chart details, gently remind the user you need their birth data and that they can add it in their profile. Be conversational and supportive.",
+        content: systemPrompt,
       },
       ...chatHistory.map(msg => ({
         role: msg.sender_type === 'user' ? 'user' : 'assistant',
