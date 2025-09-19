@@ -548,6 +548,50 @@ export type Database = {
           },
         ]
       }
+      pranayama_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          end_time: string | null
+          id: string
+          notes: string | null
+          practice_type: string
+          start_time: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds: number
+          end_time?: string | null
+          id: string
+          notes?: string | null
+          practice_type: string
+          start_time?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          practice_type?: string
+          start_time?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pranayama_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -837,6 +881,7 @@ export type Database = {
           location: string
           name: string
           relationship: string | null
+          tenant_id: string
           time: string
           user_id: string
         }
@@ -847,6 +892,7 @@ export type Database = {
           location: string
           name: string
           relationship?: string | null
+          tenant_id: string
           time: string
           user_id: string
         }
@@ -857,10 +903,19 @@ export type Database = {
           location?: string
           name?: string
           relationship?: string | null
+          tenant_id?: string
           time?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_birth_data_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_sessions: {
         Row: {
