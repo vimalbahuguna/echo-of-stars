@@ -144,18 +144,6 @@ All colors MUST be HSL. */
     height: var(--mobile-nav-height);
   }
   
-  .bg-gradient-cosmic {
-    background: var(--gradient-cosmic);
-  }
-  
-  .bg-gradient-stellar {
-    background: var(--gradient-stellar);
-  }
-  
-  .bg-gradient-nebula {
-    background: var(--gradient-nebula);
-  }
-  
   .shadow-stellar {
     box-shadow: var(--shadow-stellar);
   }
