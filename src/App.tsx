@@ -17,6 +17,7 @@ import SOSOracle from "./components/SOSOracle";
 import SettingsPage from "./pages/SettingsPage";
 import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
+import MeditationPractice from "./components/MeditationPractice";
 import { MobilePushService } from "./services/mobileServices";
 import { useEffect } from "react";
 
@@ -77,6 +78,11 @@ const App = () => {
               <Route path="/spiritual-practices/pranayama" element={
                 <ProtectedRoute>
                   <PranayamaPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/meditation" element={
+                <ProtectedRoute>
+                  <MeditationPractice />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />

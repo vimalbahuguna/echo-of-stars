@@ -102,6 +102,66 @@ serve(async (req) => {
       return new Response(JSON.stringify({ success: true, sessions }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    } else if (command === 'startMeditationSession') {
+      const { practice_type, duration_seconds } = data;
+      const { data: session, error } = await supabaseClient
+        .from('meditation_sessions')
+        .insert({
+          user_id: user.id,
+          tenant_id: tenantId,
+          practice_type,
+          duration_seconds,
+          start_time: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error starting meditation session:', error);
+        throw new Error(`Failed to start session: ${error.message}`);
+      }
+
+      return new Response(JSON.stringify({ success: true, session }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    } else if (command === 'endMeditationSession') {
+      const { sessionId, notes } = data;
+      const { data: session, error } = await supabaseClient
+        .from('meditation_sessions')
+        .update({
+          end_time: new Date().toISOString(),
+          notes: notes,
+        })
+        .eq('id', sessionId)
+        .eq('user_id', user.id)
+        .eq('tenant_id', tenantId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error ending meditation session:', error);
+        throw new Error(`Failed to end session: ${error.message}`);
+      }
+
+      return new Response(JSON.stringify({ success: true, session }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    } else if (command === 'getMeditationHistory') {
+      const { data: sessions, error } = await supabaseClient
+        .from('meditation_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('tenant_id', tenantId)
+        .order('start_time', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching meditation history:', error);
+        throw new Error(`Failed to fetch history: ${error.message}`);
+      }
+
+      return new Response(JSON.stringify({ success: true, sessions }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } else {
       return new Response(JSON.stringify({ error: `Unknown command: ${command}` }), {
         status: 400,
