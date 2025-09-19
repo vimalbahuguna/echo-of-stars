@@ -362,66 +362,50 @@ const SOSOracle = () => {
 
   // Load conversation history when component mounts
   useEffect(() => {
-      const loadConversationHistory = async (chartId: number | null = null) => {
-        if (!user) return; // Don't load history if not authenticated
-        
-        // Reset messages to initial welcome message before loading history for a new chart
-        setMessages([
-          {
-            id: '1',
-            content: "Welcome to SOS Oracle! I'm your advanced AI astrologer and cosmic guide. I have deep knowledge of both Western and Vedic astrology. Ask me about your birth chart, planetary transits, relationships, career, or any spiritual guidance you seek.",
-            sender: 'ai',
-            timestamp: new Date()
+    const loadConversationHistory = async () => {
+      if (!user) return; // Don't load history if not authenticated
+      
+      try {
+        // Get most recent conversation
+        const { data: conversations } = await supabase
+          .from('chat_conversations')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .order('updated_at', { ascending: false })
+          .limit(1);
+
+        if (conversations && conversations[0]) {
+          const conversationId = conversations[0].id;
+          setConversationId(conversationId);
+
+          // Load recent messages
+          const { data: chatMessages } = await supabase
+            .from('chat_messages')
+            .select('*')
+            .eq('conversation_id', conversationId)
+            .order('created_at', { ascending: true })
+            .limit(20);
+
+          if (chatMessages && chatMessages.length > 0) {
+            const loadedMessages: Message[] = chatMessages.map(msg => ({
+              id: msg.id,
+              content: msg.message_content,
+              sender: msg.sender_type as 'user' | 'ai',
+              timestamp: new Date(msg.created_at)
+            }));
+
+            setMessages(prev => [prev[0], ...loadedMessages]); // Keep welcome message
           }
-        ]);
-    
-        try {
-          // Get most recent conversation for the specific chart or general
-          let query = supabase
-            .from('chat_conversations')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('is_active', true);
-          
-          if (chartId) {
-            query = query.eq('birth_data_id', chartId);
-          } else {
-            query = query.is('birth_data_id', null);
-          }
-    
-          const { data: conversations } = await query
-            .order('updated_at', { ascending: false })
-            .limit(1);
-    
-          if (conversations && conversations[0]) {
-            const conversationId = conversations[0].id;
-            setConversationId(conversationId);
-    
-            // Load recent messages
-            const { data: chatMessages } = await supabase
-              .from('chat_messages')
-              .select('*')
-              .eq('conversation_id', conversationId)
-              .order('created_at', { ascending: true })
-              .limit(20);
-    
-            if (chatMessages && chatMessages.length > 0) {
-              const loadedMessages: Message[] = chatMessages.map(msg => ({
-                id: msg.id,
-                content: msg.message_content,
-                sender: msg.sender_type as 'user' | 'ai',
-                timestamp: new Date(msg.created_at)
-              }));
-    
-              setMessages(prev => [prev[0], ...loadedMessages]); // Keep welcome message
-            }
-          } else {
-            setConversationId(null); // No existing conversation for this chart/general
-          }
-        } catch (error) {
-          console.error('Error loading conversation history:', error);
         }
-      };
+      } catch (error) {
+        console.error('Error loading conversation history:', error);
+      }
+    };
+
+    loadConversationHistory();
+  }, [user]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -489,24 +473,11 @@ const SOSOracle = () => {
               </SelectContent>
             </Select>
             <Select onValueChange={(value) => {
-              setConversationId(null); // Reset conversation ID
-              setMessages([
-                {
-                  id: '1',
-                  content: "Welcome to SOS Oracle! I'm your advanced AI astrologer and cosmic guide. I have deep knowledge of both Western and Vedic astrology. Ask me about your birth chart, planetary transits, relationships, career, or any spiritual guidance you seek.",
-                  sender: 'ai',
-                  timestamp: new Date()
-                }
-              ]); // Reset messages
               if (value === 'general') {
                 setSelectedChart(null);
-                loadConversationHistory(null); // Load general history
               } else {
                 const chart = savedCharts.find(c => c.id === parseInt(value));
                 setSelectedChart(chart || null);
-                if (chart) {
-                  loadConversationHistory(chart.id); // Load history for specific chart
-                }
               }
             }}>
               <SelectTrigger className="w-[220px] bg-background/70">
