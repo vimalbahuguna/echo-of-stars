@@ -18,6 +18,7 @@ import SettingsPage from "./pages/SettingsPage";
 import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
 import MeditationPractice from "./components/MeditationPractice";
+import AstrologySection from "./pages/AstrologySection";
 import { MobilePushService } from "./services/mobileServices";
 import { useEffect } from "react";
 
@@ -83,6 +84,11 @@ const App = () => {
               <Route path="/spiritual-practices/meditation" element={
                 <ProtectedRoute>
                   <MeditationPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="/astrology" element={
+                <ProtectedRoute>
+                  <AstrologySection />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />

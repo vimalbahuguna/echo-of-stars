@@ -85,6 +85,15 @@ const CosmicHeader = () => {
         <Home className="w-4 h-4 mr-2" />
         Home
       </Button>
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className="hover:bg-primary/10 hover:text-primary"
+        onClick={() => navigate("/astrology")}
+      >
+        <Stars className="w-4 h-4 mr-2" />
+        Astrology
+      </Button>
       <Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary" onClick={() => navigate("/birth-chart")}> 
         <Calendar className="w-4 h-4 mr-2" />
         Charts
