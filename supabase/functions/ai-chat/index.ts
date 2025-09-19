@@ -68,19 +68,43 @@ serve(async (req) => {
 
     let conversationId = currentConversationId;
 
-    // If no conversationId, create a new conversation
+    // If no conversationId, try to find an existing conversation or create a new one
     if (!conversationId) {
-      const { data: newConversation, error: convError } = await supabaseClient
+      let query = supabaseClient
         .from('chat_conversations')
-        .insert({ user_id: user.id, tenant_id: tenantId, is_active: true })
         .select('id')
-        .single();
+        .eq('user_id', user.id)
+        .eq('tenant_id', tenantId)
+        .eq('is_active', true);
 
-      if (convError) {
-        console.error('Error creating conversation:', convError);
-        throw new Error(`Failed to create conversation: ${convError.message}`);
+      if (birthData && birthData.id) {
+        query = query.eq('birth_data_id', birthData.id);
+      } else {
+        query = query.is('birth_data_id', null);
       }
-      conversationId = newConversation.id;
+
+      const { data: existingConversation, error: fetchConvError } = await query.single();
+
+      if (existingConversation) {
+        conversationId = existingConversation.id;
+      } else {
+        const { data: newConversation, error: createConvError } = await supabaseClient
+          .from('chat_conversations')
+          .insert({
+            user_id: user.id,
+            tenant_id: tenantId,
+            is_active: true,
+            birth_data_id: birthData ? birthData.id : null,
+          })
+          .select('id')
+          .single();
+
+        if (createConvError) {
+          console.error('Error creating conversation:', createConvError);
+          throw new Error(`Failed to create conversation: ${createConvError.message}`);
+        }
+        conversationId = newConversation.id;
+      }
     }
 
     // Save user message
