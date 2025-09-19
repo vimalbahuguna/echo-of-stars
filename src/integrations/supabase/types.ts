@@ -963,6 +963,13 @@ export type Database = {
             foreignKeyName: "user_sessions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_profile_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -997,9 +1004,75 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_profile_view: {
+        Row: {
+          address_masked: string | null
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          id: string | null
+          is_active: boolean | null
+          last_login_at: string | null
+          last_name: string | null
+          organization_id: string | null
+          phone_masked: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_masked?: never
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name?: string | null
+          organization_id?: string | null
+          phone_masked?: never
+          role?: Database["public"]["Enums"]["user_role"] | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_masked?: never
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name?: string | null
+          organization_id?: string | null
+          phone_masked?: never
+          role?: Database["public"]["Enums"]["user_role"] | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      generate_secure_share_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_current_user_organization_id: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1012,9 +1085,23 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_profile_sensitive_data: {
+        Args: { profile_id: string }
+        Returns: {
+          address: string
+          birth_date: string
+          birth_time: string
+          phone: string
+          timezone: string
+        }[]
+      }
       has_permission: {
         Args: { action: string; resource: string }
         Returns: boolean
+      }
+      hash_session_token: {
+        Args: { token: string }
+        Returns: string
       }
     }
     Enums: {
