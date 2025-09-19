@@ -137,7 +137,7 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
                 </div>
               </div>
             </div>
-            <Button className="w-full bg-gradient-stellar hover:shadow-glow" onClick={() => setActiveTab('oracle')}>
+            <Button className="w-full bg-gradient-stellar hover:shadow-glow" onClick={() => { console.log('Setting active tab to oracle'); setActiveTab('oracle'); }}>
               Start Conversation
             </Button>
           </div>
