@@ -445,39 +445,7 @@ const SOSOracle = () => {
           </Button>
         </Link>
       </div>
-      {/* Auth Status and Demo Toggle */}
-      {!user && (
-        <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-primary" />
-                <div>
-                  <p className="font-medium">Sign in to chat with SOS Oracle</p>
-                  <p className="text-sm text-muted-foreground">Get personalized astrological insights</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={toggleDemo}
-                  className="border-secondary/50"
-                >
-                  {showDemo ? 'Hide Demo' : 'Try Demo'}
-                </Button>
-                <Button 
-                  variant="default" 
-                  size="sm"
-                  onClick={() => window.location.href = '/auth'}
-                >
-                  Sign In
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       <Card className="w-full max-w-4xl mx-auto h-[600px] bg-card/50 border-accent/20 shadow-cosmic">
       <CardHeader className="border-b border-border/40 pb-4">
@@ -543,57 +511,41 @@ const SOSOracle = () => {
       <CardContent className="p-0 h-full">
         {/* Input Area */}
         <div className="border-t border-border/40 p-4">
-          {user ? (
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleVoiceInput}
-                className={`border-secondary/50 hover:bg-secondary/10 ${
-                  isListening ? 'bg-secondary/20 border-secondary' : ''
-                }`}
-              >
-                <Mic className={`w-4 h-4 ${isListening ? 'animate-pulse' : ''}`} />
-              </Button>
-              <div className="flex-1 relative">
-                <Input
-                  placeholder="Ask SOS Oracle about your chart, relationships, career, or spiritual guidance..."
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleSendMessage()}
-                  disabled={isTyping}
-                  className="bg-input/50 border-border/50 focus:border-accent/50 focus:ring-accent/20 pr-12 disabled:opacity-50"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!inputMessage.trim() || isTyping}
-                  size="sm"
-                  className="absolute right-1 top-1 bg-gradient-nebula hover:shadow-glow-accent disabled:opacity-50"
-                >
-                  {isTyping ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground mb-3">
-                {showDemo ? 'This is a demo conversation. Sign in for personalized chat.' : 'Sign in to start chatting with SOS Oracle'}
-              </p>
-              <Button 
-                variant="default"
-                onClick={() => window.location.href = '/auth'}
-                className="bg-gradient-cosmic hover:shadow-glow-primary"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Sign In to Chat
-              </Button>
-            </div>
-          )}
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+                      <div className="flex gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={toggleVoiceInput}
+                          className={`border-secondary/50 hover:bg-secondary/10 ${
+                            isListening ? 'bg-secondary/20 border-secondary' : ''
+                          }`}
+                          disabled={!user}
+                        >
+                          <Mic className={`w-4 h-4 ${isListening ? 'animate-pulse' : ''}`} />
+                        </Button>
+                        <div className="flex-1 relative">
+                          <Input
+                            placeholder={user ? "Ask SOS Oracle about your chart, relationships, career, or spiritual guidance..." : "Sign in to start chatting with SOS Oracle"}
+                            value={inputMessage}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && user && !isTyping && handleSendMessage()}
+                            disabled={!user || isTyping}
+                            className="bg-input/50 border-border/50 focus:border-accent/50 focus:ring-accent/20 pr-12 disabled:opacity-50"
+                          />
+                          <Button
+                            onClick={handleSendMessage}
+                            disabled={!user || !inputMessage.trim() || isTyping}
+                            size="sm"
+                            className="absolute right-1 top-1 bg-gradient-nebula hover:shadow-glow-accent disabled:opacity-50"
+                          >
+                            {isTyping ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Send className="w-4 h-4" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>          <p className="text-xs text-muted-foreground mt-2 text-center">
             Ask about astrological insights, birth chart analysis, or cosmic guidance
           </p>
         </div>
