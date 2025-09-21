@@ -403,29 +403,27 @@ const SOSOracle = () => {
 
         let conversations = null;
 
-        // If a specific chart is selected, look for conversations related to that chart
+        // Get all conversations first and then filter
+        const { data: allConversations } = await supabase
+          .from('chat_conversations')
+          .select('id, conversation_title, context_data')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .order('updated_at', { ascending: false });
+
         if (selectedChart?.id) {
-          const { data } = await supabase
-            .from('chat_conversations')
-            .select('id, conversation_title, context_data')
-            .eq('user_id', user.id)
-            .eq('is_active', true)
-            .contains('context_data', { chart_id: selectedChart.id })
-            .order('updated_at', { ascending: false })
-            .limit(1);
-          
-          conversations = data;
+          // Look for conversations that match this chart ID
+          conversations = allConversations?.filter(conv => {
+            const contextData = conv.context_data;
+            if (!contextData || typeof contextData !== 'object' || Array.isArray(contextData)) {
+              return false;
+            }
+            const chartId = (contextData as Record<string, any>).chart_id;
+            return chartId && chartId.toString() === selectedChart.id.toString();
+          }).slice(0, 1);
         } else {
           // For general conversations, look for ones without chart_id
-          const { data } = await supabase
-            .from('chat_conversations')
-            .select('id, conversation_title, context_data')
-            .eq('user_id', user.id)
-            .eq('is_active', true)
-            .order('updated_at', { ascending: false });
-          
-          // Filter in JavaScript for general conversations (no chart_id or empty context)
-          conversations = data?.filter(conv => {
+          conversations = allConversations?.filter(conv => {
             const contextData = conv.context_data;
             if (!contextData || typeof contextData !== 'object' || Array.isArray(contextData)) {
               return true; // Include conversations with no context or invalid context

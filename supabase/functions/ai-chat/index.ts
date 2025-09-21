@@ -59,6 +59,13 @@ serve(async (req) => {
 
     const { message, conversationId: currentConversationId, birthData, astrologicalSystem, chartId } = await req.json();
 
+    console.log('Received request data:', { 
+      message: message ? 'present' : 'missing', 
+      conversationId: currentConversationId, 
+      chartId, 
+      birthData: birthData ? 'present' : 'missing' 
+    });
+
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message is required' }), {
         status: 400,
@@ -70,7 +77,8 @@ serve(async (req) => {
 
     // If no conversationId, create a new conversation
     if (!conversationId) {
-      const contextData = chartId ? { chart_id: chartId } : {};
+      const contextData = chartId ? { chart_id: parseInt(chartId) } : {};
+      console.log('Creating new conversation with context:', contextData);
       
       const { data: newConversation, error: convError } = await supabaseClient
         .from('chat_conversations')
@@ -89,6 +97,7 @@ serve(async (req) => {
         throw new Error(`Failed to create conversation: ${convError.message}`);
       }
       conversationId = newConversation.id;
+      console.log('Created new conversation:', conversationId, 'with context:', contextData);
     }
 
     // Save user message
