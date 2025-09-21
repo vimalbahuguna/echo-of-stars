@@ -401,23 +401,39 @@ const SOSOracle = () => {
         // Clear previous conversation ID
         setConversationId(null);
 
+        let conversations = null;
+
         // If a specific chart is selected, look for conversations related to that chart
-        let conversationQuery = supabase
-          .from('chat_conversations')
-          .select('id, conversation_title, context_data')
-          .eq('user_id', user.id)
-          .eq('is_active', true)
-          .order('updated_at', { ascending: false });
-
-        // Filter by chart if one is selected
         if (selectedChart?.id) {
-          conversationQuery = conversationQuery.contains('context_data', { chart_id: selectedChart.id });
+          const { data } = await supabase
+            .from('chat_conversations')
+            .select('id, conversation_title, context_data')
+            .eq('user_id', user.id)
+            .eq('is_active', true)
+            .contains('context_data', { chart_id: selectedChart.id })
+            .order('updated_at', { ascending: false })
+            .limit(1);
+          
+          conversations = data;
         } else {
-          // For general conversations, look for ones without chart_id or with null chart_id
-          conversationQuery = conversationQuery.or('context_data->chart_id.is.null,context_data.not.cs.{"chart_id"}');
+          // For general conversations, look for ones without chart_id
+          const { data } = await supabase
+            .from('chat_conversations')
+            .select('id, conversation_title, context_data')
+            .eq('user_id', user.id)
+            .eq('is_active', true)
+            .order('updated_at', { ascending: false });
+          
+          // Filter in JavaScript for general conversations (no chart_id or empty context)
+          conversations = data?.filter(conv => {
+            const contextData = conv.context_data;
+            if (!contextData || typeof contextData !== 'object' || Array.isArray(contextData)) {
+              return true; // Include conversations with no context or invalid context
+            }
+            const chartId = (contextData as Record<string, any>).chart_id;
+            return !chartId;
+          }).slice(0, 1);
         }
-
-        const { data: conversations } = await conversationQuery.limit(1);
 
         if (conversations && conversations[0]) {
           const conversationId = conversations[0].id;
