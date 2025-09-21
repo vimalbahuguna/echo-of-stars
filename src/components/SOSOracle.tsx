@@ -118,7 +118,12 @@ const SOSOracle = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (data) {
-        setSavedCharts(data as BirthData[]);
+        // Add astrologicalSystem property to match BirthData type
+        const chartsWithSystem = data.map(chart => ({
+          ...chart,
+          astrologicalSystem: 'western' as const // Default to western
+        }));
+        setSavedCharts(chartsWithSystem as BirthData[]);
       }
       if (error) {
         console.error("Error fetching saved charts:", error);
@@ -173,9 +178,21 @@ const SOSOracle = () => {
 
     setIsSavingOrDeleting(true);
     try {
+      // Get user's tenant_id
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.tenant_id) {
+        throw new Error('User profile not found or missing tenant information');
+      }
+
       const birthTime = birthFormData.time || '12:00';
       const chartData = {
         user_id: user.id,
+        tenant_id: profile.tenant_id,
         name: birthFormData.name,
         date: birthFormData.date,
         time: birthTime,
@@ -188,7 +205,13 @@ const SOSOracle = () => {
         // Update existing chart
         const { error: updateError } = await supabase
           .from('user_birth_data')
-          .update(chartData)
+          .update({
+            name: birthFormData.name,
+            date: birthFormData.date,
+            time: birthTime,
+            location: birthFormData.location,
+            relationship: birthFormData.relationship,
+          })
           .eq('id', editingChartId)
           .eq('user_id', user.id);
         error = updateError;
@@ -271,7 +294,8 @@ const SOSOracle = () => {
             time: selectedChart.time,
             location: selectedChart.location,
           } : null,
-          astrologicalSystem: selectedSystem
+          astrologicalSystem: selectedSystem,
+          chartId: selectedChart?.id || null // Pass chart ID for conversation context
         }
       });
 
@@ -360,26 +384,46 @@ const SOSOracle = () => {
     }
   };
 
-  // Load conversation history when component mounts
+  // Load conversation history when component mounts or selected chart changes
   useEffect(() => {
     const loadConversationHistory = async () => {
       if (!user) return; // Don't load history if not authenticated
       
       try {
-        // Get most recent conversation
-        const { data: conversations } = await supabase
+        // Reset messages to welcome message when loading
+        setMessages([{
+          id: '1',
+          content: "Welcome to SOS Oracle! I'm your advanced AI astrologer and cosmic guide. I have deep knowledge of both Western and Vedic astrology. Ask me about your birth chart, planetary transits, relationships, career, or any spiritual guidance you seek.",
+          sender: 'ai',
+          timestamp: new Date()
+        }]);
+        
+        // Clear previous conversation ID
+        setConversationId(null);
+
+        // If a specific chart is selected, look for conversations related to that chart
+        let conversationQuery = supabase
           .from('chat_conversations')
-          .select('id')
+          .select('id, conversation_title, context_data')
           .eq('user_id', user.id)
           .eq('is_active', true)
-          .order('updated_at', { ascending: false })
-          .limit(1);
+          .order('updated_at', { ascending: false });
+
+        // Filter by chart if one is selected
+        if (selectedChart?.id) {
+          conversationQuery = conversationQuery.contains('context_data', { chart_id: selectedChart.id });
+        } else {
+          // For general conversations, look for ones without chart_id or with null chart_id
+          conversationQuery = conversationQuery.or('context_data->chart_id.is.null,context_data.not.cs.{"chart_id"}');
+        }
+
+        const { data: conversations } = await conversationQuery.limit(1);
 
         if (conversations && conversations[0]) {
           const conversationId = conversations[0].id;
           setConversationId(conversationId);
 
-          // Load recent messages
+          // Load recent messages for this conversation
           const { data: chatMessages } = await supabase
             .from('chat_messages')
             .select('*')
@@ -404,7 +448,7 @@ const SOSOracle = () => {
     };
 
     loadConversationHistory();
-  }, [user]);
+  }, [user, selectedChart?.id]); // Re-load when user or selected chart changes
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -475,9 +519,19 @@ const SOSOracle = () => {
             <Select onValueChange={(value) => {
               if (value === 'general') {
                 setSelectedChart(null);
+                toast({
+                  title: "Switched to General Consultation",
+                  description: "Chat cleared. Starting fresh general conversation.",
+                });
               } else {
                 const chart = savedCharts.find(c => c.id === parseInt(value));
-                setSelectedChart(chart || null);
+                if (chart) {
+                  setSelectedChart(chart);
+                  toast({
+                    title: "Chart Selected",
+                    description: `Switched to ${chart.name}'s consultation. Loading chat history...`,
+                  });
+                }
               }
             }}>
               <SelectTrigger className="w-[220px] bg-background/70">

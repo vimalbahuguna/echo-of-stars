@@ -57,7 +57,7 @@ serve(async (req) => {
     }
     const tenantId = profile.tenant_id;
 
-    const { message, conversationId: currentConversationId, birthData, astrologicalSystem } = await req.json();
+    const { message, conversationId: currentConversationId, birthData, astrologicalSystem, chartId } = await req.json();
 
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message is required' }), {
@@ -70,9 +70,17 @@ serve(async (req) => {
 
     // If no conversationId, create a new conversation
     if (!conversationId) {
+      const contextData = chartId ? { chart_id: chartId } : {};
+      
       const { data: newConversation, error: convError } = await supabaseClient
         .from('chat_conversations')
-        .insert({ user_id: user.id, tenant_id: tenantId, is_active: true })
+        .insert({ 
+          user_id: user.id, 
+          tenant_id: tenantId, 
+          is_active: true,
+          context_data: contextData,
+          conversation_title: birthData ? `Consultation for ${birthData.name}` : 'General Consultation'
+        })
         .select('id')
         .single();
 

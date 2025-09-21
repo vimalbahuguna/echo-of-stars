@@ -120,6 +120,17 @@ const BirthChartCalculator = () => {
 
     setIsGenerating(true);
     try {
+      // Get user's tenant_id
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('tenant_id')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.tenant_id) {
+        throw new Error('User profile not found or missing tenant information');
+      }
+
       const birthTime = formData.time || '12:00';
       
       const existingQuery = supabase
@@ -165,6 +176,7 @@ const BirthChartCalculator = () => {
       } else {
         const chartData = {
             user_id: user.id,
+            tenant_id: profile.tenant_id,
             name: formData.name,
             date: formData.date,
             time: birthTime,
