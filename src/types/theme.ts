@@ -1,3 +1,12 @@
+export interface GradientColors {
+  backgroundGradient: string;
+  foregroundGradient: string;
+  primaryGradient: string;
+  secondaryGradient: string;
+  accentGradient: string;
+  cardGradient: string;
+}
+
 export interface ThemeColors {
   primary: string;
   accent: string;
@@ -26,5 +35,6 @@ export interface Theme {
   name: string;
   is_default: boolean; // Whether this is a system default theme or user-created
   colors: ThemeColors;
+  gradients?: GradientColors; // Optional gradient colors
   created_at?: string;
 }

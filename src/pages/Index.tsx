@@ -73,7 +73,7 @@ const Index = () => {
 
           <TabsContent value="dashboard" className="space-y-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-cosmic bg-clip-text text-transparent mb-4">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
                 Your Cosmic Dashboard
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">

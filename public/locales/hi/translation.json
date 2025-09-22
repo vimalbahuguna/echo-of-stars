@@ -1,4 +1,62 @@
 {
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "copy": "कॉपी करें",
+    "export": "निर्यात करें",
+    "import": "आयात करें",
+    "select": "चुनें",
+    "search": "खोजें",
+    "clear": "साफ़ करें",
+    "submit": "जमा करें",
+    "close": "बंद करें",
+    "open": "खोलें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "ok": "ठीक है",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "warning": "चेतावनी",
+    "info": "जानकारी",
+    "online": "ऑनलाइन",
+    "offline": "ऑफलाइन",
+    "signIn": "साइन इन",
+    "signOut": "साइन आउट",
+    "signUp": "साइन अप",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "dashboard": "डैशबोर्ड",
+    "home": "होम",
+    "about": "के बारे में",
+    "contact": "संपर्क",
+    "help": "सहायता",
+    "privacy": "गोपनीयता",
+    "terms": "नियम"
+  },
+  "navigation": {
+    "dashboard": "डैशबोर्ड",
+    "astrology": "ज्योतिष",
+    "birthChart": "जन्म कुंडली",
+    "compatibility": "संगतता",
+    "horoscopes": "राशिफल",
+    "ephemeris": "ग्रह स्थिति",
+    "transits": "गोचर",
+    "divisionalCharts": "विभागीय चार्ट",
+    "dashaSystem": "दशा प्रणाली",
+    "remedialMeasures": "उपचारात्मक उपाय",
+    "spiritualPractices": "आध्यात्मिक अभ्यास",
+    "meditation": "ध्यान",
+    "pranayama": "प्राणायाम",
+    "oracle": "एसओएस ओरेकल",
+    "settings": "सेटिंग्स",
+    "admin": "एडमिन"
+  },
   "planets": {
     "Sun": "सूर्य",
     "Moon": "चंद्र",
@@ -104,6 +162,379 @@
       "approximateCoordinates": "स्थान के लिए अनुमानित निर्देशांक का उपयोग किया गया।",
       "chartCalculated": "आपकी जन्म कुंडली की गणना कर ली गई है।",
       "aiInterpretationReady": "एआई व्याख्या तैयार है!"
+    }
+  },
+  "themeSettings": {
+    "title": "थीम सेटिंग्स",
+    "description": "अपना ब्रह्मांडीय इंटरफेस कस्टमाइज़ करें",
+    "templates": "थीम टेम्प्लेट",
+    "customization": "थीम कस्टमाइज़ेशन",
+    "colors": "रंग",
+    "gradients": "ग्रेडिएंट",
+    "preview": "लाइव प्रीव्यू",
+    "quickActions": "त्वरित कार्य",
+    "copyColors": "रंग कॉपी करें",
+    "export": "निर्यात करें",
+    "save": "थीम सहेजें",
+    "saving": "सहेजा जा रहा है...",
+    "newTheme": "नई थीम",
+    "cosmicDark": "कॉस्मिक डार्क",
+    "mysticLight": "मिस्टिक लाइट",
+    "celestialPurple": "सेलेस्टियल पर्पल",
+    "baseColors": "मूल रंग",
+    "componentBackgrounds": "कंपोनेंट बैकग्राउंड",
+    "solidBackground": "सॉलिड बैकग्राउंड",
+    "gradientBackground": "ग्रेडिएंट बैकग्राउंड",
+    "sampleInput": "नमूना इनपुट",
+    "toasts": {
+      "themeSaved": "थीम सहेजी गई",
+      "themeExported": "थीम निर्यात की गई",
+      "colorsCopied": "रंग कॉपी किए गए"
+    }
+  },
+  "gradientPicker": {
+    "direction": "दिशा",
+    "directions": {
+      "topToBottom": "ऊपर से नीचे",
+      "leftToRight": "बाएं से दाएं",
+      "topLeftToBottomRight": "ऊपर बाएं से नीचे दाएं",
+      "bottomToTop": "नीचे से ऊपर",
+      "rightToLeft": "दाएं से बाएं"
+    },
+    "addColor": "रंग जोड़ें",
+    "removeColor": "रंग हटाएं"
+  },
+  "compatibility": {
+    "title": "संगतता विश्लेषण",
+    "description": "दो चार्ट के बीच ब्रह्मांडीय संगतता का विश्लेषण करें",
+    "selectFirstChart": "पहला चार्ट चुनें",
+    "selectSecondChart": "दूसरा चार्ट चुनें",
+    "analyze": "संगतता का विश्लेषण करें",
+    "analyzing": "विश्लेषण हो रहा है...",
+    "toasts": {
+      "authRequired": "प्रमाणीकरण आवश्यक",
+      "selectionRequired": "चयन आवश्यक",
+      "invalidSelection": "अमान्य चयन",
+      "analysisError": "संगतता विश्लेषण त्रुटि"
+    }
+  },
+  "oracle": {
+    "title": "एसओएस ओरेकल",
+    "description": "आपका ब्रह्मांडीय एआई गाइड",
+    "placeholder": "अपनी जन्म कुंडली, संगतता, या ब्रह्मांडीय मार्गदर्शन के बारे में पूछें...",
+    "send": "भेजें",
+    "clear": "साफ़ करें",
+    "selectChart": "चार्ट चुनें",
+    "selectSystem": "ज्योतिष प्रणाली चुनें",
+    "online": "ऑनलाइन",
+    "connectionError": "ओरेकल कनेक्शन त्रुटि",
+    "copyError": "त्रुटि संदेश कॉपी करें",
+    "toasts": {
+      "chartLoaded": "चार्ट लोड हो गया",
+      "formCleared": "फॉर्म साफ़ हो गया",
+      "chartSelected": "चार्ट चुना गया"
+    }
+  },
+  "meditation": {
+    "title": "ध्यान अभ्यास",
+    "types": {
+      "bodyScan": "बॉडी स्कैन",
+      "walkingMeditation": "चलते हुए ध्यान"
+    }
+  },
+  "pranayama": {
+    "title": "प्राणायाम अभ्यास",
+    "types": {
+      "anulomVilom": "अनुलोम विलोम",
+      "kapalabhati": "कपालभाति",
+      "bhramari": "भ्रामरी",
+      "nadiShodhana": "नाड़ी शोधन",
+      "ujjayi": "उज्जायी",
+      "bhastrika": "भस्त्रिका",
+      "suryaBhedana": "सूर्य भेदन",
+      "chandraBhedana": "चंद्र भेदन"
+    }
+  },
+  "ephemeris": {
+    "title": "ग्रह स्थिति दर्शक",
+    "toasts": {
+      "authRequired": "प्रमाणीकरण आवश्यक",
+      "missingInfo": "जानकारी अधूरी है",
+      "ephemerisError": "ग्रह स्थिति त्रुटि"
+    }
+  },
+  "charts": {
+    "selectPlanet": "ग्रह चुनें",
+    "selectSystem": "चार्ट सिस्टम चुनें",
+    "selectAstrologicalSystem": "ज्योतिष प्रणाली चुनें"
+  },
+  "dashboard": {
+    "upcomingTransits": "आगामी गोचर",
+    "transits": {
+      "mercuryEntersGemini": {
+        "planet": "बुध",
+        "event": "मिथुन में प्रवेश",
+        "date": "15 दिसंबर",
+        "impact": "संचार में वृद्धि"
+      },
+      "venusConjunctJupiter": {
+        "planet": "शुक्र",
+        "event": "बृहस्पति के साथ युति",
+        "date": "18 दिसंबर",
+        "impact": "प्रेम और समृद्धि"
+      },
+      "marsTrinesSaturn": {
+        "planet": "मंगल",
+        "event": "शनि के साथ त्रिकोण",
+        "date": "22 दिसंबर",
+        "impact": "अनुशासित कार्य"
+      }
+    }
+  },
+  "hero": {
+    "voiceConsultations": "आवाज़ परामर्श"
+  },
+  "sidebar": {
+    "navigation": "नेवीगेशन",
+    "home": "होम",
+    "astrology": "ज्योतिष",
+    "oracle": "ओरेकल",
+    "spiritualPractices": "आध्यात्मिक अभ्यास",
+    "contact": "संपर्क",
+    "admin": "एडमिन",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "signOut": "साइन आउट",
+    "toggleSidebar": "साइडबार टॉगल करें"
+  },
+  "header": {
+    "appTitle": "SOS एस्ट्रल एस्ट्रो",
+    "appSubtitle": "एंटरप्राइज़ एस्ट्रोलॉजिकल प्लेटफॉर्म",
+    "navigation": {
+      "home": "होम",
+      "astrology": "ज्योतिष",
+      "oracle": "SOS ओरेकल",
+      "spiritualPractices": "आध्यात्मिक अभ्यास",
+      "contact": "संपर्क",
+      "admin": "एडमिन"
+    },
+    "userMenu": {
+      "profile": "प्रोफाइल",
+      "settings": "सेटिंग्स",
+      "adminDashboard": "एडमिन डैशबोर्ड",
+      "signOut": "साइन आउट",
+      "signIn": "साइन इन"
+    },
+    "mobileMenu": {
+      "navigation": "नेवीगेशन",
+      "account": "खाता"
+    },
+    "toasts": {
+      "signedOut": "सफलतापूर्वक साइन आउट हो गए",
+      "signOutSuccess": {
+        "description": "कॉसमॉस में मिलते हैं!"
+      },
+      "signOutError": {
+        "title": "साइन आउट त्रुटि",
+        "description": "साइन आउट करने में त्रुटि हुई।"
+      }
+    }
+  },
+  "astrology": {
+    "title": "उन्नत ज्योतिष सूट",
+    "subtitle": "उन्नत गणना और अंतर्दृष्टि के साथ व्यापक वैदिक और पश्चिमी ज्योतिष उपकरण",
+    "backToDashboard": "डैशबोर्ड पर वापस जाएं",
+    "coreTools": {
+      "title": "मुख्य ज्योतिष उपकरण",
+      "birthCharts": {
+        "title": "जन्म कुंडली",
+        "description": "कई प्रणालियों के साथ व्यापक जन्म कुंडली बनाएं",
+        "badges": {
+          "northIndian": "उत्तर भारतीय",
+          "southIndian": "दक्षिण भारतीय",
+          "eastIndian": "पूर्व भारतीय"
+        }
+      },
+      "compatibility": {
+        "title": "संगतता",
+        "description": "उन्नत सिनास्ट्री और कंपोज़िट चार्ट विश्लेषण",
+        "badges": {
+          "synastry": "सिनास्ट्री",
+          "composite": "कंपोज़िट",
+          "houseOverlays": "हाउस ओवरले"
+        }
+      },
+      "transitAnalysis": {
+        "title": "गोचर विश्लेषण",
+        "description": "वर्तमान ग्रहों की गति और उनके प्रभाव",
+        "badges": {
+          "liveTransits": "लाइव गोचर",
+          "aspects": "दृष्टि",
+          "predictions": "भविष्यवाणियां"
+        }
+      },
+      "ephemeris": {
+        "title": "पंचांग",
+        "description": "सटीक ग्रह स्थिति और गति",
+        "badges": {
+          "dailyPositions": "दैनिक स्थिति",
+          "retrograde": "वक्री",
+          "aspects": "दृष्टि"
+        }
+      }
+    },
+    "advancedFeatures": {
+      "title": "उन्नत वैदिक सुविधाएं",
+      "divisionalCharts": {
+        "title": "विभागीय चार्ट",
+        "description": "D9 नवमांश, D10 दशमांश, और अन्य वर्ग",
+        "badges": {
+          "d9Navamsa": "D9 नवमांश",
+          "d10Career": "D10 करियर",
+          "sixteenVargas": "16 वर्ग"
+        }
+      },
+      "dashaSystem": {
+        "title": "दशा प्रणाली",
+        "description": "विंशोत्तरी दशा समय प्रणाली",
+        "badges": {
+          "mahaDasha": "महादशा",
+          "antarDasha": "अंतर्दशा",
+          "currentPeriod": "वर्तमान काल"
+        }
+      },
+      "remedialMeasures": {
+        "title": "उपचारात्मक उपाय",
+        "description": "रत्न, मंत्र, और आध्यात्मिक उपचार",
+        "badges": {
+          "gemstones": "रत्न",
+          "mantras": "मंत्र",
+          "yantras": "यंत्र"
+        }
+      }
+    },
+    "additionalTools": {
+      "title": "अतिरिक्त उपकरण",
+      "readings": {
+        "title": "रीडिंग",
+        "description": "व्यक्तिगत ज्योतिषीय रीडिंग"
+      },
+      "sosOracle": {
+        "title": "SOS ओरेकल",
+        "description": "AI-संचालित ज्योतिषीय परामर्श"
+      },
+      "spiritualPractices": {
+        "title": "आध्यात्मिक अभ्यास",
+        "description": "ध्यान और प्राणायाम मार्गदर्शन"
+      },
+      "settings": {
+        "title": "सेटिंग्स",
+        "description": "अपनी ज्योतिषीय प्राथमिकताएं अनुकूलित करें"
+      }
+    },
+    "featureHighlights": {
+      "title": "✨ शामिल उन्नत सुविधाएं",
+      "features": {
+        "ayanamsaSystems": "कई अयनांश प्रणालियां (लाहिड़ी, रमन, KP)",
+        "aspectCalculations": "उन्नत दृष्टि गणना",
+        "nakshatras": "27 नक्षत्र पद विश्लेषण के साथ",
+        "planetaryStrength": "ग्रह शक्ति गणना",
+        "variableOrb": "परिवर्तनीय ऑर्ब दृष्टि विश्लेषण",
+        "remedyDatabase": "व्यापक उपचार डेटाबेस"
+      }
+    }
+  },
+  "spiritualPracticesPage": {
+    "title": "आध्यात्मिक अभ्यास",
+    "subtitle": "अपने मन, शरीर और आत्मा को पोषित करने के लिए विभिन्न अभ्यासों का अन्वेषण करें।",
+    "backToDashboard": "डैशबोर्ड पर वापस जाएं",
+    "practices": {
+      "pranayama": {
+        "title": "प्राणायाम",
+        "description": "जीवन शक्ति और शांति के लिए श्वास अभ्यास।"
+      },
+      "meditation": {
+        "title": "ध्यान",
+        "description": "सचेतता और आंतरिक शांति का विकास करें।"
+      },
+      "yogaNidra": {
+        "title": "योग निद्रा",
+        "description": "गहरी छूट और सचेत विश्राम।"
+      },
+      "asana": {
+        "title": "आसन अभ्यास",
+        "description": "शक्ति और लचीलेपन के लिए शारीरिक मुद्राएं।"
+      },
+      "mantraJapa": {
+        "title": "मंत्र जप",
+        "description": "फोकस और आध्यात्मिक संबंध के लिए जप।"
+      },
+      "upanishadTeachings": {
+        "title": "उपनिषद शिक्षाएं",
+        "description": "आत्म-साक्षात्कार के लिए प्राचीन ज्ञान।"
+      }
+    }
+  },
+  "settingsPage": {
+    "title": "सेटिंग्स",
+    "backToDashboard": "डैशबोर्ड पर वापस जाएं",
+    "menu": {
+      "title": "सेटिंग्स मेनू",
+      "themes": "थीम"
+    }
+  },
+  "roles": {
+    "super_admin": "सुपर एडमिन",
+    "tenant_admin": "टेनेंट एडमिन",
+    "organization_admin": "संगठन एडमिन",
+    "franchise_admin": "फ्रैंचाइज़ी एडमिन",
+    "manager": "प्रबंधक",
+    "customer": "ग्राहक",
+    "end_user": "उपयोगकर्ता"
+  },
+  "dashboard": {
+    "insights": {
+      "love": {
+        "type": "प्रेम",
+        "insight": "शुक्र रोमांटिक कनेक्शन के लिए अनुकूल स्थिति में है"
+      },
+      "career": {
+        "type": "करियर",
+        "insight": "मंगल आपकी व्यावसायिक महत्वाकांक्षाओं को ऊर्जा देता है"
+      },
+      "health": {
+        "type": "स्वास्थ्य",
+        "insight": "सूर्य जीवन शक्ति और कल्याण को बढ़ावा देता है"
+      }
+    },
+    "cards": {
+      "chartGenerated": {
+        "title": "चार्ट जेनरेट हुआ",
+        "lastUpdated": "अंतिम अपडेट: आज",
+        "viewFullChart": "पूरा चार्ट देखें"
+      },
+      "aiConsultation": {
+        "title": "SOS ओरेकल के साथ चैट करें",
+        "description": "24/7 ब्रह्मांडीय मार्गदर्शन",
+        "placeholder": "अपनी ब्रह्मांडीय यात्रा के बारे में मुझसे कुछ भी पूछें",
+        "startConversation": "बातचीत शुरू करें"
+      },
+      "upcomingTransits": {
+        "title": "आगामी गोचर",
+        "description": "आगे आने वाली महत्वपूर्ण ग्रहों की गतिविधियां"
+      },
+      "community": {
+        "title": "कम्युनिटी",
+        "description": "साथी साधकों से जुड़ें",
+        "activeMembers": "सक्रिय सदस्य",
+        "trendingDiscussion": "ट्रेंडिंग चर्चा",
+        "discussionText": "इस सप्ताह की अमावस्या की शक्ति का उपयोग कैसे करें",
+        "joinDiscussion": "चर्चा में शामिल हों"
+      },
+      "advancedTools": {
+        "title": "उन्नत ज्योतिष उपकरण",
+        "description": "पेशेवर-ग्रेड वैदिक ज्योतिष सुविधाओं का अन्वेषण करें"
+      }
     }
   }
 }

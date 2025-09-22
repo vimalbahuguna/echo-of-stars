@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
   TrendingUp,
   Heart,
@@ -15,7 +17,10 @@ import {
   Globe,
   BookOpen,
   Sparkles,
-  MessageSquare
+  MessageSquare,
+  Clock,
+  Gem,
+  Activity
 } from "lucide-react";
 
 interface DashboardCardsProps {
@@ -23,29 +28,31 @@ interface DashboardCardsProps {
 }
 
 const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
+  const { t } = useTranslation();
+  
   const todaysInsights = [
     {
-      type: "Love",
+      type: t("dashboard.insights.love.type"),
       icon: Heart,
-      color: "text-pink-400",
-      bg: "bg-pink-400/10",
-      insight: "Venus aligns favorably for romantic connections",
+      color: "text-pink-500",
+      bg: "bg-pink-500/10",
+      insight: t("dashboard.insights.love.insight"),
       strength: 85
     },
     {
-      type: "Career", 
+      type: t("dashboard.insights.career.type"),
       icon: Briefcase,
-      color: "text-primary",
-      bg: "bg-primary/10",
-      insight: "Mars energizes your professional ambitions",
-      strength: 92
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+      insight: t("dashboard.insights.career.insight"),
+      strength: 72
     },
     {
-      type: "Health",
+      type: t("dashboard.insights.health.type"),
       icon: Sun,
       color: "text-accent",
       bg: "bg-accent/10", 
-      insight: "Lunar cycles support emotional healing",
+      insight: t("dashboard.insights.health.insight"),
       strength: 78
     }
   ];
@@ -57,20 +64,20 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
   ];
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-3">
       {/* Today's Cosmic Energy */}
-      <Card className="md:col-span-2 lg:col-span-1 bg-card/50 border-primary/20 shadow-stellar">
+      <Card className="bg-card/50 border-primary/20 shadow-stellar">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-heading-md">
               <Sparkles className="w-5 h-5 text-primary animate-twinkle" />
               Today's Energy
             </CardTitle>
-            <Badge variant="secondary" className="bg-primary/10 text-primary">
+            <Badge variant="secondary" className="bg-primary/10 text-primary text-caption">
               Active
             </Badge>
           </div>
-          <CardDescription>Your cosmic forecast for today</CardDescription>
+          <CardDescription className="text-body-sm">Your cosmic forecast for today</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {todaysInsights.map((insight, index) => (
@@ -80,12 +87,12 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
                   <div className={`p-1 rounded-full ${insight.bg}`}>
                     <insight.icon className={`w-4 h-4 ${insight.color}`} />
                   </div>
-                  <span className="font-medium text-sm">{insight.type}</span>
+                  <span className="font-medium text-body-md">{insight.type}</span>
                 </div>
-                <span className="text-sm text-muted-foreground">{insight.strength}%</span>
+                <span className="text-body-sm text-muted-foreground">{insight.strength}%</span>
               </div>
               <Progress value={insight.strength} className="h-2" />
-              <p className="text-xs text-muted-foreground">{insight.insight}</p>
+              <p className="text-caption text-muted-foreground">{insight.insight}</p>
             </div>
           ))}
         </CardContent>
@@ -93,12 +100,12 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
 
       {/* Birth Chart Status */}
       <Card className="bg-card/50 border-accent/20 shadow-cosmic">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-accent animate-pulse-glow" />
-            Birth Chart
-          </CardTitle>
-          <CardDescription>Your cosmic blueprint</CardDescription>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-heading-md">
+              <Star className="w-5 h-5 text-primary animate-twinkle" />
+              Birth Chart
+            </CardTitle>
+            <CardDescription className="text-body-sm">Your cosmic blueprint</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center space-y-4">
@@ -106,10 +113,10 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
               <Globe className="w-10 h-10 text-white animate-orbit" />
             </div>
             <div>
-              <h3 className="font-semibold">Chart Generated</h3>
-              <p className="text-sm text-muted-foreground">Last updated: Today</p>
+              <h3 className="font-semibold text-body-lg">Chart Generated</h3>
+              <p className="text-body-sm text-muted-foreground">Last Full Chart</p>
             </div>
-            <Button variant="outline" size="sm" className="w-full border-accent/50 hover:bg-accent/10" onClick={() => setActiveTab('chart')}>
+            <Button variant="outline" size="sm" className="w-full border-accent/50 hover:bg-accent/10 text-body-sm" onClick={() => setActiveTab('chart')}>
               View Full Chart
             </Button>
           </div>
@@ -119,16 +126,16 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
       {/* AI Consultation */}
       <Card className="bg-card/50 border-secondary/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-heading-md">
             <MessageSquare className="w-5 h-5 text-secondary animate-float" />
             Chat With SOS Oracle
           </CardTitle>
-          <CardDescription>24/7 cosmic guidance</CardDescription>
+          <CardDescription className="text-body-sm">Get anything about your cosmic journey</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-3">
+              <p className="text-body-sm text-muted-foreground mb-3">
                 Ask me anything about your cosmic journey
               </p>
               <div className="flex justify-center mb-4">
@@ -137,8 +144,8 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
                 </div>
               </div>
             </div>
-            <Button className="w-full bg-gradient-stellar hover:shadow-glow" onClick={() => { console.log('Setting active tab to oracle'); setActiveTab('oracle'); }}>
-              Start Conversation
+            <Button className="w-full bg-gradient-stellar hover:shadow-glow text-body-md" onClick={() => { console.log('Setting active tab to oracle'); setActiveTab('oracle'); }}>
+              Chat with SOS Oracle
             </Button>
           </div>
         </CardContent>
@@ -147,11 +154,11 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
       {/* Upcoming Transits */}
       <Card className="md:col-span-2 bg-card/50 border-border/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-heading-md">
             <Calendar className="w-5 h-5 text-primary" />
-            Upcoming Transits
+            {t("dashboard.cards.upcomingTransits.title")}
           </CardTitle>
-          <CardDescription>Important planetary movements ahead</CardDescription>
+          <CardDescription className="text-body-sm">{t("dashboard.cards.upcomingTransits.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -160,11 +167,11 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                   <div>
-                    <p className="font-medium text-sm">{transit.planet} {transit.event}</p>
-                    <p className="text-xs text-muted-foreground">{transit.impact}</p>
+                    <p className="font-medium text-body-md">{transit.planet} {transit.event}</p>
+                    <p className="text-caption text-muted-foreground">{transit.impact}</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-caption">
                   {transit.date}
                 </Badge>
               </div>
@@ -176,21 +183,21 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
       {/* Learning Center */}
       <Card className="bg-card/50 border-border/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-accent" />
-            Start Your Reading
+          <CardTitle className="flex items-center gap-2 text-heading-md">
+            <BookOpen className="w-5 h-5 text-primary" />
+            Learning Center
           </CardTitle>
-          <CardDescription>Expand your astrological knowledge</CardDescription>
+          <CardDescription className="text-body-sm">Expand your astrological knowledge</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <p className="text-sm font-medium">Today's Lesson</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-body-md font-medium">Today's Lesson</p>
+              <p className="text-caption text-muted-foreground">
                 Understanding Mercury Retrograde: Communication & Technology
               </p>
               <Progress value={65} className="h-2" />
-              <p className="text-xs text-muted-foreground">65% complete</p>
+              <p className="text-caption text-muted-foreground">65% complete</p>
             </div>
             <Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab('readings')}>
               Continue Learning
@@ -204,25 +211,92 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5 text-secondary" />
-            Cosmic Community
+            {t("dashboard.cards.community.title")}
           </CardTitle>
-          <CardDescription>Connect with fellow seekers</CardDescription>
+          <CardDescription>{t("dashboard.cards.community.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">1.2M</div>
-              <p className="text-xs text-muted-foreground">Active members</p>
+              <p className="text-xs text-muted-foreground">{t("dashboard.cards.community.activeMembers")}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-medium">Trending Discussion</p>
+              <p className="text-xs font-medium">{t("dashboard.cards.community.trendingDiscussion")}</p>
               <p className="text-xs text-muted-foreground">
-                "How to harness the power of this week's New Moon"
+                {t("dashboard.cards.community.discussionText")}
               </p>
             </div>
             <Button variant="outline" size="sm" className="w-full">
-              Join Discussion
+              {t("dashboard.cards.community.joinDiscussion")}
             </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Advanced Astrology Features */}
+      <Card className="md:col-span-2 lg:col-span-3 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star className="w-5 h-5 text-primary animate-twinkle" />
+            {t("dashboard.cards.advancedTools.title")}
+          </CardTitle>
+          <CardDescription>{t("dashboard.cards.advancedTools.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link to="/divisional-charts">
+              <Card className="h-full hover:bg-secondary/10 transition-colors duration-200 group cursor-pointer">
+                <CardContent className="p-4 text-center">
+                  <Star className="w-8 h-8 text-yellow-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <h4 className="font-medium text-body-md mb-1">Divisional Charts</h4>
+                  <p className="text-caption text-muted-foreground mb-2">D9, D10 & 16 Vargas</p>
+                  <Badge variant="secondary" className="text-caption">Vedic</Badge>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/dasha-system">
+              <Card className="h-full hover:bg-secondary/10 transition-colors duration-200 group cursor-pointer">
+                <CardContent className="p-4 text-center">
+                  <Clock className="w-8 h-8 text-indigo-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <h4 className="font-medium text-body-md mb-1">Dasha System</h4>
+                  <p className="text-caption text-muted-foreground mb-2">Vimshottari Timing</p>
+                  <Badge variant="secondary" className="text-caption">Timing</Badge>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/transits">
+              <Card className="h-full hover:bg-secondary/10 transition-colors duration-200 group cursor-pointer">
+                <CardContent className="p-4 text-center">
+                  <TrendingUp className="w-8 h-8 text-purple-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <h4 className="font-medium text-body-md mb-1">Transit Analysis</h4>
+                  <p className="text-caption text-muted-foreground mb-2">Current Influences</p>
+                  <Badge variant="secondary" className="text-caption">Live</Badge>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/remedial-measures">
+              <Card className="h-full hover:bg-secondary/10 transition-colors duration-200 group cursor-pointer">
+                <CardContent className="p-4 text-center">
+                  <Gem className="w-8 h-8 text-pink-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <h4 className="font-medium text-body-md mb-1">Remedial Measures</h4>
+                  <p className="text-caption text-muted-foreground mb-2">Gems & Mantras</p>
+                  <Badge variant="secondary" className="text-caption">Healing</Badge>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+          
+          <div className="mt-4 text-center">
+            <Link to="/astrology">
+              <Button variant="outline" className="border-primary/50 hover:bg-primary/10">
+                <Activity className="w-4 h-4 mr-2" />
+                View All Astrology Tools
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

@@ -43,16 +43,19 @@ const HeroSection = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Main Heading */}
           <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-cosmic bg-clip-text text-transparent animate-shimmer">
-                Unlock Your
+            <h1 className="text-display-xl md:text-display-2xl font-bold mb-6 leading-tight">
+              <span className="text-foreground">
+                Unlock 
+              </span>
+              <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
+                {" "}Your
               </span>
               <br />
-              <span className="bg-gradient-stellar bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
                 Cosmic Destiny
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-heading-md md:text-heading-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Experience the world's most advanced AI-powered astrological platform. 
               Combining ancient wisdom with cutting-edge technology.
             </p>
@@ -61,19 +64,19 @@ const HeroSection = () => {
           {/* Feature Pills */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             <Card className="px-4 py-2 bg-card/50 border-primary/20 hover:border-primary/40 transition-all hover:shadow-glow">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-body-md">
                 <Brain className="w-4 h-4 text-primary" />
                 <span>SOS Oracle</span>
               </div>
             </Card>
             <Card className="px-4 py-2 bg-card/50 border-accent/20 hover:border-accent/40 transition-all hover:shadow-glow-accent">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-body-md">
                 <Zap className="w-4 h-4 text-accent" />
                 <span>Real-time Predictions</span>
               </div>
             </Card>
             <Card className="px-4 py-2 bg-card/50 border-secondary/20 hover:border-secondary/40 transition-all">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-body-md">
                 <MessageSquare className="w-4 h-4 text-secondary" />
                 <span>Voice Consultations</span>
               </div>
@@ -84,7 +87,7 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-gradient-cosmic hover:shadow-stellar text-lg px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
+              className="bg-gradient-cosmic hover:shadow-stellar text-heading-sm px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
               onClick={() => navigate("/birth-chart")}
             >
               <Stars className="w-5 h-5 mr-2" />
@@ -93,7 +96,7 @@ const HeroSection = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-primary/50 hover:bg-primary/10 text-lg px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
+              className="border-primary/50 hover:bg-primary/10 text-heading-sm px-8 py-6 h-auto font-semibold hover:scale-105 transition-transform"
             >
               <MessageSquare className="w-5 h-5 mr-2" />
               Chat with SOS Oracle
@@ -101,7 +104,7 @@ const HeroSection = () => {
           </div>
 
           {/* Trust Indicators */}
-          <div className="mt-16 flex flex-wrap justify-center items-center gap-8 text-sm text-muted-foreground">
+          <div className="mt-16 flex flex-wrap justify-center items-center gap-8 text-body-md text-muted-foreground">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary" />
               <span>99.9% Accuracy Rate</span>

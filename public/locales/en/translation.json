@@ -1,4 +1,62 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "copy": "Copy",
+    "export": "Export",
+    "import": "Import",
+    "select": "Select",
+    "search": "Search",
+    "clear": "Clear",
+    "submit": "Submit",
+    "close": "Close",
+    "open": "Open",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "online": "Online",
+    "offline": "Offline",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "profile": "Profile",
+    "settings": "Settings",
+    "dashboard": "Dashboard",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "help": "Help",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "astrology": "Astrology",
+    "birthChart": "Birth Chart",
+    "compatibility": "Compatibility",
+    "horoscopes": "Horoscopes",
+    "ephemeris": "Ephemeris",
+    "transits": "Transits",
+    "divisionalCharts": "Divisional Charts",
+    "dashaSystem": "Dasha System",
+    "remedialMeasures": "Remedial Measures",
+    "spiritualPractices": "Spiritual Practices",
+    "meditation": "Meditation",
+    "pranayama": "Pranayama",
+    "oracle": "SOS Oracle",
+    "settings": "Settings",
+    "admin": "Admin"
+  },
   "planets": {
     "Sun": "Sun",
     "Moon": "Moon",
@@ -105,5 +163,218 @@
       "chartCalculated": "Your birth chart has been calculated.",
       "aiInterpretationReady": "AI Interpretation Ready!"
     }
+  },
+  "themeSettings": {
+    "title": "Theme Settings",
+    "description": "Customize your cosmic interface",
+    "templates": "Theme Templates",
+    "customization": "Theme Customization",
+    "colors": "Colors",
+    "gradients": "Gradients",
+    "preview": "Live Preview",
+    "quickActions": "Quick Actions",
+    "copyColors": "Copy Colors",
+    "export": "Export",
+    "save": "Save Theme",
+    "saving": "Saving...",
+    "newTheme": "New Theme",
+    "cosmicDark": "Cosmic Dark",
+    "mysticLight": "Mystic Light",
+    "celestialPurple": "Celestial Purple",
+    "baseColors": "Base Colors",
+    "componentBackgrounds": "Component Backgrounds",
+    "solidBackground": "Solid Background",
+    "gradientBackground": "Gradient Background",
+    "sampleInput": "Sample input",
+    "toasts": {
+      "themeSaved": "Theme Saved",
+      "themeExported": "Theme Exported",
+      "colorsCopied": "Colors Copied"
+    }
+  },
+  "gradientPicker": {
+    "direction": "Direction",
+    "directions": {
+      "topToBottom": "Top to Bottom",
+      "leftToRight": "Left to Right",
+      "topLeftToBottomRight": "Top Left to Bottom Right",
+      "bottomToTop": "Bottom to Top",
+      "rightToLeft": "Right to Left"
+    },
+    "addColor": "Add Color",
+    "removeColor": "Remove Color"
+  },
+  "compatibility": {
+    "title": "Compatibility Analysis",
+    "description": "Analyze cosmic compatibility between two charts",
+    "selectFirstChart": "Select first chart",
+    "selectSecondChart": "Select second chart",
+    "analyze": "Analyze Compatibility",
+    "analyzing": "Analyzing...",
+    "toasts": {
+      "authRequired": "Authentication Required",
+      "selectionRequired": "Selection Required",
+      "invalidSelection": "Invalid Selection",
+      "analysisError": "Compatibility Analysis Error"
+    }
+  },
+  "oracle": {
+    "title": "SOS Oracle",
+    "description": "Your cosmic AI guide",
+    "placeholder": "Ask about your birth chart, compatibility, or cosmic guidance...",
+    "send": "Send",
+    "clear": "Clear",
+    "selectChart": "Select Chart",
+    "selectSystem": "Select Astrological System",
+    "online": "Online",
+    "connectionError": "Oracle Connection Error",
+    "copyError": "Copy error message",
+    "toasts": {
+      "chartLoaded": "Chart Loaded",
+      "formCleared": "Form Cleared",
+      "chartSelected": "Chart Selected"
+    }
+  },
+  "meditation": {
+    "title": "Meditation Practice",
+    "types": {
+      "bodyScan": "Body Scan",
+      "walkingMeditation": "Walking Meditation"
+    }
+  },
+  "pranayama": {
+    "title": "Pranayama Practice",
+    "types": {
+      "anulomVilom": "Anulom Vilom",
+      "kapalabhati": "Kapalabhati",
+      "bhramari": "Bhramari",
+      "nadiShodhana": "Nadi Shodhana",
+      "ujjayi": "Ujjayi",
+      "bhastrika": "Bhastrika",
+      "suryaBhedana": "Surya Bhedana",
+      "chandraBhedana": "Chandra Bhedana"
+    }
+  },
+  "ephemeris": {
+    "title": "Ephemeris Viewer",
+    "toasts": {
+      "authRequired": "Authentication Required",
+      "missingInfo": "Missing Information",
+      "ephemerisError": "Ephemeris Error"
+    }
+  },
+  "charts": {
+    "selectPlanet": "Select Planet",
+    "selectSystem": "Select chart system",
+    "selectAstrologicalSystem": "Select Astrological System"
+  },
+  "dashboard": {
+    "upcomingTransits": "Upcoming Transits",
+    "transits": {
+      "mercuryEntersGemini": {
+        "planet": "Mercury",
+        "event": "Enters Gemini",
+        "date": "Dec 15",
+        "impact": "Communication boost"
+      },
+      "venusConjunctJupiter": {
+        "planet": "Venus",
+        "event": "Conjunct Jupiter", 
+        "date": "Dec 18",
+        "impact": "Love & abundance"
+      },
+      "marsTrinesSaturn": {
+        "planet": "Mars",
+        "event": "Trine Saturn",
+        "date": "Dec 22", 
+        "impact": "Disciplined action"
+      }
+    }
+  },
+  "hero": {
+    "voiceConsultations": "Voice Consultations"
+  },
+  "roles": {
+    "super_admin": "Super Admin",
+    "tenant_admin": "Tenant Admin",
+    "organization_admin": "Organization Admin",
+    "franchise_admin": "Franchise Admin",
+    "manager": "Manager",
+    "customer": "Customer",
+    "end_user": "End User"
+  },
+  "dashboard": {
+    "insights": {
+      "love": {
+        "type": "Love",
+        "insight": "Venus aligns favorably for romantic connections"
+      },
+      "career": {
+        "type": "Career",
+        "insight": "Mars energizes your professional ambitions"
+      },
+      "health": {
+        "type": "Health",
+        "insight": "Sun promotes vitality and well-being"
+      }
+    },
+    "cards": {
+      "chartGenerated": {
+        "title": "Chart Generated",
+        "lastUpdated": "Last updated: Today",
+        "viewFullChart": "View Full Chart"
+      },
+      "aiConsultation": {
+        "title": "Chat With SOS Oracle",
+        "description": "24/7 cosmic guidance",
+        "placeholder": "Ask me anything about your cosmic journey",
+        "startConversation": "Start Conversation"
+      },
+      "upcomingTransits": {
+        "title": "Upcoming Transits",
+        "description": "Important planetary movements ahead"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Connect with fellow seekers",
+        "activeMembers": "Active members",
+        "trendingDiscussion": "Trending Discussion",
+        "discussionText": "How to harness the power of this week's New Moon",
+        "joinDiscussion": "Join Discussion"
+      },
+      "advancedTools": {
+        "title": "Advanced Astrology Tools",
+        "description": "Explore professional-grade Vedic astrology features"
+      }
+    }
+  },
+  "header": {
+    "appTitle": "Echo of Stars",
+    "appSubtitle": "Vedic Astrology Oracle",
+    "navigation": {
+      "home": "Home",
+      "astrology": "Astrology",
+      "oracle": "Oracle",
+      "spiritualPractices": "Spiritual Practices",
+      "contact": "Contact",
+      "admin": "Admin"
+    },
+    "userMenu": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "signOut": "Sign Out",
+      "signIn": "Sign In"
+    },
+    "mobileMenu": {
+      "navigation": "Navigation",
+      "account": "Account"
+    },
+    "toasts": {
+      "signedOut": "Signed out successfully",
+      "signOutError": "Sign out error"
+    }
+  },
+  "sidebar": {
+    "toggleSidebar": "Toggle Sidebar"
   }
 }

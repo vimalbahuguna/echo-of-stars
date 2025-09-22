@@ -19,8 +19,13 @@ import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
 import MeditationPractice from "./components/MeditationPractice";
 import AstrologySection from "./pages/AstrologySection";
+import RemedialMeasuresPage from "./pages/RemedialMeasuresPage";
+import TransitAnalysisPage from "./pages/TransitAnalysisPage";
+import DivisionalChartsPage from "./pages/DivisionalChartsPage";
+import DashaSystemPage from "./pages/DashaSystemPage";
 import { MobilePushService } from "./services/mobileServices";
 import { useEffect } from "react";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +38,8 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -91,13 +97,34 @@ const App = () => {
                   <AstrologySection />
                 </ProtectedRoute>
               } />
+              <Route path="/remedial-measures" element={
+                <ProtectedRoute>
+                  <RemedialMeasuresPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/transits" element={
+                <ProtectedRoute>
+                  <TransitAnalysisPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/divisional-charts" element={
+                <ProtectedRoute>
+                  <DivisionalChartsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dasha-system" element={
+                <ProtectedRoute>
+                  <DashaSystemPage />
+                </ProtectedRoute>
+              } />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  );
+      </ThemeProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
 };
 
 export default App;

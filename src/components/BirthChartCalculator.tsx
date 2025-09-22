@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +24,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ChartPreview from "@/components/charts/ChartPreview";
+import ChartSystemSelector from "@/components/charts/ChartSystemSelector";
+import DivisionalCharts from "@/components/charts/DivisionalCharts";
+import DashaSystem from "@/components/charts/DashaSystem";
+import TransitAnalysis from "@/components/charts/TransitAnalysis";
+import RemedialMeasures from "@/components/charts/RemedialMeasures";
 import { geocodeLocation } from "@/components/GeocodingService";
 import { 
   Calendar,
@@ -40,7 +46,10 @@ import {
   ChevronUp,
   Save,
   Search,
-  Users
+  Users,
+  Settings,
+  TrendingUp,
+  Shield
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -56,6 +65,8 @@ const BirthChartCalculator = () => {
     relationship: 'Self',
     astrologicalSystem: 'western'
   });
+  const [chartSystem, setChartSystem] = useState<'north' | 'south' | 'east'>('north');
+  const [activeTab, setActiveTab] = useState('chart');
   const [savedCharts, setSavedCharts] = useState<any[]>([]);
   const [editingChartId, setEditingChartId] = useState<number | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -490,24 +501,87 @@ const BirthChartCalculator = () => {
 
           {generatedChart && (
             <div className="mt-6 space-y-4">
-                <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
-                    <CardHeader>
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <CardTitle className="text-xl">{t('birthChartCalculator.generatedChartTitle')}</CardTitle>
-                                <CardDescription>{t('birthChartCalculator.generatedChartDescription')}</CardDescription>
-                            </div>
-                            <Button variant="ghost" onClick={() => setShowChart(!showChart)}>
-                                {showChart ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    {showChart && (
-                        <CardContent>
-                            <ChartPreview chartData={generatedChart} />
-                        </CardContent>
-                    )}
-                </Card>
+              <Card className="w-full max-w-6xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <CardTitle className="text-xl">{t('birthChartCalculator.generatedChartTitle')}</CardTitle>
+                      <CardDescription>{t('birthChartCalculator.generatedChartDescription')}</CardDescription>
+                    </div>
+                    <Button variant="ghost" onClick={() => setShowChart(!showChart)}>
+                      {showChart ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    </Button>
+                  </div>
+                </CardHeader>
+                {showChart && (
+                  <CardContent>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                      <TabsList className="grid w-full grid-cols-5">
+                        <TabsTrigger value="chart" className="flex items-center gap-2">
+                          <Star className="w-4 h-4" />
+                          Birth Chart
+                        </TabsTrigger>
+                        <TabsTrigger value="divisional" className="flex items-center gap-2">
+                          <Settings className="w-4 h-4" />
+                          Divisional Charts
+                        </TabsTrigger>
+                        <TabsTrigger value="dasha" className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          Dasha System
+                        </TabsTrigger>
+                        <TabsTrigger value="transit" className="flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4" />
+                          Transit Analysis
+                        </TabsTrigger>
+                        <TabsTrigger value="remedies" className="flex items-center gap-2">
+                          <Shield className="w-4 h-4" />
+                          Remedial Measures
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="chart" className="mt-6">
+                         <div className="space-y-4">
+                           <ChartSystemSelector 
+                             value={chartSystem} 
+                             onChange={setChartSystem} 
+                           />
+                           <ChartPreview 
+                             chartData={generatedChart} 
+                           />
+                         </div>
+                       </TabsContent>
+                       
+                       <TabsContent value="divisional" className="mt-6">
+                         <DivisionalCharts 
+                           planets={generatedChart.planets || []}
+                           chartSystem={chartSystem}
+                           onChartSystemChange={setChartSystem}
+                         />
+                       </TabsContent>
+                       
+                       <TabsContent value="dasha" className="mt-6">
+                         <DashaSystem 
+                           planets={generatedChart.planets || []}
+                           birthDate={new Date(formData.date)}
+                           moonLongitude={generatedChart.planets?.find((p: any) => p.name === 'Moon')?.longitude || 0}
+                         />
+                       </TabsContent>
+                       
+                       <TabsContent value="transit" className="mt-6">
+                          <TransitAnalysis 
+                            natalPlanets={generatedChart.planets || []}
+                          />
+                        </TabsContent>
+                       
+                       <TabsContent value="remedies" className="mt-6">
+                         <RemedialMeasures 
+                           planets={generatedChart.planets || []}
+                         />
+                       </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                )}
+              </Card>
             </div>
           )}
         </div>

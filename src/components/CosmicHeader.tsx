@@ -30,7 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
 const CosmicHeader = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -41,14 +41,14 @@ const CosmicHeader = () => {
       await signOut();
       navigate("/auth");
       toast({
-        title: "Signed out successfully",
-        description: "See you in the cosmos!"
+        title: t("header.toasts.signedOut"),
+        description: t("header.toasts.signOutSuccess.description")
       });
     } catch (error) {
       console.error('Sign out error:', error);
       toast({
-        title: "Sign out error",
-        description: "There was an error signing out.",
+        title: t("header.toasts.signOutError.title"),
+        description: t("header.toasts.signOutError.description"),
         variant: "destructive"
       });
     }
@@ -56,15 +56,15 @@ const CosmicHeader = () => {
 
   const getRoleDisplay = (role: string) => {
     const roleMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-      'super_admin': { label: 'Super Admin', variant: 'destructive' },
-      'tenant_admin': { label: 'Tenant Admin', variant: 'default' },
-      'organization_admin': { label: 'Org Admin', variant: 'secondary' },
-      'franchise_admin': { label: 'Franchise Admin', variant: 'outline' },
-      'manager': { label: 'Manager', variant: 'outline' },
-      'customer': { label: 'Customer', variant: 'secondary' },
-      'end_user': { label: 'User', variant: 'outline' }
+      'super_admin': { label: t("roles.super_admin"), variant: 'destructive' },
+      'tenant_admin': { label: t("roles.tenant_admin"), variant: 'default' },
+      'organization_admin': { label: t("roles.organization_admin"), variant: 'secondary' },
+      'franchise_admin': { label: t("roles.franchise_admin"), variant: 'outline' },
+      'manager': { label: t("roles.manager"), variant: 'outline' },
+      'customer': { label: t("roles.customer"), variant: 'secondary' },
+      'end_user': { label: t("roles.end_user"), variant: 'outline' }
     };
-    return roleMap[role] || { label: 'User', variant: 'outline' as const };
+    return roleMap[role] || { label: t("roles.end_user"), variant: 'outline' as const };
   };
 
   const getUserInitials = () => {
@@ -83,7 +83,7 @@ const CosmicHeader = () => {
         onClick={() => navigate("/")}
       >
         <Home className="w-4 h-4 mr-2" />
-        Home
+        {t("header.navigation.home")}
       </Button>
       <Button 
         variant="ghost" 
@@ -92,18 +92,18 @@ const CosmicHeader = () => {
         onClick={() => navigate("/astrology")}
       >
         <Stars className="w-4 h-4 mr-2" />
-        Astrology
+        {t("header.navigation.astrology")}
       </Button>
 
 
 
       <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "oracle", 100); }}>
         <MessageCircle className="w-4 h-4 mr-2" />
-        SOS Oracle
+        {t("header.navigation.oracle")}
       </Button>
       <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/spiritual-practices")}>
         <Leaf className="w-4 h-4 mr-2" />
-        Spiritual Practices
+        {t("header.navigation.spiritualPractices")}
       </Button>
 
       <Button 
@@ -113,7 +113,7 @@ const CosmicHeader = () => {
         onClick={() => navigate("/contact-us")}
       >
         <Mail className="w-4 h-4 mr-2" />
-        Contact
+        {t("header.navigation.contact")}
       </Button>
       {isAdmin() && (
         <Button 
@@ -123,7 +123,7 @@ const CosmicHeader = () => {
           onClick={() => navigate("/admin")}
         >
           <Shield className="w-4 h-4 mr-2" />
-          Admin
+          {t("header.navigation.admin")}
         </Button>
       )}
     </>
@@ -134,17 +134,17 @@ const CosmicHeader = () => {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-          <div className="relative">
-            <Stars className="h-8 w-8 text-primary animate-pulse-glow" />
-            <div className="absolute inset-0 animate-twinkle">
-              <Sparkles className="h-8 w-8 text-accent" />
+          <div className="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg border border-primary/20">
+            <Stars className="h-7 w-7 text-primary animate-pulse-glow" />
+            <div className="absolute top-1 right-1">
+              <Sparkles className="h-4 w-4 text-accent animate-twinkle" />
             </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
-              SOS Astral Astro
+          <div className="flex flex-col">
+            <h1 className="text-heading-lg font-bold bg-gradient-stellar bg-clip-text text-transparent">
+              {t("header.appTitle")}
             </h1>
-            <p className="text-xs text-muted-foreground">Enterprise Astrological Platform</p>
+            <p className="text-body-sm text-muted-foreground">{t("header.appSubtitle")}</p>
           </div>
         </div>
 
@@ -208,25 +208,25 @@ const CosmicHeader = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>{t("header.userMenu.profile")}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
+                  <span>{t("header.userMenu.settings")}</span>
                 </DropdownMenuItem>
                 {isAdmin() && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate("/admin")}>
                       <Shield className="mr-2 h-4 w-4" />
-                      <span>Admin Dashboard</span>
+                      <span>{t("header.userMenu.adminDashboard")}</span>
                     </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
+                  <span>{t("header.userMenu.signOut")}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -238,7 +238,7 @@ const CosmicHeader = () => {
               onClick={() => window.location.href = '/auth'}
             >
               <User className="w-4 h-4 mr-2" />
-              Sign In
+              {t("header.userMenu.signIn")}
             </Button>
           )}
 
@@ -251,7 +251,7 @@ const CosmicHeader = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <div className="flex flex-col gap-4 mt-8">
-                <div className="text-lg font-semibold">Navigation</div>
+                <div className="text-lg font-semibold">{t("header.mobileMenu.navigation")}</div>
                 <div className="flex flex-col gap-2">
                   <NavigationItems />
                 </div>
@@ -259,19 +259,19 @@ const CosmicHeader = () => {
                 {user && (
                   <>
                     <div className="border-t pt-4 mt-4">
-                      <div className="text-lg font-semibold mb-2">Account</div>
+                      <div className="text-lg font-semibold mb-2">{t("header.mobileMenu.account")}</div>
                       <div className="flex flex-col gap-2">
                         <Button variant="ghost" className="justify-start" onClick={() => navigate("/profile")}>
                           <User className="mr-2 h-4 w-4" />
-                          Profile
+                          {t("header.userMenu.profile")}
                         </Button>
                         <Button variant="ghost" className="justify-start" onClick={() => navigate("/settings")}>
                           <Settings className="mr-2 h-4 w-4" />
-                          Settings
+                          {t("header.userMenu.settings")}
                         </Button>
                         <Button variant="ghost" className="justify-start text-destructive" onClick={handleSignOut}>
                           <LogOut className="mr-2 h-4 w-4" />
-                          Sign Out
+                          {t("header.userMenu.signOut")}
                         </Button>
                       </div>
                     </div>

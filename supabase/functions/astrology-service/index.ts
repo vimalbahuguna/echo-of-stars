@@ -6,6 +6,109 @@ import HoroscopeModule from 'https://esm.sh/circular-natal-horoscope-js@latest';
 const Origin = HoroscopeModule.Origin;
 const Horoscope = HoroscopeModule.Horoscope;
 
+// Enhanced astronomical constants for higher precision
+const ASTRONOMICAL_CONSTANTS = {
+  LAHIRI_AYANAMSA: 24.14, // Current approximate value for 2024
+  RAMAN_AYANAMSA: 21.45,
+  KRISHNAMURTI_AYANAMSA: 23.85,
+  
+  // Nakshatra span in degrees
+  NAKSHATRA_SPAN: 13.333333, // 13°20' in decimal degrees
+  NAKSHATRA_COUNT: 27,
+};
+
+// Enhanced Nakshatra data
+const NAKSHATRAS = [
+  { name: 'Ashwini', lord: 'Ketu', deity: 'Ashwini Kumaras', nature: 'Light', guna: 'Rajas' },
+  { name: 'Bharani', lord: 'Venus', deity: 'Yama', nature: 'Fierce', guna: 'Rajas' },
+  { name: 'Krittika', lord: 'Sun', deity: 'Agni', nature: 'Mixed', guna: 'Rajas' },
+  { name: 'Rohini', lord: 'Moon', deity: 'Brahma', nature: 'Fixed', guna: 'Rajas' },
+  { name: 'Mrigashira', lord: 'Mars', deity: 'Soma', nature: 'Soft', guna: 'Tamas' },
+  { name: 'Ardra', lord: 'Rahu', deity: 'Rudra', nature: 'Sharp', guna: 'Tamas' },
+  { name: 'Punarvasu', lord: 'Jupiter', deity: 'Aditi', nature: 'Movable', guna: 'Sattva' },
+  { name: 'Pushya', lord: 'Saturn', deity: 'Brihaspati', nature: 'Light', guna: 'Sattva' },
+  { name: 'Ashlesha', lord: 'Mercury', deity: 'Nagas', nature: 'Sharp', guna: 'Sattva' },
+  { name: 'Magha', lord: 'Ketu', deity: 'Pitrs', nature: 'Fierce', guna: 'Tamas' },
+  { name: 'Purva Phalguni', lord: 'Venus', deity: 'Bhaga', nature: 'Fierce', guna: 'Rajas' },
+  { name: 'Uttara Phalguni', lord: 'Sun', deity: 'Aryaman', nature: 'Fixed', guna: 'Rajas' },
+  { name: 'Hasta', lord: 'Moon', deity: 'Savitar', nature: 'Light', guna: 'Rajas' },
+  { name: 'Chitra', lord: 'Mars', deity: 'Tvashtar', nature: 'Soft', guna: 'Tamas' },
+  { name: 'Swati', lord: 'Rahu', deity: 'Vayu', nature: 'Movable', guna: 'Tamas' },
+  { name: 'Vishakha', lord: 'Jupiter', deity: 'Indragni', nature: 'Mixed', guna: 'Sattva' },
+  { name: 'Anuradha', lord: 'Saturn', deity: 'Mitra', nature: 'Soft', guna: 'Sattva' },
+  { name: 'Jyeshtha', lord: 'Mercury', deity: 'Indra', nature: 'Sharp', guna: 'Sattva' },
+  { name: 'Mula', lord: 'Ketu', deity: 'Nirriti', nature: 'Sharp', guna: 'Tamas' },
+  { name: 'Purva Ashadha', lord: 'Venus', deity: 'Apas', nature: 'Fierce', guna: 'Rajas' },
+  { name: 'Uttara Ashadha', lord: 'Sun', deity: 'Vishvedevas', nature: 'Fixed', guna: 'Rajas' },
+  { name: 'Shravana', lord: 'Moon', deity: 'Vishnu', nature: 'Movable', guna: 'Rajas' },
+  { name: 'Dhanishta', lord: 'Mars', deity: 'Vasus', nature: 'Movable', guna: 'Tamas' },
+  { name: 'Shatabhisha', lord: 'Rahu', deity: 'Varuna', nature: 'Movable', guna: 'Tamas' },
+  { name: 'Purva Bhadrapada', lord: 'Jupiter', deity: 'Aja Ekapada', nature: 'Fierce', guna: 'Sattva' },
+  { name: 'Uttara Bhadrapada', lord: 'Saturn', deity: 'Ahir Budhnya', nature: 'Fixed', guna: 'Sattva' },
+  { name: 'Revati', lord: 'Mercury', deity: 'Pushan', nature: 'Soft', guna: 'Sattva' },
+];
+
+// Helper functions for enhanced calculations
+function tropicalToSidereal(longitude: number, ayanamsa: number = ASTRONOMICAL_CONSTANTS.LAHIRI_AYANAMSA): number {
+  let sidereal = longitude - ayanamsa;
+  return sidereal < 0 ? sidereal + 360 : sidereal;
+}
+
+function getNakshatra(siderealLongitude: number) {
+  const normalizedLongitude = siderealLongitude < 0 ? siderealLongitude + 360 : siderealLongitude % 360;
+  const nakshatraIndex = Math.floor(normalizedLongitude / ASTRONOMICAL_CONSTANTS.NAKSHATRA_SPAN);
+  const degreesInNakshatra = normalizedLongitude % ASTRONOMICAL_CONSTANTS.NAKSHATRA_SPAN;
+  const pada = Math.floor(degreesInNakshatra / (ASTRONOMICAL_CONSTANTS.NAKSHATRA_SPAN / 4)) + 1;
+  
+  const nakshatra = NAKSHATRAS[nakshatraIndex];
+  
+  return {
+    nakshatra: nakshatra.name,
+    lord: nakshatra.lord,
+    pada,
+    degrees: degreesInNakshatra,
+    deity: nakshatra.deity,
+    nature: nakshatra.nature,
+    guna: nakshatra.guna
+  };
+}
+
+function calculatePlanetaryDignity(planetName: string, longitude: number): string {
+  const signIndex = Math.floor(longitude / 30);
+  const planetLower = planetName.toLowerCase();
+  
+  // Simplified dignity calculation
+  const ownSigns: { [key: string]: number[] } = {
+    'sun': [4], // Leo
+    'moon': [3], // Cancer
+    'mars': [0, 7], // Aries, Scorpio
+    'mercury': [2, 5], // Gemini, Virgo
+    'jupiter': [8, 11], // Sagittarius, Pisces
+    'venus': [1, 6], // Taurus, Libra
+    'saturn': [9, 10], // Capricorn, Aquarius
+  };
+  
+  const exaltationSigns: { [key: string]: number } = {
+    'sun': 0, // Aries
+    'moon': 1, // Taurus
+    'mars': 9, // Capricorn
+    'mercury': 5, // Virgo
+    'jupiter': 3, // Cancer
+    'venus': 11, // Pisces
+    'saturn': 6, // Libra
+  };
+  
+  if (exaltationSigns[planetLower] === signIndex) {
+    return 'Exalted';
+  } else if (ownSigns[planetLower]?.includes(signIndex)) {
+    return 'Own Sign';
+  } else if (exaltationSigns[planetLower] === (signIndex + 6) % 12) {
+    return 'Debilitated';
+  }
+  
+  return 'Neutral';
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*', 
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -122,16 +225,28 @@ serve(async (req) => {
       const ascendantData = horoscope.Ascendant;
       const midheavenData = horoscope.Midheaven;
 
-      const planets: Planet[] = planetsData.map((p: any) => ({
-        name: p.key || p.label,
-        longitude: p.ChartPosition?.Ecliptic?.DecimalDegrees || 0,
-        latitude: p.latitude || 0,
-        speed: p.speed || 0,
-        sign: p.Sign?.label || 'Unknown',
-        degrees: p.ChartPosition?.Ecliptic?.ArcDegrees?.degrees || 0,
-        house: p.House?.id || 0,
-        isRetrograde: p.isRetrograde || false,
-      }));
+      const planets: Planet[] = planetsData.map((p: any) => {
+        const longitude = p.ChartPosition?.Ecliptic?.DecimalDegrees || 0;
+        const siderealLongitude = birthData.astrologicalSystem === 'vedic' ? 
+          tropicalToSidereal(longitude) : longitude;
+        const nakshatra = birthData.astrologicalSystem === 'vedic' ? 
+          getNakshatra(siderealLongitude) : null;
+        
+        return {
+          name: p.key || p.label,
+          longitude: longitude,
+          latitude: p.latitude || 0,
+          speed: p.speed || 0,
+          sign: p.Sign?.label || 'Unknown',
+          degrees: p.ChartPosition?.Ecliptic?.ArcDegrees?.degrees || 0,
+          house: p.House?.id || 0,
+          isRetrograde: p.isRetrograde || false,
+          // Enhanced Vedic properties
+          siderealLongitude: siderealLongitude,
+          nakshatra: nakshatra,
+          dignity: calculatePlanetaryDignity(p.key || p.label, longitude)
+        };
+      });
 
       const houses: number[] = housesData.map((h: any) => h.ChartPosition?.StartPosition?.Ecliptic?.DecimalDegrees || 0);
       

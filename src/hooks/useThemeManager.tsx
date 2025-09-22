@@ -2,7 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Theme, ThemeColors } from "@/types/theme";
+import { Theme, ThemeColors, GradientColors } from "@/types/theme";
+
+const DEFAULT_GRADIENT_COLORS: GradientColors = {
+  backgroundGradient: "linear-gradient(135deg, hsl(240 100% 2%) 0%, hsl(240 50% 8%) 100%)",
+  foregroundGradient: "linear-gradient(135deg, hsl(45 100% 95%) 0%, hsl(45 90% 92%) 100%)",
+  primaryGradient: "linear-gradient(135deg, hsl(45 100% 65%) 0%, hsl(45 100% 75%) 100%)",
+  secondaryGradient: "linear-gradient(135deg, hsl(270 60% 35%) 0%, hsl(270 60% 45%) 100%)",
+  accentGradient: "linear-gradient(135deg, hsl(220 100% 50%) 0%, hsl(220 100% 60%) 100%)",
+  cardGradient: "linear-gradient(135deg, hsl(240 50% 8%) 0%, hsl(240 40% 12%) 100%)",
+};
 
 const DEFAULT_THEME_COLORS: ThemeColors = {
   primary: "hsl(222.2 47.4% 11.2%)",
@@ -30,6 +39,7 @@ const SYSTEM_DEFAULT_THEME: Theme = {
   name: "Default Dark",
   is_default: true,
   colors: DEFAULT_THEME_COLORS,
+  gradients: DEFAULT_GRADIENT_COLORS,
 };
 
 export const useThemeManager = () => {
@@ -41,9 +51,60 @@ export const useThemeManager = () => {
 
   const applyThemeToDOM = useCallback((theme: Theme) => {
     const root = document.documentElement;
+    
+    // Map theme color keys to CSS variable names
+    const cssVariableMap: Record<string, string> = {
+      primary: '--primary',
+      accent: '--accent', 
+      background: '--background',
+      foreground: '--foreground',
+      card: '--card',
+      cardForeground: '--card-foreground',
+      popover: '--popover',
+      popoverForeground: '--popover-foreground',
+      primaryForeground: '--primary-foreground',
+      secondary: '--secondary',
+      secondaryForeground: '--secondary-foreground',
+      muted: '--muted',
+      mutedForeground: '--muted-foreground',
+      accentForeground: '--accent-foreground',
+      destructive: '--destructive',
+      destructiveForeground: '--destructive-foreground',
+      border: '--border',
+      input: '--input',
+      ring: '--ring',
+    };
+
+    // Map gradient keys to CSS variable names
+    const gradientVariableMap: Record<string, string> = {
+      backgroundGradient: '--gradient-background',
+      foregroundGradient: '--gradient-foreground',
+      primaryGradient: '--gradient-primary',
+      secondaryGradient: '--gradient-secondary',
+      accentGradient: '--gradient-accent',
+      cardGradient: '--gradient-card',
+    };
+
+    // Apply color variables
     for (const [key, value] of Object.entries(theme.colors)) {
-      root.style.setProperty(`--${key}`, value);
+      const cssVar = cssVariableMap[key];
+      if (cssVar) {
+        // Convert HSL string to just the values (remove 'hsl(' and ')')
+        const hslValues = value.replace(/hsl\(|\)/g, '');
+        root.style.setProperty(cssVar, hslValues);
+      }
     }
+    
+    // Apply gradient variables if they exist
+    if (theme.gradients) {
+      for (const [key, value] of Object.entries(theme.gradients)) {
+        const cssVar = gradientVariableMap[key];
+        if (cssVar) {
+          root.style.setProperty(cssVar, value);
+        }
+      }
+    }
+    
     localStorage.setItem("activeThemeId", theme.id || "default");
     setActiveTheme(theme);
   }, []);
@@ -72,8 +133,9 @@ export const useThemeManager = () => {
       const userThemes = (data as any[]).map((theme: any) => ({
         id: theme.id,
         name: theme.name,
-        is_default: theme.is_default,
-        colors: theme.colors as ThemeColors
+        is_default: theme.is_default || false,
+        colors: theme.colors as ThemeColors,
+        gradients: theme.gradients as GradientColors || DEFAULT_GRADIENT_COLORS
       })) as Theme[];
       const allThemes = [SYSTEM_DEFAULT_THEME, ...userThemes];
       setThemes(allThemes);
@@ -95,15 +157,21 @@ export const useThemeManager = () => {
       return;
     }
 
-    const themeData = { ...theme, user_id: user.id };
+    const themeData = { 
+      name: theme.name,
+      colors: theme.colors as any,
+      gradients: theme.gradients as any || DEFAULT_GRADIENT_COLORS,
+      user_id: user.id 
+    };
     let error;
     if (theme.id) {
       // Update existing theme
       const { error: updateError } = await supabase
         .from('user_themes' as any)
         .update({
-          ...themeData,
-          colors: theme.colors as any
+          name: themeData.name,
+          colors: themeData.colors,
+          gradients: themeData.gradients
         })
         .eq('id', theme.id)
         .eq('user_id', user.id);
@@ -112,10 +180,7 @@ export const useThemeManager = () => {
       // Add new theme
       const { error: insertError } = await supabase
         .from('user_themes' as any)
-        .insert({
-          ...themeData,
-          colors: theme.colors as any
-        });
+        .insert(themeData);
       error = insertError;
     }
 
