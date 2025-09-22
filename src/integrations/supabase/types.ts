@@ -979,6 +979,7 @@ export type Database = {
         Row: {
           colors: Json
           created_at: string | null
+          gradients: Json
           id: string
           is_default: boolean | null
           name: string
@@ -987,6 +988,7 @@ export type Database = {
         Insert: {
           colors: Json
           created_at?: string | null
+          gradients?: Json
           id?: string
           is_default?: boolean | null
           name: string
@@ -995,6 +997,7 @@ export type Database = {
         Update: {
           colors?: Json
           created_at?: string | null
+          gradients?: Json
           id?: string
           is_default?: boolean | null
           name?: string
