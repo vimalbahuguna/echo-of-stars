@@ -111,33 +111,53 @@ export const useThemeManager = () => {
 
   const fetchThemes = useCallback(async () => {
     setIsLoadingThemes(true);
-    if (!user) {
-      setThemes([SYSTEM_DEFAULT_THEME]);
-      applyThemeToDOM(SYSTEM_DEFAULT_THEME);
-      setIsLoadingThemes(false);
-      return;
+    
+    // Fetch system themes (is_default = true, user_id is null) and user themes
+    const queries = [
+      supabase
+        .from('user_themes' as any)
+        .select('*')
+        .eq('is_default', true)
+        .is('user_id', null),
+    ];
+
+    if (user) {
+      queries.push(
+        supabase
+          .from('user_themes' as any)
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+      );
     }
 
-    const { data, error } = await supabase
-      .from('user_themes' as any)
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    const results = await Promise.all(queries);
+    const systemThemesResult = results[0];
+    const userThemesResult = user ? results[1] : { data: [], error: null };
 
-    if (error) {
-      console.error("Error fetching themes:", error);
+    if (systemThemesResult.error || (user && userThemesResult.error)) {
+      console.error("Error fetching themes:", systemThemesResult.error || userThemesResult.error);
       toast({ title: "Error", description: "Failed to load themes.", variant: "destructive" });
       setThemes([SYSTEM_DEFAULT_THEME]);
       applyThemeToDOM(SYSTEM_DEFAULT_THEME);
     } else {
-      const userThemes = (data as any[]).map((theme: any) => ({
+      const systemThemes = (systemThemesResult.data as any[]).map((theme: any) => ({
         id: theme.id,
         name: theme.name,
         is_default: theme.is_default || false,
         colors: theme.colors as ThemeColors,
         gradients: theme.gradients as GradientColors || DEFAULT_GRADIENT_COLORS
       })) as Theme[];
-      const allThemes = [SYSTEM_DEFAULT_THEME, ...userThemes];
+      
+      const userThemes = user ? (userThemesResult.data as any[]).map((theme: any) => ({
+        id: theme.id,
+        name: theme.name,
+        is_default: theme.is_default || false,
+        colors: theme.colors as ThemeColors,
+        gradients: theme.gradients as GradientColors || DEFAULT_GRADIENT_COLORS
+      })) as Theme[] : [];
+      
+      const allThemes = [SYSTEM_DEFAULT_THEME, ...systemThemes, ...userThemes];
       setThemes(allThemes);
 
       const savedThemeId = localStorage.getItem("activeThemeId");
