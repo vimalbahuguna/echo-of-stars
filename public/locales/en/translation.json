@@ -354,6 +354,8 @@
     "navigation": {
       "home": "Home",
       "astrology": "Astrology",
+      "ephemeris": "Ephemeris",
+      "dailyHoroscopes": "Daily Horoscopes",
       "oracle": "Oracle",
       "spiritualPractices": "Spiritual Practices",
       "contact": "Contact",
@@ -376,5 +378,36 @@
   },
   "sidebar": {
     "toggleSidebar": "Toggle Sidebar"
+  },
+  "spiritualPracticesPage": {
+    "title": "Spiritual Practices",
+    "subtitle": "Explore various practices to nourish your mind, body, and soul.",
+    "backToDashboard": "Back to Dashboard",
+    "practices": {
+      "pranayama": {
+        "title": "Pranayama",
+        "description": "Breathing practices for vitality and peace."
+      },
+      "meditation": {
+        "title": "Meditation",
+        "description": "Cultivate mindfulness and inner peace."
+      },
+      "yogaNidra": {
+        "title": "Yoga Nidra",
+        "description": "Deep relaxation and conscious rest."
+      },
+      "asana": {
+        "title": "Asana Practice",
+        "description": "Physical postures for strength and flexibility."
+      },
+      "mantraJapa": {
+        "title": "Mantra Japa",
+        "description": "Chanting for focus and spiritual connection."
+      },
+      "upanishadTeachings": {
+        "title": "Upanishad Teachings",
+        "description": "Ancient wisdom for self-realization."
+      }
+    }
   }
 }

@@ -313,6 +313,8 @@
     "navigation": {
       "home": "होम",
       "astrology": "ज्योतिष",
+      "ephemeris": "ग्रह स्थिति",
+      "dailyHoroscopes": "दैनिक राशिफल",
       "oracle": "SOS ओरेकल",
       "spiritualPractices": "आध्यात्मिक अभ्यास",
       "contact": "संपर्क",

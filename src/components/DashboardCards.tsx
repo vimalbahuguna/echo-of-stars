@@ -206,34 +206,6 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
         </CardContent>
       </Card>
 
-      {/* Community */}
-      <Card className="bg-card/50 border-border/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-secondary" />
-            {t("dashboard.cards.community.title")}
-          </CardTitle>
-          <CardDescription>{t("dashboard.cards.community.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">1.2M</div>
-              <p className="text-xs text-muted-foreground">{t("dashboard.cards.community.activeMembers")}</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs font-medium">{t("dashboard.cards.community.trendingDiscussion")}</p>
-              <p className="text-xs text-muted-foreground">
-                {t("dashboard.cards.community.discussionText")}
-              </p>
-            </div>
-            <Button variant="outline" size="sm" className="w-full">
-              {t("dashboard.cards.community.joinDiscussion")}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Advanced Astrology Features */}
       <Card className="md:col-span-2 lg:col-span-3 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
         <CardHeader>
@@ -297,6 +269,34 @@ const DashboardCards: React.FC<DashboardCardsProps> = ({ setActiveTab }) => {
                 View All Astrology Tools
               </Button>
             </Link>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Community */}
+      <Card className="bg-card/50 border-border/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-secondary" />
+            {t("dashboard.cards.community.title")}
+          </CardTitle>
+          <CardDescription>{t("dashboard.cards.community.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">1.2M</div>
+              <p className="text-xs text-muted-foreground">{t("dashboard.cards.community.activeMembers")}</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs font-medium">{t("dashboard.cards.community.trendingDiscussion")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("dashboard.cards.community.discussionText")}
+              </p>
+            </div>
+            <Button variant="outline" size="sm" className="w-full">
+              {t("dashboard.cards.community.joinDiscussion")}
+            </Button>
           </div>
         </CardContent>
       </Card>

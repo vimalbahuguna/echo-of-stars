@@ -14,6 +14,7 @@ import BirthChartCalculator from "./components/BirthChartCalculator";
 import CompatibilityAnalyzer from "./components/CompatibilityAnalyzer";
 import EphemerisViewer from "./components/EphemerisViewer";
 import SOSOracle from "./components/SOSOracle";
+import DailyHoroscopes from "./components/DailyHoroscopes";
 import SettingsPage from "./pages/SettingsPage";
 import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
@@ -70,6 +71,11 @@ const App = () => {
               <Route path="/oracle" element={
                 <ProtectedRoute>
                   <SOSOracle />
+                </ProtectedRoute>
+              } />
+              <Route path="/daily-horoscopes" element={
+                <ProtectedRoute>
+                  <DailyHoroscopes />
                 </ProtectedRoute>
               } />
               <Route path="/settings" element={

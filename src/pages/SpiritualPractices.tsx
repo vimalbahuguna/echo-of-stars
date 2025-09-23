@@ -28,7 +28,7 @@ const SpiritualPractices = () => {
               <CardTitle className="text-3xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
                 {t("spiritualPracticesPage.title")}
               </CardTitle>
-              <CardDescription className="text-muted-foreground">
+              <CardDescription className="text-muted-foreground text-sm">
                 {t("spiritualPracticesPage.subtitle")}
               </CardDescription>
             </CardHeader>

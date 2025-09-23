@@ -76,53 +76,44 @@ const CosmicHeader = () => {
 
   const NavigationItems = () => (
     <>
-      <Button 
-        variant="ghost" 
-        size="sm" 
-        className="hover:bg-primary/10 hover:text-primary"
-        onClick={() => navigate("/")}
-      >
-        <Home className="w-4 h-4 mr-2" />
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => navigate("/")}>
+        <Home className="w-5 h-5 mr-2" />
         {t("header.navigation.home")}
       </Button>
-      <Button 
-        variant="ghost" 
-        size="sm" 
-        className="hover:bg-primary/10 hover:text-primary"
-        onClick={() => navigate("/astrology")}
-      >
-        <Stars className="w-4 h-4 mr-2" />
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => navigate("/astrology")}>
+        <Stars className="w-5 h-5 mr-2" />
         {t("header.navigation.astrology")}
       </Button>
-
-
-
-      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "oracle", 100); }}>
-        <MessageCircle className="w-4 h-4 mr-2" />
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => navigate("/daily-horoscopes")}>
+        <Sun className="w-5 h-5 mr-2" />
+        {t("header.navigation.dailyHoroscopes")}
+      </Button>
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => { navigate("/"); setTimeout(() => window.location.hash = "oracle", 100); }}>
+        <MessageCircle className="w-5 h-5 mr-2" />
         {t("header.navigation.oracle")}
       </Button>
-      <Button variant="ghost" size="sm" className="hover:bg-accent/10 hover:text-accent" onClick={() => navigate("/spiritual-practices")}>
-        <Leaf className="w-4 h-4 mr-2" />
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => navigate("/spiritual-practices")}>
+        <Leaf className="w-5 h-5 mr-2" />
         {t("header.navigation.spiritualPractices")}
       </Button>
 
       <Button 
         variant="ghost" 
-        size="sm" 
-        className="hover:bg-accent/10 hover:text-accent"
+        size="default" 
+        className="hover:bg-accent/10 hover:text-accent text-base"
         onClick={() => navigate("/contact-us")}
       >
-        <Mail className="w-4 h-4 mr-2" />
+        <Mail className="w-5 h-5 mr-2" />
         {t("header.navigation.contact")}
       </Button>
       {isAdmin() && (
         <Button 
           variant="ghost" 
-          size="sm" 
-          className="hover:bg-destructive/10 hover:text-destructive"
+          size="default" 
+          className="hover:bg-destructive/10 hover:text-destructive text-base"
           onClick={() => navigate("/admin")}
         >
-          <Shield className="w-4 h-4 mr-2" />
+          <Shield className="w-5 h-5 mr-2" />
           {t("header.navigation.admin")}
         </Button>
       )}
@@ -131,7 +122,7 @@ const CosmicHeader = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-20 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <div className="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg border border-primary/20">
@@ -141,15 +132,15 @@ const CosmicHeader = () => {
             </div>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-heading-lg font-bold bg-gradient-stellar bg-clip-text text-transparent">
+            <h1 className="text-heading-xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
               {t("header.appTitle")}
             </h1>
-            <p className="text-body-sm text-muted-foreground">{t("header.appSubtitle")}</p>
+            <p className="text-body-md text-muted-foreground">{t("header.appSubtitle")}</p>
           </div>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-4">
+        <nav className="hidden lg:flex items-center gap-4">
           <NavigationItems />
         </nav>
 
@@ -233,11 +224,11 @@ const CosmicHeader = () => {
           ) : (
             <Button 
               variant="outline" 
-              size="sm" 
-              className="border-primary/50 hover:bg-primary/10"
+              size="default" 
+              className="border-primary/50 hover:bg-primary/10 text-base"
               onClick={() => window.location.href = '/auth'}
             >
-              <User className="w-4 h-4 mr-2" />
+              <User className="w-5 h-5 mr-2" />
               {t("header.userMenu.signIn")}
             </Button>
           )}
@@ -245,13 +236,13 @@ const CosmicHeader = () => {
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden">
-                <Menu className="w-4 h-4" />
+              <Button variant="ghost" size="default" className="lg:hidden">
+                <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <div className="flex flex-col gap-4 mt-8">
-                <div className="text-lg font-semibold">{t("header.mobileMenu.navigation")}</div>
+                <div className="text-xl font-semibold">{t("header.mobileMenu.navigation")}</div>
                 <div className="flex flex-col gap-2">
                   <NavigationItems />
                 </div>
@@ -259,18 +250,18 @@ const CosmicHeader = () => {
                 {user && (
                   <>
                     <div className="border-t pt-4 mt-4">
-                      <div className="text-lg font-semibold mb-2">{t("header.mobileMenu.account")}</div>
+                      <div className="text-xl font-semibold mb-2">{t("header.mobileMenu.account")}</div>
                       <div className="flex flex-col gap-2">
-                        <Button variant="ghost" className="justify-start" onClick={() => navigate("/profile")}>
-                          <User className="mr-2 h-4 w-4" />
+                        <Button variant="ghost" className="justify-start text-base" onClick={() => navigate("/profile")}>
+                          <User className="mr-2 h-5 w-5" />
                           {t("header.userMenu.profile")}
                         </Button>
-                        <Button variant="ghost" className="justify-start" onClick={() => navigate("/settings")}>
-                          <Settings className="mr-2 h-4 w-4" />
+                        <Button variant="ghost" className="justify-start text-base" onClick={() => navigate("/settings")}>
+                          <Settings className="mr-2 h-5 w-5" />
                           {t("header.userMenu.settings")}
                         </Button>
-                        <Button variant="ghost" className="justify-start text-destructive" onClick={handleSignOut}>
-                          <LogOut className="mr-2 h-4 w-4" />
+                        <Button variant="ghost" className="justify-start text-destructive text-base" onClick={handleSignOut}>
+                          <LogOut className="mr-2 h-5 w-5" />
                           {t("header.userMenu.signOut")}
                         </Button>
                       </div>
