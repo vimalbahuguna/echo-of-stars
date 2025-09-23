@@ -12,7 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface PranayamaSession {
   id: string;
@@ -34,6 +35,147 @@ const PranayamaPractice = () => {
   const [notes, setNotes] = useState('');
   const [history, setHistory] = useState<PranayamaSession[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showExercises, setShowExercises] = useState(false);
+
+  const pranayamaExercises = {
+    "Anulom Vilom": {
+      name: "Anulom Vilom (Alternate Nostril Breathing)",
+      steps: [
+        "Sit comfortably with spine straight and shoulders relaxed",
+        "Use right thumb to close right nostril, inhale through left nostril for 4 counts",
+        "Close left nostril with ring finger, release thumb and exhale through right nostril for 4 counts",
+        "Inhale through right nostril for 4 counts",
+        "Close right nostril, release ring finger and exhale through left nostril for 4 counts",
+        "This completes one round. Practice 5-10 rounds initially"
+      ],
+      benefits: "Balances nervous system, improves concentration, reduces stress and anxiety",
+      duration: "5-15 minutes daily"
+    },
+    "Kapalbhati": {
+      name: "Kapalbhati (Skull Shining Breath)",
+      steps: [
+        "Sit in comfortable cross-legged position with spine erect",
+        "Place hands on knees in chin mudra",
+        "Take a deep breath in naturally",
+        "Exhale forcefully through nose by contracting abdominal muscles",
+        "Allow natural inhalation to follow",
+        "Start with 30 rapid exhalations, gradually increase to 100"
+      ],
+      benefits: "Cleanses respiratory system, strengthens core muscles, energizes body and mind",
+      duration: "3-5 minutes daily"
+    },
+    "Bhastrika": {
+      name: "Bhastrika (Bellows Breath)",
+      steps: [
+        "Sit comfortably with spine straight",
+        "Take 10 deep breaths, inhaling and exhaling completely",
+        "On 11th breath, inhale deeply and hold (Antara Kumbhaka)",
+        "Hold breath as long as comfortable without strain",
+        "Exhale slowly and completely",
+        "Take normal breaths to recover, then repeat cycle"
+      ],
+      benefits: "Increases lung capacity, generates heat, boosts metabolism and immunity",
+      duration: "3-5 cycles, build gradually"
+    },
+    "Nadi Shodhana": {
+      name: "Nadi Shodhana (Channel Purification)",
+      steps: [
+        "Sit with spine erect, use Vishnu mudra (fold index and middle fingers)",
+        "Close right nostril with thumb, inhale left nostril for 4 counts",
+        "Close both nostrils, hold breath for 2 counts",
+        "Release thumb, exhale right nostril for 4 counts",
+        "Inhale right nostril for 4 counts",
+        "Close both nostrils, hold for 2 counts",
+        "Release ring finger, exhale left nostril for 4 counts"
+      ],
+      benefits: "Purifies energy channels, balances left and right brain hemispheres",
+      duration: "10-20 minutes daily"
+    },
+    "Bhramari": {
+      name: "Bhramari (Humming Bee Breath)",
+      steps: [
+        "Sit comfortably with eyes closed",
+        "Place thumbs in ears, index fingers above eyebrows",
+        "Place middle fingers on closed eyelids gently",
+        "Ring and little fingers on sides of nose",
+        "Inhale normally through nose",
+        "Exhale making a humming sound like a bee",
+        "Focus on the vibration and sound"
+      ],
+      benefits: "Calms mind, reduces stress, improves concentration and memory",
+      duration: "5-10 minutes daily"
+    },
+    "Ujjayi": {
+      name: "Ujjayi (Victorious Breath)",
+      steps: [
+        "Sit or lie down comfortably",
+        "Breathe through nose only",
+        "Slightly constrict throat to create soft sound",
+        "Inhale slowly and deeply, creating ocean-like sound",
+        "Exhale slowly with same constricted throat",
+        "Maintain steady rhythm throughout practice",
+        "Focus on the sound and breath"
+      ],
+      benefits: "Builds internal heat, calms nervous system, improves focus",
+      duration: "5-20 minutes daily"
+    },
+    "Sitali": {
+      name: "Sitali (Cooling Breath)",
+      steps: [
+        "Sit comfortably with spine straight",
+        "Curl tongue into tube shape (if unable, purse lips)",
+        "Inhale slowly through curled tongue",
+        "Close mouth and hold breath briefly",
+        "Exhale slowly through nose",
+        "Feel cooling sensation throughout body",
+        "Continue for several rounds"
+      ],
+      benefits: "Cools body temperature, reduces heat and inflammation, calms mind",
+      duration: "5-10 minutes, especially in hot weather"
+    },
+    "Sitkari": {
+      name: "Sitkari (Hissing Breath)",
+      steps: [
+        "Sit with spine erect and shoulders relaxed",
+        "Open mouth slightly, place tongue against teeth",
+        "Inhale through mouth making hissing sound",
+        "Close mouth and hold breath briefly",
+        "Exhale slowly through nose",
+        "Feel cooling effect on tongue and mouth",
+        "Repeat for desired duration"
+      ],
+      benefits: "Cools body, purifies blood, controls hunger and thirst",
+      duration: "5-10 minutes daily"
+    },
+    "Surya Bhedana": {
+      name: "Surya Bhedana (Right Nostril Breathing)",
+      steps: [
+        "Sit comfortably with spine straight",
+        "Use right hand in Vishnu mudra",
+        "Close left nostril with ring finger",
+        "Inhale slowly through right nostril only",
+        "Close both nostrils, hold breath comfortably",
+        "Release ring finger, exhale through left nostril",
+        "Keep right nostril closed throughout exhalation"
+      ],
+      benefits: "Increases body heat, activates sympathetic nervous system, energizes",
+      duration: "5-10 minutes, best in morning"
+    },
+    "Chandra Bhedana": {
+      name: "Chandra Bhedana (Left Nostril Breathing)",
+      steps: [
+        "Sit with spine erect and relaxed",
+        "Use right hand in Vishnu mudra",
+        "Close right nostril with thumb",
+        "Inhale slowly through left nostril only",
+        "Close both nostrils, hold breath gently",
+        "Release thumb, exhale through right nostril",
+        "Keep left nostril closed throughout exhalation"
+      ],
+      benefits: "Cools body, activates parasympathetic nervous system, promotes relaxation",
+      duration: "5-10 minutes, best in evening"
+    }
+  };
 
   const fetchHistory = async () => {
     if (!user) return;
@@ -206,6 +348,55 @@ const PranayamaPractice = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {practiceType && pranayamaExercises[practiceType as keyof typeof pranayamaExercises] && (
+                <Card className="bg-secondary/20 border-secondary/30">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg text-primary">
+                        <BookOpen className="w-5 h-5 inline mr-2" />
+                        Practice Guide: {practiceType}
+                      </CardTitle>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setShowExercises(!showExercises)}
+                      >
+                        {showExercises ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  {showExercises && (
+                    <CardContent className="pt-0">
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Steps:</h4>
+                          <ol className="space-y-2">
+                            {pranayamaExercises[practiceType as keyof typeof pranayamaExercises].steps.map((step, index) => (
+                              <li key={index} className="flex gap-3 text-sm">
+                                <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0">
+                                  {index + 1}
+                                </span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/30">
+                          <div>
+                            <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Benefits:</h4>
+                            <p className="text-sm">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].benefits}</p>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Recommended Duration:</h4>
+                            <p className="text-sm">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].duration}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  )}
+                </Card>
+              )}
 
               <div className="text-center text-6xl font-bold text-primary">
                 {formatTime(duration)}
