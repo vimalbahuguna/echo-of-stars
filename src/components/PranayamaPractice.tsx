@@ -9,11 +9,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2, BookOpen, ChevronDown, ChevronUp, Clock, User, Users, Crown } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
+// Import illustrations
+import anulomVilomImg from '@/assets/pranayama/anulom-vilom.jpg';
+import kapalbhatiImg from '@/assets/pranayama/kapalbhati.jpg';
+import bhastrikaImg from '@/assets/pranayama/bhastrika.jpg';
+import nadiShodhanaImg from '@/assets/pranayama/nadi-shodhana.jpg';
+import bhramariImg from '@/assets/pranayama/bhramari.jpg';
+import ujjayiImg from '@/assets/pranayama/ujjayi.jpg';
+import sitaliImg from '@/assets/pranayama/sitali.jpg';
+import sitkariImg from '@/assets/pranayama/sitkari.jpg';
+import suryaBhedanaImg from '@/assets/pranayama/surya-bhedana.jpg';
+import chandraBhedanaImg from '@/assets/pranayama/chandra-bhedana.jpg';
 
 interface PranayamaSession {
   id: string;
@@ -36,63 +49,89 @@ const PranayamaPractice = () => {
   const [history, setHistory] = useState<PranayamaSession[]>([]);
   const [loading, setLoading] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
+  const [skillLevel, setSkillLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
 
   const pranayamaExercises = {
     "Anulom Vilom": {
       name: "Anulom Vilom (Alternate Nostril Breathing)",
+      image: anulomVilomImg,
       steps: [
         "Sit comfortably with spine straight and shoulders relaxed",
-        "Use right thumb to close right nostril, inhale through left nostril for 4 counts",
-        "Close left nostril with ring finger, release thumb and exhale through right nostril for 4 counts",
-        "Inhale through right nostril for 4 counts",
-        "Close right nostril, release ring finger and exhale through left nostril for 4 counts",
-        "This completes one round. Practice 5-10 rounds initially"
+        "Use right thumb to close right nostril, inhale through left nostril",
+        "Close left nostril with ring finger, release thumb and exhale through right nostril",
+        "Inhale through right nostril",
+        "Close right nostril, release ring finger and exhale through left nostril",
+        "This completes one round. Practice multiple rounds"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 0, exhale: 4, rounds: "5-7", totalDuration: "5-7 minutes" },
+        intermediate: { inhale: 6, hold: 2, exhale: 6, rounds: "7-10", totalDuration: "8-12 minutes" },
+        advanced: { inhale: 8, hold: 4, exhale: 8, rounds: "10-15", totalDuration: "12-20 minutes" }
+      },
       benefits: "Balances nervous system, improves concentration, reduces stress and anxiety",
       duration: "5-15 minutes daily"
     },
     "Kapalbhati": {
       name: "Kapalbhati (Skull Shining Breath)",
+      image: kapalbhatiImg,
       steps: [
         "Sit in comfortable cross-legged position with spine erect",
         "Place hands on knees in chin mudra",
         "Take a deep breath in naturally",
         "Exhale forcefully through nose by contracting abdominal muscles",
         "Allow natural inhalation to follow",
-        "Start with 30 rapid exhalations, gradually increase to 100"
+        "Start with rapid exhalations, gradually increase count"
       ],
+      timings: {
+        beginner: { exhalesPerRound: 30, rounds: 2, rest: "30 seconds", totalDuration: "3-5 minutes" },
+        intermediate: { exhalesPerRound: 60, rounds: 3, rest: "45 seconds", totalDuration: "5-8 minutes" },
+        advanced: { exhalesPerRound: 100, rounds: 3, rest: "60 seconds", totalDuration: "8-12 minutes" }
+      },
       benefits: "Cleanses respiratory system, strengthens core muscles, energizes body and mind",
       duration: "3-5 minutes daily"
     },
     "Bhastrika": {
       name: "Bhastrika (Bellows Breath)",
+      image: bhastrikaImg,
       steps: [
         "Sit comfortably with spine straight",
-        "Take 10 deep breaths, inhaling and exhaling completely",
-        "On 11th breath, inhale deeply and hold (Antara Kumbhaka)",
+        "Take deep breaths, inhaling and exhaling completely",
+        "On final breath, inhale deeply and hold (Antara Kumbhaka)",
         "Hold breath as long as comfortable without strain",
         "Exhale slowly and completely",
         "Take normal breaths to recover, then repeat cycle"
       ],
+      timings: {
+        beginner: { rapidBreaths: 10, hold: "10-15 seconds", cycles: 3, rest: "1 minute", totalDuration: "5-7 minutes" },
+        intermediate: { rapidBreaths: 15, hold: "20-30 seconds", cycles: 4, rest: "1.5 minutes", totalDuration: "8-12 minutes" },
+        advanced: { rapidBreaths: 20, hold: "30-60 seconds", cycles: 5, rest: "2 minutes", totalDuration: "12-18 minutes" }
+      },
       benefits: "Increases lung capacity, generates heat, boosts metabolism and immunity",
       duration: "3-5 cycles, build gradually"
     },
     "Nadi Shodhana": {
       name: "Nadi Shodhana (Channel Purification)",
+      image: nadiShodhanaImg,
       steps: [
         "Sit with spine erect, use Vishnu mudra (fold index and middle fingers)",
-        "Close right nostril with thumb, inhale left nostril for 4 counts",
-        "Close both nostrils, hold breath for 2 counts",
-        "Release thumb, exhale right nostril for 4 counts",
-        "Inhale right nostril for 4 counts",
-        "Close both nostrils, hold for 2 counts",
-        "Release ring finger, exhale left nostril for 4 counts"
+        "Close right nostril with thumb, inhale left nostril",
+        "Close both nostrils, hold breath",
+        "Release thumb, exhale right nostril",
+        "Inhale right nostril",
+        "Close both nostrils, hold breath",
+        "Release ring finger, exhale left nostril"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 2, exhale: 4, rounds: "5-7", totalDuration: "8-10 minutes" },
+        intermediate: { inhale: 6, hold: 4, exhale: 6, rounds: "8-12", totalDuration: "12-16 minutes" },
+        advanced: { inhale: 8, hold: 8, exhale: 8, rounds: "12-20", totalDuration: "18-25 minutes" }
+      },
       benefits: "Purifies energy channels, balances left and right brain hemispheres",
       duration: "10-20 minutes daily"
     },
     "Bhramari": {
       name: "Bhramari (Humming Bee Breath)",
+      image: bhramariImg,
       steps: [
         "Sit comfortably with eyes closed",
         "Place thumbs in ears, index fingers above eyebrows",
@@ -102,11 +141,17 @@ const PranayamaPractice = () => {
         "Exhale making a humming sound like a bee",
         "Focus on the vibration and sound"
       ],
+      timings: {
+        beginner: { inhale: 4, humDuration: 6, rounds: "5-7", totalDuration: "5-8 minutes" },
+        intermediate: { inhale: 5, humDuration: 8, rounds: "8-12", totalDuration: "8-12 minutes" },
+        advanced: { inhale: 6, humDuration: 12, rounds: "12-15", totalDuration: "12-18 minutes" }
+      },
       benefits: "Calms mind, reduces stress, improves concentration and memory",
       duration: "5-10 minutes daily"
     },
     "Ujjayi": {
       name: "Ujjayi (Victorious Breath)",
+      image: ujjayiImg,
       steps: [
         "Sit or lie down comfortably",
         "Breathe through nose only",
@@ -116,11 +161,17 @@ const PranayamaPractice = () => {
         "Maintain steady rhythm throughout practice",
         "Focus on the sound and breath"
       ],
+      timings: {
+        beginner: { inhale: 4, exhale: 4, rounds: "10-15", totalDuration: "5-8 minutes" },
+        intermediate: { inhale: 6, exhale: 6, rounds: "15-20", totalDuration: "10-15 minutes" },
+        advanced: { inhale: 8, exhale: 8, rounds: "20-30", totalDuration: "15-25 minutes" }
+      },
       benefits: "Builds internal heat, calms nervous system, improves focus",
       duration: "5-20 minutes daily"
     },
     "Sitali": {
       name: "Sitali (Cooling Breath)",
+      image: sitaliImg,
       steps: [
         "Sit comfortably with spine straight",
         "Curl tongue into tube shape (if unable, purse lips)",
@@ -130,11 +181,17 @@ const PranayamaPractice = () => {
         "Feel cooling sensation throughout body",
         "Continue for several rounds"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 2, exhale: 4, rounds: "5-8", totalDuration: "5-7 minutes" },
+        intermediate: { inhale: 6, hold: 3, exhale: 6, rounds: "8-12", totalDuration: "8-12 minutes" },
+        advanced: { inhale: 8, hold: 4, exhale: 8, rounds: "12-15", totalDuration: "12-18 minutes" }
+      },
       benefits: "Cools body temperature, reduces heat and inflammation, calms mind",
       duration: "5-10 minutes, especially in hot weather"
     },
     "Sitkari": {
       name: "Sitkari (Hissing Breath)",
+      image: sitkariImg,
       steps: [
         "Sit with spine erect and shoulders relaxed",
         "Open mouth slightly, place tongue against teeth",
@@ -144,11 +201,17 @@ const PranayamaPractice = () => {
         "Feel cooling effect on tongue and mouth",
         "Repeat for desired duration"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 2, exhale: 4, rounds: "5-8", totalDuration: "4-6 minutes" },
+        intermediate: { inhale: 6, hold: 3, exhale: 6, rounds: "8-12", totalDuration: "7-10 minutes" },
+        advanced: { inhale: 8, hold: 4, exhale: 8, rounds: "12-15", totalDuration: "10-15 minutes" }
+      },
       benefits: "Cools body, purifies blood, controls hunger and thirst",
       duration: "5-10 minutes daily"
     },
     "Surya Bhedana": {
       name: "Surya Bhedana (Right Nostril Breathing)",
+      image: suryaBhedanaImg,
       steps: [
         "Sit comfortably with spine straight",
         "Use right hand in Vishnu mudra",
@@ -158,11 +221,17 @@ const PranayamaPractice = () => {
         "Release ring finger, exhale through left nostril",
         "Keep right nostril closed throughout exhalation"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 2, exhale: 4, rounds: "5-7", totalDuration: "5-8 minutes" },
+        intermediate: { inhale: 6, hold: 4, exhale: 6, rounds: "8-12", totalDuration: "10-15 minutes" },
+        advanced: { inhale: 8, hold: 8, exhale: 8, rounds: "12-15", totalDuration: "15-20 minutes" }
+      },
       benefits: "Increases body heat, activates sympathetic nervous system, energizes",
       duration: "5-10 minutes, best in morning"
     },
     "Chandra Bhedana": {
       name: "Chandra Bhedana (Left Nostril Breathing)",
+      image: chandraBhedanaImg,
       steps: [
         "Sit with spine erect and relaxed",
         "Use right hand in Vishnu mudra",
@@ -172,6 +241,11 @@ const PranayamaPractice = () => {
         "Release thumb, exhale through right nostril",
         "Keep left nostril closed throughout exhalation"
       ],
+      timings: {
+        beginner: { inhale: 4, hold: 2, exhale: 4, rounds: "5-7", totalDuration: "5-8 minutes" },
+        intermediate: { inhale: 6, hold: 4, exhale: 6, rounds: "8-12", totalDuration: "10-15 minutes" },
+        advanced: { inhale: 8, hold: 8, exhale: 8, rounds: "12-15", totalDuration: "15-20 minutes" }
+      },
       benefits: "Cools body, activates parasympathetic nervous system, promotes relaxation",
       duration: "5-10 minutes, best in evening"
     }
@@ -368,28 +442,83 @@ const PranayamaPractice = () => {
                   </CardHeader>
                   {showExercises && (
                     <CardContent className="pt-0">
-                      <div className="space-y-4">
+                      <div className="space-y-6">
+                        {/* Skill Level Selector */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Select Your Level:</h4>
+                          <Tabs value={skillLevel} onValueChange={(value) => setSkillLevel(value as 'beginner' | 'intermediate' | 'advanced')}>
+                            <TabsList className="grid w-full grid-cols-3">
+                              <TabsTrigger value="beginner" className="flex items-center gap-2">
+                                <User className="w-4 h-4" />
+                                Beginner
+                              </TabsTrigger>
+                              <TabsTrigger value="intermediate" className="flex items-center gap-2">
+                                <Users className="w-4 h-4" />
+                                Intermediate
+                              </TabsTrigger>
+                              <TabsTrigger value="advanced" className="flex items-center gap-2">
+                                <Crown className="w-4 h-4" />
+                                Advanced
+                              </TabsTrigger>
+                            </TabsList>
+                          </Tabs>
+                        </div>
+
+                        {/* Illustration */}
+                        <div className="flex justify-center">
+                          <img 
+                            src={pranayamaExercises[practiceType as keyof typeof pranayamaExercises].image} 
+                            alt={`${practiceType} illustration`}
+                            className="w-full max-w-sm rounded-lg shadow-lg"
+                          />
+                        </div>
+
+                        {/* Timing Information */}
+                        <Card className="bg-background/60 border-primary/20">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <Clock className="w-5 h-5" />
+                              {skillLevel.charAt(0).toUpperCase() + skillLevel.slice(1)} Level Timing
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              {Object.entries(pranayamaExercises[practiceType as keyof typeof pranayamaExercises].timings[skillLevel]).map(([key, value]) => (
+                                <div key={key} className="flex justify-between items-center p-2 bg-secondary/20 rounded">
+                                  <span className="font-medium capitalize">
+                                    {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                                  </span>
+                                  <Badge variant="secondary">{value}</Badge>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Steps */}
                         <div>
-                          <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Steps:</h4>
-                          <ol className="space-y-2">
+                          <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3">Step-by-Step Instructions:</h4>
+                          <ol className="space-y-3">
                             {pranayamaExercises[practiceType as keyof typeof pranayamaExercises].steps.map((step, index) => (
                               <li key={index} className="flex gap-3 text-sm">
-                                <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium flex-shrink-0">
+                                <span className="bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
                                   {index + 1}
                                 </span>
-                                <span>{step}</span>
+                                <span className="leading-relaxed">{step}</span>
                               </li>
                             ))}
                           </ol>
                         </div>
+
+                        {/* Benefits and Duration */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/30">
                           <div>
                             <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Benefits:</h4>
-                            <p className="text-sm">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].benefits}</p>
+                            <p className="text-sm leading-relaxed">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].benefits}</p>
                           </div>
                           <div>
                             <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-2">Recommended Duration:</h4>
-                            <p className="text-sm">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].duration}</p>
+                            <p className="text-sm leading-relaxed">{pranayamaExercises[practiceType as keyof typeof pranayamaExercises].duration}</p>
                           </div>
                         </div>
                       </div>
