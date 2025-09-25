@@ -50,23 +50,19 @@ serve(async (req) => {
       });
     }
 
-    const { data: profile, error: profileError } = await supabaseClient
-      .from('profiles')
-      .select('tenant_id')
-      .eq('id', user.id)
-      .single();
+    const { data: tenantIdData, error: tenantError } = await supabaseClient.rpc('get_current_user_tenant_id');
 
-    if (profileError || !profile || !profile.tenant_id) {
-      console.error('Profile fetch failed:', profileError);
+    if (tenantError || !tenantIdData) {
+      console.error('Tenant fetch via RPC failed:', tenantError);
       return new Response(JSON.stringify({ 
-        error: 'User profile or tenant not found',
-        details: profileError?.message 
+        error: 'User tenant not found',
+        details: tenantError?.message 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const tenantId = profile.tenant_id;
+    const tenantId = tenantIdData as string;
 
     if (command === 'startPranayamaSession') {
       console.log('Starting pranayama session with data:', data);
@@ -77,8 +73,7 @@ serve(async (req) => {
       console.log('Practice type:', practice_type);
       console.log('Duration seconds:', duration_seconds);
       
-      console.log('Profile data:', profile);
-      console.log('Profile error:', null);
+      console.log('Resolved tenant via RPC:', tenantId);
       
       const { data: session, error } = await supabaseClient
         .from('pranayama_sessions')
