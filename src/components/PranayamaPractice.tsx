@@ -13,8 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2, BookOpen, ChevronDown, ChevronUp, Clock, User, Users, Crown } from 'lucide-react';
+import { Loader2, Play, Pause, Square, History, PlusCircle, Edit, Trash2, BookOpen, ChevronDown, ChevronUp, Clock, User, Users, Crown, Video } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import PranayamaVideoPlayer from '@/components/pranayama/PranayamaVideoPlayer';
+import IntegratedRealLifeModelPlayer from '@/components/pranayama/IntegratedRealLifeModelPlayer';
 
 // Import illustrations
 import anulomVilomImg from '@/assets/pranayama/anulom-vilom.jpg';
@@ -38,6 +40,20 @@ interface PranayamaSession {
   created_at: string;
 }
 
+interface PranayamaExercise {
+  name: string;
+  image: string;
+  videoUrl?: string;
+  steps: string[];
+  timings: {
+    beginner: { inhale: number; hold?: number; exhale: number; rounds?: string; totalDuration?: string; [key: string]: any };
+    intermediate: { inhale: number; hold?: number; exhale: number; rounds?: string; totalDuration?: string; [key: string]: any };
+    advanced: { inhale: number; hold?: number; exhale: number; rounds?: string; totalDuration?: string; [key: string]: any };
+  };
+  benefits: string;
+  duration: string;
+}
+
 const PranayamaPractice = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
@@ -50,11 +66,14 @@ const PranayamaPractice = () => {
   const [loading, setLoading] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [skillLevel, setSkillLevel] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+  const [useRealLifeModel, setUseRealLifeModel] = useState(false);
 
-  const pranayamaExercises = {
+  const pranayamaExercises: Record<string, PranayamaExercise> = {
     "Anulom Vilom": {
       name: "Anulom Vilom (Alternate Nostril Breathing)",
       image: anulomVilomImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Working sample video
       steps: [
         "Sit comfortably with spine straight and shoulders relaxed",
         "Use right thumb to close right nostril, inhale through left nostril",
@@ -74,6 +93,7 @@ const PranayamaPractice = () => {
     "Kapalbhati": {
       name: "Kapalbhati (Skull Shining Breath)",
       image: kapalbhatiImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", // Working sample video
       steps: [
         "Sit in comfortable cross-legged position with spine erect",
         "Place hands on knees in chin mudra",
@@ -83,9 +103,9 @@ const PranayamaPractice = () => {
         "Start with rapid exhalations, gradually increase count"
       ],
       timings: {
-        beginner: { exhalesPerRound: 30, rounds: 2, rest: "30 seconds", totalDuration: "3-5 minutes" },
-        intermediate: { exhalesPerRound: 60, rounds: 3, rest: "45 seconds", totalDuration: "5-8 minutes" },
-        advanced: { exhalesPerRound: 100, rounds: 3, rest: "60 seconds", totalDuration: "8-12 minutes" }
+        beginner: { exhalesPerRound: 30, rounds: "2", rest: "30 seconds", totalDuration: "3-5 minutes", inhale: 4, exhale: 4 },
+        intermediate: { exhalesPerRound: 60, rounds: "3", rest: "45 seconds", totalDuration: "5-8 minutes", inhale: 6, exhale: 6 },
+        advanced: { exhalesPerRound: 100, rounds: "3", rest: "60 seconds", totalDuration: "8-12 minutes", inhale: 8, exhale: 8 }
       },
       benefits: "Cleanses respiratory system, strengthens core muscles, energizes body and mind",
       duration: "3-5 minutes daily"
@@ -93,6 +113,7 @@ const PranayamaPractice = () => {
     "Bhastrika": {
       name: "Bhastrika (Bellows Breath)",
       image: bhastrikaImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", // Working sample video
       steps: [
         "Sit comfortably with spine straight",
         "Take deep breaths, inhaling and exhaling completely",
@@ -102,9 +123,9 @@ const PranayamaPractice = () => {
         "Take normal breaths to recover, then repeat cycle"
       ],
       timings: {
-        beginner: { rapidBreaths: 10, hold: "10-15 seconds", cycles: 3, rest: "1 minute", totalDuration: "5-7 minutes" },
-        intermediate: { rapidBreaths: 15, hold: "20-30 seconds", cycles: 4, rest: "1.5 minutes", totalDuration: "8-12 minutes" },
-        advanced: { rapidBreaths: 20, hold: "30-60 seconds", cycles: 5, rest: "2 minutes", totalDuration: "12-18 minutes" }
+        beginner: { rapidBreaths: 10, hold: 15, cycles: 3, rest: "1 minute", totalDuration: "5-7 minutes", inhale: 4, exhale: 4 },
+        intermediate: { rapidBreaths: 15, hold: 25, cycles: 4, rest: "1.5 minutes", totalDuration: "8-12 minutes", inhale: 6, exhale: 6 },
+        advanced: { rapidBreaths: 20, hold: 45, cycles: 5, rest: "2 minutes", totalDuration: "12-18 minutes", inhale: 8, exhale: 8 }
       },
       benefits: "Increases lung capacity, generates heat, boosts metabolism and immunity",
       duration: "3-5 cycles, build gradually"
@@ -112,6 +133,7 @@ const PranayamaPractice = () => {
     "Nadi Shodhana": {
       name: "Nadi Shodhana (Channel Purification)",
       image: nadiShodhanaImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", // Added working sample video
       steps: [
         "Sit with spine erect, use Vishnu mudra (fold index and middle fingers)",
         "Close right nostril with thumb, inhale left nostril",
@@ -132,6 +154,7 @@ const PranayamaPractice = () => {
     "Bhramari": {
       name: "Bhramari (Humming Bee Breath)",
       image: bhramariImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Working sample video
       steps: [
         "Sit comfortably with eyes closed",
         "Place thumbs in ears, index fingers above eyebrows",
@@ -142,9 +165,9 @@ const PranayamaPractice = () => {
         "Focus on the vibration and sound"
       ],
       timings: {
-        beginner: { inhale: 4, humDuration: 6, rounds: "5-7", totalDuration: "5-8 minutes" },
-        intermediate: { inhale: 5, humDuration: 8, rounds: "8-12", totalDuration: "8-12 minutes" },
-        advanced: { inhale: 6, humDuration: 12, rounds: "12-15", totalDuration: "12-18 minutes" }
+        beginner: { inhale: 4, humDuration: 6, rounds: "5-7", totalDuration: "5-8 minutes", exhale: 6 },
+        intermediate: { inhale: 5, humDuration: 8, rounds: "8-12", totalDuration: "8-12 minutes", exhale: 8 },
+        advanced: { inhale: 6, humDuration: 12, rounds: "12-15", totalDuration: "12-18 minutes", exhale: 12 }
       },
       benefits: "Calms mind, reduces stress, improves concentration and memory",
       duration: "5-10 minutes daily"
@@ -152,6 +175,7 @@ const PranayamaPractice = () => {
     "Ujjayi": {
       name: "Ujjayi (Victorious Breath)",
       image: ujjayiImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", // Working sample video
       steps: [
         "Sit or lie down comfortably",
         "Breathe through nose only",
@@ -172,6 +196,7 @@ const PranayamaPractice = () => {
     "Sitali": {
       name: "Sitali (Cooling Breath)",
       image: sitaliImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", // Added working sample video
       steps: [
         "Sit comfortably with spine straight",
         "Curl tongue into tube shape (if unable, purse lips)",
@@ -192,6 +217,7 @@ const PranayamaPractice = () => {
     "Sitkari": {
       name: "Sitkari (Hissing Breath)",
       image: sitkariImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", // Added working sample video
       steps: [
         "Sit with spine erect and shoulders relaxed",
         "Open mouth slightly, place tongue against teeth",
@@ -212,6 +238,7 @@ const PranayamaPractice = () => {
     "Surya Bhedana": {
       name: "Surya Bhedana (Right Nostril Breathing)",
       image: suryaBhedanaImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", // Added working sample video
       steps: [
         "Sit comfortably with spine straight",
         "Use right hand in Vishnu mudra",
@@ -232,6 +259,7 @@ const PranayamaPractice = () => {
     "Chandra Bhedana": {
       name: "Chandra Bhedana (Left Nostril Breathing)",
       image: chandraBhedanaImg,
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", // Added working sample video
       steps: [
         "Sit with spine erect and relaxed",
         "Use right hand in Vishnu mudra",
@@ -609,9 +637,42 @@ const PranayamaPractice = () => {
 
               <div className="flex gap-4 justify-center">
                 {!timerRunning ? (
-                  <Button onClick={startPractice} disabled={loading || !practiceType} className="px-8 py-6 text-lg">
-                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Play className="w-6 h-6" />} Start
-                  </Button>
+                  <>
+                    <Button onClick={startPractice} disabled={loading || !practiceType} className="px-8 py-6 text-lg">
+                      {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Play className="w-6 h-6" />} Start
+                    </Button>
+                    {practiceType && pranayamaExercises[practiceType as keyof typeof pranayamaExercises] && (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => {
+                              setUseRealLifeModel(false);
+                              setShowVideoPlayer(true);
+                            }} 
+                            disabled={loading} 
+                            variant={!useRealLifeModel ? "default" : "outline"} 
+                            className="px-6 py-4 text-base"
+                          >
+                            <Video className="w-5 h-5 mr-2" /> Animated Guide
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              setUseRealLifeModel(true);
+                              setShowVideoPlayer(true);
+                            }} 
+                            disabled={loading} 
+                            variant={useRealLifeModel ? "default" : "outline"} 
+                            className="px-6 py-4 text-base"
+                          >
+                            <Video className="w-5 h-5 mr-2" /> Real Model
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground text-center">
+                          Choose between animated visualization or real-life model demonstration
+                        </p>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <Button onClick={endPractice} disabled={loading} className="px-8 py-6 text-lg bg-destructive hover:bg-destructive/90">
                     {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Square className="w-6 h-6" />} End
@@ -633,6 +694,42 @@ const PranayamaPractice = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Pranayama Video Player Modal */}
+          {showVideoPlayer && practiceType && pranayamaExercises[practiceType as keyof typeof pranayamaExercises] && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+                <Button
+                  onClick={() => setShowVideoPlayer(false)}
+                  className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white"
+                  size="sm"
+                >
+                  ✕
+                </Button>
+                {useRealLifeModel ? (
+                  <IntegratedRealLifeModelPlayer
+                    pranayamaType={practiceType}
+                    level={skillLevel}
+                    pranayamaData={pranayamaExercises[practiceType as keyof typeof pranayamaExercises]}
+                    onSessionComplete={(duration) => {
+                      console.log(`Real-life model session completed: ${duration} seconds`);
+                      setShowVideoPlayer(false);
+                    }}
+                    onSessionStop={() => setShowVideoPlayer(false)}
+                  />
+                ) : (
+                  <PranayamaVideoPlayer
+                    pranayamaType={practiceType}
+                    pranayamaData={pranayamaExercises[practiceType as keyof typeof pranayamaExercises]}
+                    onSessionComplete={(duration) => {
+                      console.log(`Animated session completed: ${duration} seconds`);
+                      setShowVideoPlayer(false);
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          )}
 
           <Card className="w-full max-w-2xl mx-auto bg-card/50 border-primary/20 shadow-stellar">
             <CardHeader className="text-center pb-6">

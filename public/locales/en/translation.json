@@ -364,6 +364,7 @@
     "userMenu": {
       "profile": "Profile",
       "settings": "Settings",
+      "adminDashboard": "Admin Dashboard",
       "signOut": "Sign Out",
       "signIn": "Sign In"
     },
@@ -407,6 +408,10 @@
       "upanishadTeachings": {
         "title": "Upanishad Teachings",
         "description": "Ancient wisdom for self-realization."
+      },
+      "yoniTantraPuja": {
+        "title": "Yoni Tantra Puja",
+        "description": "Sacred ritual honoring the Divine Feminine."
       }
     }
   }

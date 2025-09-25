@@ -5,7 +5,7 @@ import CosmicHeader from '@/components/CosmicHeader';
 import CosmicFooter from '@/components/CosmicFooter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, Leaf, Heart, Sun, Moon, MessageSquare } from 'lucide-react';
+import { Brain, Leaf, Heart, Sun, Moon, MessageSquare, Flower, Book } from 'lucide-react';
 
 const SpiritualPractices = () => {
   const { t } = useTranslation();
@@ -73,6 +73,20 @@ const SpiritualPractices = () => {
                   <Sun className="w-12 h-12 text-orange-500 mb-4" />
                   <CardTitle className="text-xl">{t("spiritualPracticesPage.practices.upanishadTeachings.title")}</CardTitle>
                   <CardDescription>{t("spiritualPracticesPage.practices.upanishadTeachings.description")}</CardDescription>
+                </Card>
+              </Link>
+              <Link to="/spiritual-practices/yoni-tantra-puja">
+                <Card className="h-full flex flex-col items-center justify-center text-center p-6 hover:bg-secondary/10 transition-colors duration-200">
+                  <Flower className="w-12 h-12 text-pink-500 mb-4" />
+                  <CardTitle className="text-xl">{t("spiritualPracticesPage.practices.yoniTantraPuja.title")}</CardTitle>
+                  <CardDescription>{t("spiritualPracticesPage.practices.yoniTantraPuja.description")}</CardDescription>
+                </Card>
+              </Link>
+              <Link to="/spiritual-practices/yoni-tantra-book">
+                <Card className="h-full flex flex-col items-center justify-center text-center p-6 hover:bg-secondary/10 transition-colors duration-200">
+                  <Book className="w-12 h-12 text-purple-600 mb-4" />
+                  <CardTitle className="text-xl">Yoni Tantra Book</CardTitle>
+                  <CardDescription>Complete sacred text with mantras and detailed explanations of all patalas</CardDescription>
                 </Card>
               </Link>
             </CardContent>

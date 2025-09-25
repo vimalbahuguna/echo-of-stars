@@ -23,6 +23,8 @@ import YogaNidraPractice from "./components/YogaNidraPractice";
 import AsanaPractice from "./components/AsanaPractice";
 import UpanishadTeachings from "./components/UpanishadTeachings";
 import MantraJapa from "./components/MantraJapa";
+import YoniTantraPuja from "./components/YoniTantraPuja";
+import YoniTantraBook from "./components/YoniTantraBook";
 import AstrologySection from "./pages/AstrologySection";
 import RemedialMeasuresPage from "./pages/RemedialMeasuresPage";
 import TransitAnalysisPage from "./pages/TransitAnalysisPage";
@@ -120,6 +122,16 @@ const App = () => {
               <Route path="/spiritual-practices/mantra-japa" element={
                 <ProtectedRoute>
                   <MantraJapa />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/yoni-tantra-puja" element={
+                <ProtectedRoute>
+                  <YoniTantraPuja onBack={() => window.history.back()} />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/yoni-tantra-book" element={
+                <ProtectedRoute>
+                  <YoniTantraBook />
                 </ProtectedRoute>
               } />
               <Route path="/astrology" element={
