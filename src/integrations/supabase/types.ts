@@ -408,6 +408,84 @@ export type Database = {
           },
         ]
       }
+      mantra_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          end_time: string | null
+          id: string
+          mantra_type: string
+          notes: string | null
+          repetitions: number
+          start_time: string
+          target_repetitions: number
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          mantra_type?: string
+          notes?: string | null
+          repetitions?: number
+          start_time?: string
+          target_repetitions?: number
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          mantra_type?: string
+          notes?: string | null
+          repetitions?: number
+          start_time?: string
+          target_repetitions?: number
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meditation_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          end_time: string | null
+          id: string
+          notes: string | null
+          practice_type: string
+          start_time: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          practice_type: string
+          start_time?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          practice_type?: string
+          start_time?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           address: string | null
@@ -564,7 +642,7 @@ export type Database = {
           created_at?: string
           duration_seconds: number
           end_time?: string | null
-          id: string
+          id?: string
           notes?: string | null
           practice_type: string
           start_time?: string
