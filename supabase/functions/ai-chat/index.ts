@@ -140,15 +140,18 @@ serve(async (req) => {
 
     const messages = [
       {
-        role: 'system',
+        role: 'system' as const,
         content: systemPrompt,
       },
-      ...chatHistory.map(msg => ({
-        role: msg.sender_type === 'user' ? 'user' : 'assistant',
-        content: msg.message_content,
-      })),
+      ...chatHistory.map(msg => {
+        const role = msg.sender_type === 'user' ? 'user' as const : 'assistant' as const;
+        return {
+          role,
+          content: msg.message_content,
+        };
+      }),
       {
-        role: 'user',
+        role: 'user' as const,
         content: message,
       },
     ];
@@ -196,7 +199,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in AI chat function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'An unknown error occurred' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

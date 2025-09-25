@@ -256,8 +256,8 @@ serve(async (req) => {
         aspect: a.label || 'Unknown',
         orb: a.orb || 0,
       }));
-      const ascendant = ascendantData.longitude;
-      const midheaven = midheavenData.longitude;
+      const ascendant = ascendantData.ChartPosition?.Ecliptic?.DecimalDegrees || 0;
+      const midheaven = midheavenData.ChartPosition?.Ecliptic?.DecimalDegrees || 0;
 
       const chartData = {
         planets,
@@ -337,7 +337,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in astrology-service function:', error);
     return new Response(JSON.stringify({ 
-      error: error.message 
+      error: error instanceof Error ? error.message : 'An unknown error occurred'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

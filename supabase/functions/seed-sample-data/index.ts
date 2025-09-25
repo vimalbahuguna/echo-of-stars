@@ -155,7 +155,7 @@ serve(async (req) => {
     console.error('Error in seed-sample-data function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
         success: false
       }),
       { 
