@@ -25,7 +25,7 @@ interface PranayamaSession {
 }
 
 const PranayamaPractice = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { toast } = useToast();
   const [practiceType, setPracticeType] = useState('');
   const [duration, setDuration] = useState(0);
@@ -80,18 +80,57 @@ const PranayamaPractice = () => {
   }, [timerRunning, duration]);
 
   const startPractice = async () => {
+    console.log('Starting practice - User:', user);
+    console.log('Starting practice - Profile:', profile);
+    console.log('Starting practice - Profile tenant_id:', profile?.tenant_id);
+    console.log('Starting practice - Practice Type:', practiceType);
+    
     if (!user) {
-      toast({ title: 'Sign in required', description: 'Please sign in to start a practice.', variant: 'destructive' });
+      toast({ 
+        title: 'Sign in required', 
+        description: 'Please sign in to start a practice.', 
+        variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: 'Sign in required: Please sign in to start a practice.'
+      });
       return;
     }
+    
+    if (!profile?.tenant_id) {
+      toast({ 
+        title: 'Profile Setup Required', 
+        description: 'Your profile needs to be set up with a tenant. Please contact support.', 
+        variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: 'Profile Setup Required: Your profile needs to be set up with a tenant. Please contact support.'
+      });
+      return;
+    }
+    
     if (!practiceType) {
-      toast({ title: 'Missing Information', description: 'Please select a practice type.', variant: 'destructive' });
+      toast({ 
+        title: 'Missing Information', 
+        description: 'Please select a practice type.', 
+        variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: 'Missing Information: Please select a practice type.'
+      });
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('spiritual-practice-service', {
+      console.log('Making API call to spiritual-practice-service...');
+      
+      // Get the current session to ensure we have a valid auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('No active session found. Please sign in again.');
+      }
+      
+      console.log('Session token exists:', !!session.access_token);
+      
+      const response = await supabase.functions.invoke('spiritual-practice-service', {
         body: {
           command: 'startPranayamaSession',
           data: {
@@ -101,20 +140,55 @@ const PranayamaPractice = () => {
         },
       });
 
-      if (error) throw error;
-      if (data && data.success) {
-        setSessionId(data.session.id);
+      console.log('Full API Response:', response);
+      console.log('API Response - Data:', response.data);
+      console.log('API Response - Error:', response.error);
+
+      // Check for function invocation error first
+      if (response.error) {
+        console.error('Function invocation error:', response.error);
+        throw new Error(`Function error: ${response.error.message || 'Unknown function error'}`);
+      }
+
+      // Check if the response data indicates an error
+      if (response.data && response.data.error) {
+        console.error('Function returned error:', response.data);
+        throw new Error(`API error: ${response.data.error} ${response.data.details ? '- ' + response.data.details : ''}`);
+      }
+
+      // Check for successful response
+      if (response.data && response.data.success) {
+        setSessionId(response.data.session.id);
         setDuration(0);
         setTimerRunning(true);
         setNotes('');
         toast({ title: 'Practice Started', description: `Started ${practiceType} practice.` });
+      } else {
+        throw new Error('Unexpected response format from API');
       }
     } catch (error: any) {
       console.error('Error starting practice:', error);
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        statusText: error.statusText,
+        details: error.details,
+        code: error.code,
+        fullError: error
+      });
       toast({
         title: 'Error',
-        description: `Failed to start practice: ${error.message}`,
+        description: `Failed to start practice: ${error.message || 'Edge Function returned a non-2xx status code'}`,
         variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: `Pranayama Error: ${JSON.stringify({
+          message: error.message,
+          status: error.status,
+          details: error.details,
+          code: error.code,
+          practiceType: practiceType,
+          timestamp: new Date().toISOString()
+        }, null, 2)}`
       });
     } finally {
       setLoading(false);
@@ -150,6 +224,8 @@ const PranayamaPractice = () => {
         title: 'Error',
         description: `Failed to end practice: ${error.message}`,
         variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: `Failed to end practice: ${error.message}`
       });
     } finally {
       setLoading(false);

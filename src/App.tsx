@@ -19,6 +19,10 @@ import SettingsPage from "./pages/SettingsPage";
 import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
 import MeditationPractice from "./components/MeditationPractice";
+import YogaNidraPractice from "./components/YogaNidraPractice";
+import AsanaPractice from "./components/AsanaPractice";
+import UpanishadTeachings from "./components/UpanishadTeachings";
+import MantraJapa from "./components/MantraJapa";
 import AstrologySection from "./pages/AstrologySection";
 import RemedialMeasuresPage from "./pages/RemedialMeasuresPage";
 import TransitAnalysisPage from "./pages/TransitAnalysisPage";
@@ -96,6 +100,26 @@ const App = () => {
               <Route path="/spiritual-practices/meditation" element={
                 <ProtectedRoute>
                   <MeditationPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/yoga-nidra" element={
+                <ProtectedRoute>
+                  <YogaNidraPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/asana" element={
+                <ProtectedRoute>
+                  <AsanaPractice />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/upanishad-teachings" element={
+                <ProtectedRoute>
+                  <UpanishadTeachings />
+                </ProtectedRoute>
+              } />
+              <Route path="/spiritual-practices/mantra-japa" element={
+                <ProtectedRoute>
+                  <MantraJapa />
                 </ProtectedRoute>
               } />
               <Route path="/astrology" element={

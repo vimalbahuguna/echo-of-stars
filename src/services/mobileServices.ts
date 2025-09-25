@@ -1,6 +1,5 @@
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { PushNotifications } from '@capacitor/push-notifications';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 export class MobileLocationService {
@@ -46,35 +45,8 @@ export class MobileLocationService {
 
 export class MobilePushService {
   static async initializePushNotifications() {
-    if (!Capacitor.isNativePlatform()) {
-      console.log('Push notifications only available on native platforms');
-      return;
-    }
-
-    try {
-      // Request permission
-      const permStatus = await PushNotifications.requestPermissions();
-      if (permStatus.receive !== 'granted') {
-        throw new Error('Push notification permission denied');
-      }
-
-      // Register for push notifications
-      await PushNotifications.register();
-
-      // Listen for registration success
-      PushNotifications.addListener('registration', (token) => {
-        console.log('Push registration success, token: ' + token.value);
-        // TODO: Send token to backend for user-specific notifications
-      });
-
-      // Listen for push notifications
-      PushNotifications.addListener('pushNotificationReceived', (notification) => {
-        console.log('Push notification received: ', notification);
-      });
-
-    } catch (error) {
-      console.error('Error initializing push notifications:', error);
-    }
+    console.log('Push notifications have been disabled for this app');
+    return;
   }
 
   static async scheduleLocalNotification(title: string, body: string, scheduledAt?: Date) {

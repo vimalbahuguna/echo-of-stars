@@ -137,7 +137,13 @@ export const useThemeManager = () => {
 
     if (systemThemesResult.error || (user && userThemesResult.error)) {
       console.error("Error fetching themes:", systemThemesResult.error || userThemesResult.error);
-      toast({ title: "Error", description: "Failed to load themes.", variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: "Failed to load themes.", 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: "Failed to load themes."
+      });
       setThemes([SYSTEM_DEFAULT_THEME]);
       applyThemeToDOM(SYSTEM_DEFAULT_THEME);
     } else {
@@ -206,7 +212,13 @@ export const useThemeManager = () => {
 
     if (error) {
       console.error("Error saving theme:", error);
-      toast({ title: "Error", description: `Failed to save theme: ${error.message}`, variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: `Failed to save theme: ${error.message}`, 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: `Failed to save theme: ${error.message}`
+      });
       return false;
     } else {
       toast({ title: "Success", description: "Theme saved successfully!" });
@@ -229,7 +241,13 @@ export const useThemeManager = () => {
 
     if (error) {
       console.error("Error deleting theme:", error);
-      toast({ title: "Error", description: `Failed to delete theme: ${error.message}`, variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: `Failed to delete theme: ${error.message}`, 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: `Failed to delete theme: ${error.message}`
+      });
       return false;
     } else {
       toast({ title: "Success", description: "Theme deleted successfully!" });

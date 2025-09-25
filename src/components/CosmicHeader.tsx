@@ -49,7 +49,9 @@ const CosmicHeader = () => {
       toast({
         title: t("header.toasts.signOutError.title"),
         description: t("header.toasts.signOutError.description"),
-        variant: "destructive"
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: t("header.toasts.signOutError.description")
       });
     }
   };

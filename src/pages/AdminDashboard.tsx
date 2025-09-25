@@ -402,7 +402,9 @@ const AdminDashboard = () => {
       toast({
         title: "Error",
         description: error.message || "Failed to create organization",
-        variant: "destructive"
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: error.message || "Failed to create organization"
       });
     }
   };

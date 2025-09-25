@@ -211,7 +211,13 @@ const BirthChartCalculator = () => {
 
       toast({ title: t('birthChartCalculator.toasts.saveSuccess'), description: t('birthChartCalculator.toasts.saveSuccessDescription', { chartName: formData.name }) });
     } catch (error) {
-      toast({ title: t('birthChartCalculator.toasts.saveFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
+      toast({ 
+        title: t('birthChartCalculator.toasts.saveFailed'), 
+        description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError')
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -239,7 +245,13 @@ const BirthChartCalculator = () => {
       await fetchSavedCharts();
       toast({ title: t('birthChartCalculator.toasts.deleteSuccess'), description: t('birthChartCalculator.toasts.deleteSuccessDescription') });
     } catch (error) {
-      toast({ title: t('birthChartCalculator.toasts.deleteFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
+      toast({ 
+        title: t('birthChartCalculator.toasts.deleteFailed'), 
+        description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError')
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -310,7 +322,13 @@ const BirthChartCalculator = () => {
         }
       }
     } catch (error) {
-      toast({ title: t('birthChartCalculator.toasts.generationFailed'), description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), variant: "destructive" });
+      toast({ 
+        title: t('birthChartCalculator.toasts.generationFailed'), 
+        description: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError'), 
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: error instanceof Error ? error.message : t('birthChartCalculator.toasts.unknownError')
+      });
     } finally {
       setIsGenerating(false);
     }

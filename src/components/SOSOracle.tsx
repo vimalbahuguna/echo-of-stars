@@ -127,7 +127,13 @@ const SOSOracle = () => {
       }
       if (error) {
         console.error("Error fetching saved charts:", error);
-        toast({ title: "Error", description: "Failed to load saved birth data.", variant: "destructive" });
+        toast({ 
+          title: "Error", 
+          description: "Failed to load saved birth data.", 
+          variant: "destructive",
+          showCopyButton: true,
+          copyMessage: "Failed to load saved birth data."
+        });
       }
     } else {
       setSavedCharts([]);
@@ -233,7 +239,13 @@ const SOSOracle = () => {
 
       toast({ title: "Birth Data Saved!", description: `Chart "${birthFormData.name}" has been successfully saved.` });
     } catch (error) {
-      toast({ title: "Save Failed", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
+      toast({ 
+          title: "Save Failed", 
+          description: error instanceof Error ? error.message : "An unknown error occurred.", 
+          variant: "destructive",
+          showCopyButton: true,
+          copyMessage: error instanceof Error ? error.message : "An unknown error occurred."
+        });
     } finally {
       setIsSavingOrDeleting(false);
     }

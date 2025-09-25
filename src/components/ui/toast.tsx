@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { CopyErrorButton } from "./copy-error-button";
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -39,9 +40,49 @@ const toastVariants = cva(
 
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
-  return <ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props} />;
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & VariantProps<typeof toastVariants> & {
+    showCopyButton?: boolean;
+    copyMessage?: string;
+  }
+>(({ className, variant, showCopyButton = false, copyMessage, children, ...props }, ref) => {
+  // Extract text content from children for copying
+  const getTextContent = (node: React.ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return node.toString();
+    if (React.isValidElement(node)) {
+      return getTextContent(node.props.children);
+    }
+    if (Array.isArray(node)) {
+      return node.map(getTextContent).join(' ');
+    }
+    return '';
+  };
+
+  const textContent = copyMessage || getTextContent(children);
+
+  return (
+    <ToastPrimitives.Root 
+      ref={ref} 
+      className={cn(
+        toastVariants({ variant }), 
+        showCopyButton && "pr-16", // Add padding for copy button
+        className
+      )} 
+      {...props}
+    >
+      {children}
+      {showCopyButton && textContent && (
+        <div className="absolute right-8 top-2">
+          <CopyErrorButton 
+            message={textContent}
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 opacity-70 hover:opacity-100"
+          />
+        </div>
+      )}
+    </ToastPrimitives.Root>
+  );
 });
 Toast.displayName = ToastPrimitives.Root.displayName;
 

@@ -71,7 +71,9 @@ const Auth = () => {
         toast({
           title: "Sign In Failed",
           description: error.message,
-          variant: "destructive"
+          variant: "destructive",
+          showCopyButton: true,
+          copyMessage: error.message
         });
       } else {
         toast({
@@ -83,7 +85,9 @@ const Auth = () => {
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
-        variant: "destructive"
+        variant: "destructive",
+        showCopyButton: true,
+        copyMessage: "An unexpected error occurred."
       });
     } finally {
       setLoading(false);

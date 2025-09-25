@@ -81,11 +81,23 @@ const MeditationPractice = () => {
 
   const startPractice = async () => {
     if (!user) {
-      toast({ title: 'Sign in required', description: 'Please sign in to start a practice.', variant: 'destructive' });
+      toast({ 
+        title: 'Sign in required', 
+        description: 'Please sign in to start a practice.', 
+        variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: 'Sign in required: Please sign in to start a practice.'
+      });
       return;
     }
     if (!practiceType) {
-      toast({ title: 'Missing Information', description: 'Please select a practice type.', variant: 'destructive' });
+      toast({ 
+        title: 'Missing Information', 
+        description: 'Please select a practice type.', 
+        variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: 'Missing Information: Please select a practice type.'
+      });
       return;
     }
 
@@ -150,6 +162,8 @@ const MeditationPractice = () => {
         title: 'Error',
         description: `Failed to end practice: ${error.message}`,
         variant: 'destructive',
+        showCopyButton: true,
+        copyMessage: `Failed to end practice: ${error.message}`
       });
     } finally {
       setLoading(false);

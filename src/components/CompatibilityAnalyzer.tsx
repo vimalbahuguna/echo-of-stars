@@ -113,6 +113,8 @@ const CompatibilityAnalyzer = () => {
         title: "Compatibility Analysis Error",
         description: error instanceof Error ? error.message : "An unknown error occurred during analysis.",
         variant: "destructive",
+        showCopyButton: true,
+        copyMessage: error instanceof Error ? error.message : "An unknown error occurred during analysis."
       });
     } finally {
       setIsLoading(false);
