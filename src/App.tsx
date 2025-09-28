@@ -16,6 +16,7 @@ import EphemerisViewer from "./components/EphemerisViewer";
 import SOSOracle from "./components/SOSOracle";
 import DailyHoroscopes from "./components/DailyHoroscopes";
 import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
 import SpiritualPractices from "./pages/SpiritualPractices";
 import PranayamaPractice from "./components/PranayamaPractice";
 import MeditationPractice from "./components/MeditationPractice";
@@ -87,6 +88,11 @@ const App = () => {
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } />
               <Route path="/spiritual-practices" element={

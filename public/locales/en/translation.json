@@ -414,5 +414,13 @@
         "description": "Sacred ritual honoring the Divine Feminine."
       }
     }
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "backToDashboard": "Back to Dashboard",
+    "menu": {
+      "title": "Settings Menu",
+      "themes": "Themes"
+    }
   }
 }
