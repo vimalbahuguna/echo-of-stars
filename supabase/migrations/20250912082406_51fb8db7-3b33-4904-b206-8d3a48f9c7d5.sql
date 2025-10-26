@@ -5,17 +5,14 @@ CREATE OR REPLACE FUNCTION public.get_current_user_tenant_id()
 RETURNS UUID AS $$
     SELECT tenant_id FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = 'public';
-
 CREATE OR REPLACE FUNCTION public.get_current_user_role()
 RETURNS public.user_role AS $$
     SELECT role FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = 'public';
-
 CREATE OR REPLACE FUNCTION public.get_current_user_organization_id()
 RETURNS UUID AS $$
     SELECT organization_id FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = 'public';
-
 CREATE OR REPLACE FUNCTION public.has_permission(resource TEXT, action TEXT)
 RETURNS BOOLEAN AS $$
     SELECT EXISTS (
@@ -27,7 +24,6 @@ RETURNS BOOLEAN AS $$
         AND $2 = ANY(rp.actions)
     )
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = 'public';
-
 -- Update new user registration function
 CREATE OR REPLACE FUNCTION public.handle_new_user_registration()
 RETURNS TRIGGER AS $$
@@ -69,7 +65,6 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public';
-
 -- Update timestamp trigger function
 CREATE OR REPLACE FUNCTION public.update_updated_at_column()
 RETURNS TRIGGER AS $$

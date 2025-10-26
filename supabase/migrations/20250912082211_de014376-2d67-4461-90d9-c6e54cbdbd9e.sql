@@ -5,7 +5,6 @@ CREATE TYPE public.user_role AS ENUM ('super_admin', 'tenant_admin', 'organizati
 CREATE TYPE public.tenant_status AS ENUM ('active', 'suspended', 'inactive', 'trial');
 CREATE TYPE public.organization_type AS ENUM ('headquarters', 'franchise', 'branch', 'partner');
 CREATE TYPE public.subscription_tier AS ENUM ('basic', 'professional', 'enterprise', 'custom');
-
 -- Geographic hierarchy tables
 CREATE TABLE public.continents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -14,7 +13,6 @@ CREATE TABLE public.continents (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 CREATE TABLE public.countries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     continent_id UUID REFERENCES public.continents(id) ON DELETE RESTRICT,
@@ -26,7 +24,6 @@ CREATE TABLE public.countries (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 CREATE TABLE public.states (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     country_id UUID REFERENCES public.countries(id) ON DELETE RESTRICT,
@@ -36,7 +33,6 @@ CREATE TABLE public.states (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     UNIQUE(country_id, code)
 );
-
 CREATE TABLE public.cities (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     state_id UUID REFERENCES public.states(id) ON DELETE RESTRICT,
@@ -47,7 +43,6 @@ CREATE TABLE public.cities (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 -- Multi-tenant system
 CREATE TABLE public.tenants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -70,7 +65,6 @@ CREATE TABLE public.tenants (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 -- Organizations within tenants
 CREATE TABLE public.organizations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -89,7 +83,6 @@ CREATE TABLE public.organizations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 -- User profiles with multi-tenant support
 CREATE TABLE public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -117,7 +110,6 @@ CREATE TABLE public.profiles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     UNIQUE(tenant_id, email)
 );
-
 -- Role permissions matrix
 CREATE TABLE public.role_permissions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -129,7 +121,6 @@ CREATE TABLE public.role_permissions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     UNIQUE(tenant_id, role, resource)
 );
-
 -- User sessions for multi-tenant tracking
 CREATE TABLE public.user_sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -142,7 +133,6 @@ CREATE TABLE public.user_sessions (
     expires_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 -- Enable Row Level Security
 ALTER TABLE public.continents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.countries ENABLE ROW LEVEL SECURITY;
@@ -153,23 +143,19 @@ ALTER TABLE public.organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.role_permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_sessions ENABLE ROW LEVEL SECURITY;
-
 -- Create security definer functions to avoid RLS recursion
 CREATE OR REPLACE FUNCTION public.get_current_user_tenant_id()
 RETURNS UUID AS $$
     SELECT tenant_id FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = public;
-
 CREATE OR REPLACE FUNCTION public.get_current_user_role()
 RETURNS public.user_role AS $$
     SELECT role FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = public;
-
 CREATE OR REPLACE FUNCTION public.get_current_user_organization_id()
 RETURNS UUID AS $$
     SELECT organization_id FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = public;
-
 CREATE OR REPLACE FUNCTION public.has_permission(resource TEXT, action TEXT)
 RETURNS BOOLEAN AS $$
     SELECT EXISTS (
@@ -181,24 +167,19 @@ RETURNS BOOLEAN AS $$
         AND $2 = ANY(rp.actions)
     )
 $$ LANGUAGE SQL SECURITY DEFINER STABLE SET search_path = public;
-
 -- RLS Policies for geographic data (public read access)
 CREATE POLICY "Geographic data is publicly readable" ON public.continents FOR SELECT USING (true);
 CREATE POLICY "Geographic data is publicly readable" ON public.countries FOR SELECT USING (true);
 CREATE POLICY "Geographic data is publicly readable" ON public.states FOR SELECT USING (true);
 CREATE POLICY "Geographic data is publicly readable" ON public.cities FOR SELECT USING (true);
-
 -- RLS Policies for tenants
 CREATE POLICY "Users can view their own tenant" ON public.tenants 
     FOR SELECT USING (id = public.get_current_user_tenant_id());
-
 CREATE POLICY "Super admins can manage all tenants" ON public.tenants 
     FOR ALL USING (public.get_current_user_role() = 'super_admin');
-
 -- RLS Policies for organizations
 CREATE POLICY "Users can view organizations in their tenant" ON public.organizations 
     FOR SELECT USING (tenant_id = public.get_current_user_tenant_id());
-
 CREATE POLICY "Organization admins can manage their organizations" ON public.organizations 
     FOR ALL USING (
         tenant_id = public.get_current_user_tenant_id() 
@@ -207,43 +188,35 @@ CREATE POLICY "Organization admins can manage their organizations" ON public.org
             OR id = public.get_current_user_organization_id()
         )
     );
-
 -- RLS Policies for profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles 
     FOR SELECT USING (id = auth.uid());
-
 CREATE POLICY "Users can update their own profile" ON public.profiles 
     FOR UPDATE USING (id = auth.uid());
-
 CREATE POLICY "Admins can view profiles in their tenant" ON public.profiles 
     FOR SELECT USING (
         tenant_id = public.get_current_user_tenant_id()
         AND public.get_current_user_role() IN ('super_admin', 'tenant_admin', 'organization_admin')
     );
-
 CREATE POLICY "Admins can manage profiles in their tenant" ON public.profiles 
     FOR ALL USING (
         tenant_id = public.get_current_user_tenant_id()
         AND public.get_current_user_role() IN ('super_admin', 'tenant_admin', 'organization_admin')
     );
-
 -- RLS Policies for role permissions
 CREATE POLICY "Admins can manage role permissions" ON public.role_permissions 
     FOR ALL USING (
         tenant_id = public.get_current_user_tenant_id()
         AND public.get_current_user_role() IN ('super_admin', 'tenant_admin')
     );
-
 -- RLS Policies for user sessions
 CREATE POLICY "Users can view their own sessions" ON public.user_sessions 
     FOR SELECT USING (user_id = auth.uid());
-
 CREATE POLICY "Admins can view sessions in their tenant" ON public.user_sessions 
     FOR SELECT USING (
         tenant_id = public.get_current_user_tenant_id()
         AND public.get_current_user_role() IN ('super_admin', 'tenant_admin', 'organization_admin')
     );
-
 -- Create indexes for performance
 CREATE INDEX idx_countries_continent_id ON public.countries(continent_id);
 CREATE INDEX idx_states_country_id ON public.states(country_id);
@@ -256,7 +229,6 @@ CREATE INDEX idx_profiles_role ON public.profiles(role);
 CREATE INDEX idx_role_permissions_tenant_role ON public.role_permissions(tenant_id, role);
 CREATE INDEX idx_user_sessions_user_id ON public.user_sessions(user_id);
 CREATE INDEX idx_user_sessions_tenant_id ON public.user_sessions(tenant_id);
-
 -- Create trigger function for updated_at timestamps
 CREATE OR REPLACE FUNCTION public.update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -265,7 +237,6 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Apply updated_at triggers
 CREATE TRIGGER update_continents_updated_at BEFORE UPDATE ON public.continents FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 CREATE TRIGGER update_countries_updated_at BEFORE UPDATE ON public.countries FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
@@ -274,7 +245,6 @@ CREATE TRIGGER update_cities_updated_at BEFORE UPDATE ON public.cities FOR EACH 
 CREATE TRIGGER update_tenants_updated_at BEFORE UPDATE ON public.tenants FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON public.organizations FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
-
 -- Function to handle new user registration
 CREATE OR REPLACE FUNCTION public.handle_new_user_registration()
 RETURNS TRIGGER AS $$
@@ -316,12 +286,10 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-
 -- Create trigger for new user registration
 CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user_registration();
-
 -- Insert sample geographic data
 INSERT INTO public.continents (name, code) VALUES 
     ('Asia', 'AS'),
@@ -331,7 +299,6 @@ INSERT INTO public.continents (name, code) VALUES
     ('Africa', 'AF'),
     ('Australia', 'AU'),
     ('Antarctica', 'AN');
-
 -- Insert sample countries (focusing on major ones)
 INSERT INTO public.countries (continent_id, name, code, iso_code, currency_code, timezone_offset) 
 SELECT 
@@ -354,7 +321,6 @@ CROSS JOIN (
         ('AU', 'Australia', 'AU', 'AUS', 'AUD', 600)
 ) AS country_data(continent_code, name, code, iso_code, currency_code, timezone_offset)
 WHERE c.code = country_data.continent_code;
-
 -- Insert default role permissions
 INSERT INTO public.role_permissions (tenant_id, role, resource, actions) 
 SELECT 

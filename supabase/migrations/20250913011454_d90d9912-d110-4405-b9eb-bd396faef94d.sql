@@ -21,7 +21,6 @@ CREATE TABLE public.birth_charts (
     CONSTRAINT birth_charts_tenant_id_fkey FOREIGN KEY (tenant_id) REFERENCES public.tenants(id) ON DELETE CASCADE,
     CONSTRAINT birth_charts_birth_city_id_fkey FOREIGN KEY (birth_city_id) REFERENCES public.cities(id)
 );
-
 -- Create chart interpretations table for AI-generated analyses
 CREATE TABLE public.chart_interpretations (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -42,7 +41,6 @@ CREATE TABLE public.chart_interpretations (
     CONSTRAINT chart_interpretations_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
     CONSTRAINT chart_interpretations_tenant_id_fkey FOREIGN KEY (tenant_id) REFERENCES public.tenants(id) ON DELETE CASCADE
 );
-
 -- Create chart shares table for sharing capabilities
 CREATE TABLE public.chart_shares (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -62,7 +60,6 @@ CREATE TABLE public.chart_shares (
     CONSTRAINT chart_shares_shared_by_user_id_fkey FOREIGN KEY (shared_by_user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
     CONSTRAINT chart_shares_shared_with_user_id_fkey FOREIGN KEY (shared_with_user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
-
 -- Create planetary positions table for detailed astronomical data
 CREATE TABLE public.planetary_positions (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -78,7 +75,6 @@ CREATE TABLE public.planetary_positions (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     CONSTRAINT planetary_positions_chart_id_fkey FOREIGN KEY (chart_id) REFERENCES public.birth_charts(id) ON DELETE CASCADE
 );
-
 -- Create chat conversations table for real chat history
 CREATE TABLE public.chat_conversations (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -92,7 +88,6 @@ CREATE TABLE public.chat_conversations (
     CONSTRAINT chat_conversations_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
     CONSTRAINT chat_conversations_tenant_id_fkey FOREIGN KEY (tenant_id) REFERENCES public.tenants(id) ON DELETE CASCADE
 );
-
 -- Create chat messages table
 CREATE TABLE public.chat_messages (
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -108,7 +103,6 @@ CREATE TABLE public.chat_messages (
     CONSTRAINT chat_messages_conversation_id_fkey FOREIGN KEY (conversation_id) REFERENCES public.chat_conversations(id) ON DELETE CASCADE,
     CONSTRAINT chat_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
-
 -- Enable Row Level Security on all tables
 ALTER TABLE public.birth_charts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chart_interpretations ENABLE ROW LEVEL SECURITY;
@@ -116,131 +110,104 @@ ALTER TABLE public.chart_shares ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.planetary_positions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
-
 -- Create RLS policies for birth_charts
 CREATE POLICY "Users can view their own charts"
 ON public.birth_charts FOR SELECT
 USING (auth.uid() = user_id);
-
 CREATE POLICY "Users can create their own charts"
 ON public.birth_charts FOR INSERT
 WITH CHECK (auth.uid() = user_id AND tenant_id = get_current_user_tenant_id());
-
 CREATE POLICY "Users can update their own charts"
 ON public.birth_charts FOR UPDATE
 USING (auth.uid() = user_id);
-
 CREATE POLICY "Users can delete their own charts"
 ON public.birth_charts FOR DELETE
 USING (auth.uid() = user_id);
-
 CREATE POLICY "Users can view public charts"
 ON public.birth_charts FOR SELECT
 USING (is_public = true);
-
 -- Create RLS policies for chart_interpretations
 CREATE POLICY "Users can view interpretations for their charts"
 ON public.chart_interpretations FOR SELECT
 USING (auth.uid() = user_id);
-
 CREATE POLICY "Users can create interpretations for their charts"
 ON public.chart_interpretations FOR INSERT
 WITH CHECK (auth.uid() = user_id AND tenant_id = get_current_user_tenant_id());
-
 CREATE POLICY "Users can update interpretations for their charts"
 ON public.chart_interpretations FOR UPDATE
 USING (auth.uid() = user_id);
-
 -- Create RLS policies for chart_shares
 CREATE POLICY "Users can view shares they created or received"
 ON public.chart_shares FOR SELECT
 USING (auth.uid() = shared_by_user_id OR auth.uid() = shared_with_user_id);
-
 CREATE POLICY "Users can create shares for their charts"
 ON public.chart_shares FOR INSERT
 WITH CHECK (
     auth.uid() = shared_by_user_id AND
     EXISTS (SELECT 1 FROM public.birth_charts WHERE id = chart_id AND user_id = auth.uid())
 );
-
 CREATE POLICY "Users can update their own shares"
 ON public.chart_shares FOR UPDATE
 USING (auth.uid() = shared_by_user_id);
-
 -- Create RLS policies for planetary_positions
 CREATE POLICY "Users can view positions for their charts"
 ON public.planetary_positions FOR SELECT
 USING (
     EXISTS (SELECT 1 FROM public.birth_charts WHERE id = chart_id AND user_id = auth.uid())
 );
-
 CREATE POLICY "System can insert planetary positions"
 ON public.planetary_positions FOR INSERT
 WITH CHECK (
     EXISTS (SELECT 1 FROM public.birth_charts WHERE id = chart_id AND user_id = auth.uid())
 );
-
 -- Create RLS policies for chat_conversations
 CREATE POLICY "Users can view their own conversations"
 ON public.chat_conversations FOR SELECT
 USING (auth.uid() = user_id);
-
 CREATE POLICY "Users can create their own conversations"
 ON public.chat_conversations FOR INSERT
 WITH CHECK (auth.uid() = user_id AND tenant_id = get_current_user_tenant_id());
-
 CREATE POLICY "Users can update their own conversations"
 ON public.chat_conversations FOR UPDATE
 USING (auth.uid() = user_id);
-
 -- Create RLS policies for chat_messages
 CREATE POLICY "Users can view messages in their conversations"
 ON public.chat_messages FOR SELECT
 USING (
     EXISTS (SELECT 1 FROM public.chat_conversations WHERE id = conversation_id AND user_id = auth.uid())
 );
-
 CREATE POLICY "Users can create messages in their conversations"
 ON public.chat_messages FOR INSERT
 WITH CHECK (
     auth.uid() = user_id AND
     EXISTS (SELECT 1 FROM public.chat_conversations WHERE id = conversation_id AND user_id = auth.uid())
 );
-
 -- Create indexes for performance
 CREATE INDEX idx_birth_charts_user_id ON public.birth_charts(user_id);
 CREATE INDEX idx_birth_charts_tenant_id ON public.birth_charts(tenant_id);
 CREATE INDEX idx_birth_charts_created_at ON public.birth_charts(created_at);
 CREATE INDEX idx_birth_charts_chart_type ON public.birth_charts(chart_type);
-
 CREATE INDEX idx_chart_interpretations_chart_id ON public.chart_interpretations(chart_id);
 CREATE INDEX idx_chart_interpretations_user_id ON public.chart_interpretations(user_id);
-
 CREATE INDEX idx_chart_shares_chart_id ON public.chart_shares(chart_id);
 CREATE INDEX idx_chart_shares_share_token ON public.chart_shares(share_token);
-
 CREATE INDEX idx_planetary_positions_chart_id ON public.planetary_positions(chart_id);
 CREATE INDEX idx_planetary_positions_planet_name ON public.planetary_positions(planet_name);
-
 CREATE INDEX idx_chat_conversations_user_id ON public.chat_conversations(user_id);
 CREATE INDEX idx_chat_messages_conversation_id ON public.chat_messages(conversation_id);
-
 -- Create triggers for updated_at columns
 CREATE TRIGGER update_birth_charts_updated_at
     BEFORE UPDATE ON public.birth_charts
     FOR EACH ROW
     EXECUTE FUNCTION public.update_updated_at_column();
-
 CREATE TRIGGER update_chart_interpretations_updated_at
     BEFORE UPDATE ON public.chart_interpretations
     FOR EACH ROW
     EXECUTE FUNCTION public.update_updated_at_column();
-
 CREATE TRIGGER update_chart_shares_updated_at
     BEFORE UPDATE ON public.chart_shares
     FOR EACH ROW
     EXECUTE FUNCTION public.update_updated_at_column();
-
 CREATE TRIGGER update_chat_conversations_updated_at
     BEFORE UPDATE ON public.chat_conversations
     FOR EACH ROW

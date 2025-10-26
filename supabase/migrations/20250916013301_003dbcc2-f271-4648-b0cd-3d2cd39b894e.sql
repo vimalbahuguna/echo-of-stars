@@ -43,7 +43,6 @@ BEGIN
     RETURN NEW;
 END;
 $$;
-
 -- Create trigger on auth.users to automatically create profiles
 CREATE OR REPLACE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users

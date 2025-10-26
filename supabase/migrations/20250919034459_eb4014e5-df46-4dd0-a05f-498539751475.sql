@@ -1,11 +1,9 @@
 -- Enable pgcrypto extension for secure hashing
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- Fix security linter issues from previous migration
 
 -- 1. Fix the security definer view issue by converting to a function instead
 DROP VIEW IF EXISTS public.admin_profile_view;
-
 CREATE OR REPLACE FUNCTION public.get_admin_profile_view()
 RETURNS TABLE(
   id UUID,
@@ -55,7 +53,6 @@ AS $$
       OR p.id = auth.uid()
     );
 $$;
-
 -- 2. Fix search_path for existing functions
 CREATE OR REPLACE FUNCTION public.get_profile_sensitive_data(profile_id UUID)
 RETURNS TABLE(
@@ -84,7 +81,6 @@ AS $$
       OR auth.uid() = profile_id
     );
 $$;
-
 CREATE OR REPLACE FUNCTION public.hash_session_token(token TEXT)
 RETURNS TEXT
 LANGUAGE SQL
@@ -93,7 +89,6 @@ SET search_path = public
 AS $$
   SELECT encode(digest(token, 'sha256'), 'hex');
 $$;
-
 CREATE OR REPLACE FUNCTION public.generate_secure_share_token()
 RETURNS TEXT
 LANGUAGE SQL

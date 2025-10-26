@@ -192,7 +192,7 @@ END$$;
 
 -- 7) RLS Policies
 -- Cohorts: Admins manage within tenant; members can read if part of cohort
-CREATE POLICY IF NOT EXISTS "Admins manage cohorts in tenant" ON public.academy_cohorts
+CREATE POLICY "Admins manage cohorts in tenant" ON public.academy_cohorts
   FOR ALL USING (
     tenant_id = public.get_current_user_tenant_id() AND
     public.get_current_user_role() IN ('super_admin','tenant_admin','organization_admin')
@@ -201,7 +201,7 @@ CREATE POLICY IF NOT EXISTS "Admins manage cohorts in tenant" ON public.academy_
     public.get_current_user_role() IN ('super_admin','tenant_admin','organization_admin')
   );
 
-CREATE POLICY IF NOT EXISTS "Members read cohorts they belong to" ON public.academy_cohorts
+CREATE POLICY "Members read cohorts they belong to" ON public.academy_cohorts
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.cohort_members cm
@@ -211,7 +211,7 @@ CREATE POLICY IF NOT EXISTS "Members read cohorts they belong to" ON public.acad
   );
 
 -- Cohort members: users read their own membership entries; admins manage in tenant
-CREATE POLICY IF NOT EXISTS "Users read own cohort_members" ON public.cohort_members
+CREATE POLICY "Users read own cohort_members" ON public.cohort_members
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.academy_memberships am
@@ -219,7 +219,7 @@ CREATE POLICY IF NOT EXISTS "Users read own cohort_members" ON public.cohort_mem
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Admins manage cohort_members in tenant" ON public.cohort_members
+CREATE POLICY "Admins manage cohort_members in tenant" ON public.cohort_members
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.academy_cohorts c
@@ -233,7 +233,7 @@ CREATE POLICY IF NOT EXISTS "Admins manage cohort_members in tenant" ON public.c
   );
 
 -- Sections: Admins manage within tenant; faculty of the section can read; students read if enrolled
-CREATE POLICY IF NOT EXISTS "Admins manage sections in tenant" ON public.course_sections
+CREATE POLICY "Admins manage sections in tenant" ON public.course_sections
   FOR ALL USING (
     tenant_id = public.get_current_user_tenant_id() AND
     public.get_current_user_role() IN ('super_admin','tenant_admin','organization_admin')
@@ -242,10 +242,10 @@ CREATE POLICY IF NOT EXISTS "Admins manage sections in tenant" ON public.course_
     public.get_current_user_role() IN ('super_admin','tenant_admin','organization_admin')
   );
 
-CREATE POLICY IF NOT EXISTS "Faculty read own sections" ON public.course_sections
+CREATE POLICY "Faculty read own sections" ON public.course_sections
   FOR SELECT USING (faculty_user_id = auth.uid());
 
-CREATE POLICY IF NOT EXISTS "Members read sections if enrolled" ON public.course_sections
+CREATE POLICY "Members read sections if enrolled" ON public.course_sections
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.section_enrollments se
@@ -255,7 +255,7 @@ CREATE POLICY IF NOT EXISTS "Members read sections if enrolled" ON public.course
   );
 
 -- Section enrollments: users read/manage their own; admins manage in tenant
-CREATE POLICY IF NOT EXISTS "Users read own section_enrollments" ON public.section_enrollments
+CREATE POLICY "Users read own section_enrollments" ON public.section_enrollments
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.academy_memberships am
@@ -263,7 +263,7 @@ CREATE POLICY IF NOT EXISTS "Users read own section_enrollments" ON public.secti
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Users insert own section_enrollments" ON public.section_enrollments
+CREATE POLICY "Users insert own section_enrollments" ON public.section_enrollments
   FOR INSERT WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.academy_memberships am
@@ -271,7 +271,7 @@ CREATE POLICY IF NOT EXISTS "Users insert own section_enrollments" ON public.sec
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Admins manage section_enrollments in tenant" ON public.section_enrollments
+CREATE POLICY "Admins manage section_enrollments in tenant" ON public.section_enrollments
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.course_sections s
@@ -285,7 +285,7 @@ CREATE POLICY IF NOT EXISTS "Admins manage section_enrollments in tenant" ON pub
   );
 
 -- Assignments: faculty/admin manage; members read if enrolled in section
-CREATE POLICY IF NOT EXISTS "Faculty/admin manage assignments" ON public.assignments
+CREATE POLICY "Faculty/admin manage assignments" ON public.assignments
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.course_sections s
@@ -304,7 +304,7 @@ CREATE POLICY IF NOT EXISTS "Faculty/admin manage assignments" ON public.assignm
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Members read assignments if enrolled" ON public.assignments
+CREATE POLICY "Members read assignments if enrolled" ON public.assignments
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.section_enrollments se
@@ -314,7 +314,7 @@ CREATE POLICY IF NOT EXISTS "Members read assignments if enrolled" ON public.ass
   );
 
 -- Submissions: users manage own; faculty/admin read in tenant
-CREATE POLICY IF NOT EXISTS "Users manage own submissions" ON public.assignment_submissions
+CREATE POLICY "Users manage own submissions" ON public.assignment_submissions
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.academy_memberships am
@@ -327,7 +327,7 @@ CREATE POLICY IF NOT EXISTS "Users manage own submissions" ON public.assignment_
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Faculty/admin read submissions" ON public.assignment_submissions
+CREATE POLICY "Faculty/admin read submissions" ON public.assignment_submissions
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.assignments a
@@ -340,7 +340,7 @@ CREATE POLICY IF NOT EXISTS "Faculty/admin read submissions" ON public.assignmen
   );
 
 -- Announcements: admins/faculty manage in tenant; members read if tenant matches
-CREATE POLICY IF NOT EXISTS "Admins/faculty manage announcements" ON public.announcements
+CREATE POLICY "Admins/faculty manage announcements" ON public.announcements
   FOR ALL USING (
     tenant_id = public.get_current_user_tenant_id() AND (
       public.get_current_user_role() IN ('super_admin','tenant_admin','organization_admin') OR
@@ -359,13 +359,13 @@ CREATE POLICY IF NOT EXISTS "Admins/faculty manage announcements" ON public.anno
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Members read announcements in tenant" ON public.announcements
+CREATE POLICY "Members read announcements in tenant" ON public.announcements
   FOR SELECT USING (
     tenant_id = public.get_current_user_tenant_id()
   );
 
 -- Resources: faculty/admin manage; members read if enrolled
-CREATE POLICY IF NOT EXISTS "Faculty/admin manage resources" ON public.section_resources
+CREATE POLICY "Faculty/admin manage resources" ON public.section_resources
   FOR ALL USING (
     EXISTS (
       SELECT 1 FROM public.course_sections s
@@ -384,7 +384,7 @@ CREATE POLICY IF NOT EXISTS "Faculty/admin manage resources" ON public.section_r
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Members read resources if enrolled" ON public.section_resources
+CREATE POLICY "Members read resources if enrolled" ON public.section_resources
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.section_enrollments se

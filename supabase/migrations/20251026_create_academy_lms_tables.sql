@@ -14,7 +14,6 @@ create table if not exists public.courses (
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
-
 -- Lessons
 create table if not exists public.lessons (
   id uuid primary key default gen_random_uuid(),
@@ -28,7 +27,6 @@ create table if not exists public.lessons (
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
-
 -- Enrollments
 create table if not exists public.enrollments (
   id uuid primary key default gen_random_uuid(),
@@ -40,7 +38,6 @@ create table if not exists public.enrollments (
   updated_at timestamptz default now(),
   unique (user_id, course_id)
 );
-
 -- Certificates
 create table if not exists public.certificates (
   id uuid primary key default gen_random_uuid(),
@@ -50,7 +47,6 @@ create table if not exists public.certificates (
   certificate_number text unique,
   metadata jsonb default '{}'::jsonb
 );
-
 -- Lesson Completions (optional granular progress)
 create table if not exists public.lesson_completions (
   id uuid primary key default gen_random_uuid(),
@@ -59,33 +55,29 @@ create table if not exists public.lesson_completions (
   completed_at timestamptz not null default now(),
   unique (user_id, lesson_id)
 );
-
 -- RLS enablement
 alter table public.courses enable row level security;
 alter table public.lessons enable row level security;
 alter table public.enrollments enable row level security;
 alter table public.certificates enable row level security;
 alter table public.lesson_completions enable row level security;
-
 -- Policies: allow read for authenticated users; write constrained to owner relations
-create policy if not exists "courses_read_authenticated" on public.courses
+create policy "courses_read_authenticated" on public.courses
   for select using (auth.uid() is not null);
-create policy if not exists "lessons_read_authenticated" on public.lessons
+create policy "lessons_read_authenticated" on public.lessons
   for select using (auth.uid() is not null);
-create policy if not exists "enrollments_read_own" on public.enrollments
+create policy "enrollments_read_own" on public.enrollments
   for select using (user_id = auth.uid());
-create policy if not exists "certificates_read_own" on public.certificates
+create policy "certificates_read_own" on public.certificates
   for select using (user_id = auth.uid());
-create policy if not exists "lesson_completions_read_own" on public.lesson_completions
+create policy "lesson_completions_read_own" on public.lesson_completions
   for select using (user_id = auth.uid());
-
 -- Insert policies for writes (users can manage their own progress)
-create policy if not exists "enrollments_insert_self" on public.enrollments
+create policy "enrollments_insert_self" on public.enrollments
   for insert with check (user_id = auth.uid());
-create policy if not exists "enrollments_update_self" on public.enrollments
+create policy "enrollments_update_self" on public.enrollments
   for update using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy if not exists "lesson_completions_insert_self" on public.lesson_completions
+create policy "lesson_completions_insert_self" on public.lesson_completions
   for insert with check (user_id = auth.uid());
-
 -- Admin roles can manage courses and lessons (assuming 'service_role' on server side)
--- For client-side, we restrict to read only; writes are expected via admin backend.
+-- For client-side, we restrict to read only; writes are expected via admin backend.;

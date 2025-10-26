@@ -1,7 +1,6 @@
 -- Add gradients column to user_themes table
 ALTER TABLE public.user_themes 
 ADD COLUMN IF NOT EXISTS gradients jsonb NOT NULL DEFAULT '{}';
-
 -- Update existing records to have default gradients if they don't have any
 UPDATE public.user_themes 
 SET gradients = '{

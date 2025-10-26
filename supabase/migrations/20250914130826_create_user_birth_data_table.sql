@@ -9,9 +9,7 @@ create table public.user_birth_data (
     constraint user_birth_data_pkey primary key (id),
     constraint user_birth_data_user_id_fkey foreign key (user_id) references auth.users (id) on delete cascade
 );
-
 alter table public.user_birth_data enable row level security;
-
 create policy "Allow users to manage their own birth data" on public.user_birth_data for all
     using (auth.uid() = user_id)
     with check (auth.uid() = user_id);
