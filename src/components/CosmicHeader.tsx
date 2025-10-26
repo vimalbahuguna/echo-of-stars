@@ -22,7 +22,10 @@ import {
   Home,
   HeartHandshake,
   Globe,
-  Leaf
+  Leaf,
+  Brain,
+  Flower,
+  BookOpen
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -98,7 +101,37 @@ const CosmicHeader = () => {
         <Leaf className="w-5 h-5 mr-2" />
         {t("header.navigation.spiritualPractices")}
       </Button>
-
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="default" 
+            className="hover:bg-accent/10 hover:text-accent text-base"
+            onClick={() => navigate("/academy")}
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            {t("header.navigation.spiritualAcademy")}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem onClick={() => navigate("/academy/astrology")}>
+            <Stars className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.academyAstrology")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/academy/meditation")}>
+            <Brain className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.academyMeditation")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/academy/sanskrit")}>
+            <Flower className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.academySanskrit")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/academy/scriptures")}>
+            <BookOpen className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.academyScriptures")}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Button 
         variant="ghost" 
         size="default" 

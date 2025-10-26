@@ -34,6 +34,15 @@ import DashaSystemPage from "./pages/DashaSystemPage";
 import { MobilePushService } from "./services/mobileServices";
 import { useEffect } from "react";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import SpiritualAcademy from "./pages/SpiritualAcademy";
+import AcademyAstrology from "./pages/AcademyAstrology";
+import AcademyMeditation from "./pages/AcademyMeditation";
+import AcademySanskrit from "./pages/AcademySanskrit";
+import AcademyScriptures from "./pages/AcademyScriptures";
+import VedicAcademyHome from "./pages/VedicAcademyHome";
+import VedicStudentDashboard from "./pages/VedicStudentDashboard";
+import VedicFacultyDashboard from "./pages/VedicFacultyDashboard";
+import VedicAdminDashboard from "./pages/VedicAdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -163,6 +172,51 @@ const App = () => {
               <Route path="/dasha-system" element={
                 <ProtectedRoute>
                   <DashaSystemPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy" element={
+                <ProtectedRoute>
+                  <SpiritualAcademy />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/astrology" element={
+                <ProtectedRoute>
+                  <AcademyAstrology />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/meditation" element={
+                <ProtectedRoute>
+                  <AcademyMeditation />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/sanskrit" element={
+                <ProtectedRoute>
+                  <AcademySanskrit />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/scriptures" element={
+                <ProtectedRoute>
+                  <AcademyScriptures />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic" element={
+                <ProtectedRoute>
+                  <VedicAcademyHome />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/student" element={
+                <ProtectedRoute>
+                  <VedicStudentDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/faculty" element={
+                <ProtectedRoute>
+                  <VedicFacultyDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/admin" element={
+                <ProtectedRoute adminOnly>
+                  <VedicAdminDashboard />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />
