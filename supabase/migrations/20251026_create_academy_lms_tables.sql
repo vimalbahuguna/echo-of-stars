@@ -62,22 +62,126 @@ alter table public.enrollments enable row level security;
 alter table public.certificates enable row level security;
 alter table public.lesson_completions enable row level security;
 -- Policies: allow read for authenticated users; write constrained to owner relations
-create policy "courses_read_authenticated" on public.courses
-  for select using (auth.uid() is not null);
-create policy "lessons_read_authenticated" on public.lessons
-  for select using (auth.uid() is not null);
-create policy "enrollments_read_own" on public.enrollments
-  for select using (user_id = auth.uid());
-create policy "certificates_read_own" on public.certificates
-  for select using (user_id = auth.uid());
-create policy "lesson_completions_read_own" on public.lesson_completions
-  for select using (user_id = auth.uid());
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'courses_read_authenticated'
+      AND c.relname = 'courses'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "courses_read_authenticated" on public.courses
+      for select using (auth.uid() is not null);
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'lessons_read_authenticated'
+      AND c.relname = 'lessons'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "lessons_read_authenticated" on public.lessons
+      for select using (auth.uid() is not null);
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'enrollments_read_own'
+      AND c.relname = 'enrollments'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "enrollments_read_own" on public.enrollments
+      for select using (user_id = auth.uid());
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'certificates_read_own'
+      AND c.relname = 'certificates'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "certificates_read_own" on public.certificates
+      for select using (user_id = auth.uid());
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'lesson_completions_read_own'
+      AND c.relname = 'lesson_completions'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "lesson_completions_read_own" on public.lesson_completions
+      for select using (user_id = auth.uid());
+  END IF;
+END $$;
 -- Insert policies for writes (users can manage their own progress)
-create policy "enrollments_insert_self" on public.enrollments
-  for insert with check (user_id = auth.uid());
-create policy "enrollments_update_self" on public.enrollments
-  for update using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "lesson_completions_insert_self" on public.lesson_completions
-  for insert with check (user_id = auth.uid());
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'enrollments_insert_self'
+      AND c.relname = 'enrollments'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "enrollments_insert_self" on public.enrollments
+      for insert with check (user_id = auth.uid());
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'enrollments_update_self'
+      AND c.relname = 'enrollments'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "enrollments_update_self" on public.enrollments
+      for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policy p
+    JOIN pg_class c ON p.polrelid = c.oid
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+    WHERE p.polname = 'lesson_completions_insert_self'
+      AND c.relname = 'lesson_completions'
+      AND n.nspname = 'public'
+  ) THEN
+    create policy "lesson_completions_insert_self" on public.lesson_completions
+      for insert with check (user_id = auth.uid());
+  END IF;
+END $$;
 -- Admin roles can manage courses and lessons (assuming 'service_role' on server side)
 -- For client-side, we restrict to read only; writes are expected via admin backend.;
