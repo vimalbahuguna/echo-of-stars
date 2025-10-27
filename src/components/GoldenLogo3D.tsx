@@ -91,12 +91,42 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
           {/* Inner Glow Circle */}
           <div className="absolute inset-12 rounded-full bg-gradient-radial from-yellow-400/30 via-amber-500/20 to-transparent animate-pulse-glow"></div>
 
-          {/* Central Om Symbol (Divine) */}
+          {/* Central Om Symbol (Divine) - Using Unicode ॐ */}
+          <div className="absolute inset-0 flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-110">
+            <div 
+              className="text-[120px] sm:text-[140px] md:text-[160px] font-bold select-none animate-glow-pulse"
+              style={{
+                fontFamily: 'serif',
+                textShadow: `
+                  0 2px 0 #c99a48,
+                  0 4px 0 #b8893f,
+                  0 6px 0 #a77836,
+                  0 8px 0 #96672d,
+                  0 10px 0 #855624,
+                  0 12px 0 #74451b,
+                  0 14px 10px rgba(0,0,0,0.4),
+                  0 16px 20px rgba(0,0,0,0.3),
+                  0 20px 30px rgba(0,0,0,0.2),
+                  0 0 40px rgba(250,204,21,0.8),
+                  0 0 60px rgba(251,191,36,0.6)
+                `,
+                background: 'linear-gradient(180deg, #ffd700 0%, #ffed4e 15%, #ffd700 30%, #c9a853 50%, #a77836 70%, #855624 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 30px rgba(250,204,21,0.9))'
+              }}
+            >
+              ॐ
+            </div>
+          </div>
+
+          {/* Alternative SVG Om for better rendering */}
           <svg
             viewBox="0 0 200 200"
-            className="absolute inset-0 w-full h-full p-12 transition-transform duration-500 group-hover:rotate-12"
+            className="absolute inset-0 w-full h-full p-6 transition-transform duration-500 group-hover:rotate-6 opacity-90"
             style={{
-              filter: 'drop-shadow(0 0 30px rgba(250,204,21,0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.5))'
+              filter: 'drop-shadow(0 0 25px rgba(250,204,21,0.7))'
             }}
           >
             <defs>
@@ -109,10 +139,10 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
                 <stop offset="100%" style={{ stopColor: '#855624', stopOpacity: 1 }} />
               </linearGradient>
               <filter id="emboss">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-                <feOffset dx="0" dy="4" result="offsetblur" />
+                <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                <feOffset dx="0" dy="6" result="offsetblur" />
                 <feComponentTransfer>
-                  <feFuncA type="linear" slope="0.5" />
+                  <feFuncA type="linear" slope="0.6" />
                 </feComponentTransfer>
                 <feMerge>
                   <feMergeNode />
@@ -121,20 +151,64 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
               </filter>
             </defs>
             
-            {/* Om Symbol Path */}
-            <path
-              d="M 100 40 C 85 40, 75 50, 75 65 C 75 75, 80 82, 90 85 L 85 100 C 82 110, 85 120, 95 120 C 105 120, 110 112, 108 102 L 105 90 C 115 88, 125 80, 125 65 C 125 50, 115 40, 100 40 Z M 130 70 C 135 65, 145 65, 150 70 C 155 75, 155 85, 150 90 C 145 95, 135 95, 130 90 C 125 85, 125 75, 130 70 Z M 60 130 Q 70 125, 85 130 T 110 135 Q 125 138, 140 135 M 80 145 C 80 155, 90 160, 100 160 C 110 160, 120 155, 120 145"
-              fill="url(#goldGradient)"
-              stroke="#c9a853"
-              strokeWidth="2"
-              filter="url(#emboss)"
-              className="animate-glow-pulse"
-            />
-            
-            {/* Decorative Dots */}
-            <circle cx="100" cy="25" r="4" fill="url(#goldGradient)" filter="url(#emboss)" />
-            <circle cx="150" cy="55" r="3" fill="url(#goldGradient)" filter="url(#emboss)" />
-            <circle cx="50" cy="55" r="3" fill="url(#goldGradient)" filter="url(#emboss)" />
+            {/* Enhanced Om Symbol Path - More authentic design */}
+            <g transform="translate(100, 100) scale(1.2)">
+              {/* Main Om body */}
+              <path
+                d="M -30 -20 Q -35 -30, -25 -35 Q -15 -38, -10 -30 L -5 -15 Q 0 -10, 5 -15 L 10 -30 Q 15 -38, 25 -35 Q 35 -30, 30 -20 Q 25 -10, 15 -5 L 15 10 Q 18 20, 10 25 Q 2 28, -5 23 L -10 15 Q -15 5, -20 0 Q -28 -8, -30 -20 Z"
+                fill="url(#goldGradient)"
+                stroke="#b8893f"
+                strokeWidth="2.5"
+                filter="url(#emboss)"
+                className="animate-glow-pulse"
+              />
+              {/* Top curve of Om */}
+              <path
+                d="M -25 -35 Q 0 -45, 25 -35"
+                fill="none"
+                stroke="url(#goldGradient)"
+                strokeWidth="4"
+                strokeLinecap="round"
+                filter="url(#emboss)"
+              />
+              {/* Right side circle */}
+              <circle 
+                cx="35" 
+                cy="-15" 
+                r="8" 
+                fill="url(#goldGradient)" 
+                stroke="#b8893f"
+                strokeWidth="2"
+                filter="url(#emboss)"
+              />
+              {/* Bottom curve */}
+              <path
+                d="M -20 15 Q -10 25, 0 28 Q 10 30, 20 25"
+                fill="none"
+                stroke="url(#goldGradient)"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                filter="url(#emboss)"
+              />
+              {/* Base line */}
+              <path
+                d="M -35 35 Q -15 32, 0 35 Q 15 38, 35 35"
+                fill="none"
+                stroke="url(#goldGradient)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                filter="url(#emboss)"
+              />
+              {/* Decorative bindhu (dot) */}
+              <circle 
+                cx="0" 
+                cy="-48" 
+                r="5" 
+                fill="url(#goldGradient)" 
+                filter="url(#emboss)"
+                className="animate-pulse"
+              />
+            </g>
           </svg>
 
           {/* Lotus Petals Base */}
