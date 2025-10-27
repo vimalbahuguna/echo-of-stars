@@ -14,6 +14,230 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          organization_id: string | null
+          role: Database["public"]["Enums"]["academy_role"]
+          status: string
+          tenant_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string | null
+          role: Database["public"]["Enums"]["academy_role"]
+          status?: string
+          tenant_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string | null
+          role?: Database["public"]["Enums"]["academy_role"]
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_memberships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_memberships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_profile_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academy_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asm_assessment_results: {
+        Row: {
+          assessment_id: number
+          created_at: string
+          graded_at: string | null
+          grader_faculty_id: number | null
+          passed: boolean | null
+          result_id: number
+          score: number | null
+          student_id: number
+          updated_at: string
+        }
+        Insert: {
+          assessment_id: number
+          created_at?: string
+          graded_at?: string | null
+          grader_faculty_id?: number | null
+          passed?: boolean | null
+          result_id?: number
+          score?: number | null
+          student_id: number
+          updated_at?: string
+        }
+        Update: {
+          assessment_id?: number
+          created_at?: string
+          graded_at?: string | null
+          grader_faculty_id?: number | null
+          passed?: boolean | null
+          result_id?: number
+          score?: number | null
+          student_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asm_assessment_results_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "asm_assessments"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_grader_faculty_id_fkey"
+            columns: ["grader_faculty_id"]
+            isOneToOne: false
+            referencedRelation: "fac_faculty"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_grader_faculty_id_fkey"
+            columns: ["grader_faculty_id"]
+            isOneToOne: false
+            referencedRelation: "vw_faculty_week_load"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "asm_assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      asm_assessments: {
+        Row: {
+          assessment_id: number
+          assessment_name: string
+          assessment_type_id: number
+          description: string | null
+          duration_hours: number | null
+          level_id: number
+          max_marks: number | null
+          quantity: number | null
+        }
+        Insert: {
+          assessment_id?: number
+          assessment_name: string
+          assessment_type_id: number
+          description?: string | null
+          duration_hours?: number | null
+          level_id: number
+          max_marks?: number | null
+          quantity?: number | null
+        }
+        Update: {
+          assessment_id?: number
+          assessment_name?: string
+          assessment_type_id?: number
+          description?: string | null
+          duration_hours?: number | null
+          level_id?: number
+          max_marks?: number | null
+          quantity?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asm_assessments_assessment_type_id_fkey"
+            columns: ["assessment_type_id"]
+            isOneToOne: false
+            referencedRelation: "asm_types"
+            referencedColumns: ["assessment_type_id"]
+          },
+          {
+            foreignKeyName: "asm_assessments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "asm_assessments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      asm_types: {
+        Row: {
+          assessment_type_id: number
+          description: string | null
+          type_name: string
+        }
+        Insert: {
+          assessment_type_id?: number
+          description?: string | null
+          type_name: string
+        }
+        Update: {
+          assessment_type_id?: number
+          description?: string | null
+          type_name?: string
+        }
+        Relationships: []
+      }
       birth_charts: {
         Row: {
           astrological_system: string
@@ -85,6 +309,134 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cert_certifications_awarded: {
+        Row: {
+          award_id: number
+          awarded_at: string
+          certificate_code: string | null
+          created_at: string
+          level_id: number
+          notes: string | null
+          status: Database["public"]["Enums"]["cert_status_enum"]
+          student_id: number
+          updated_at: string
+        }
+        Insert: {
+          award_id?: number
+          awarded_at?: string
+          certificate_code?: string | null
+          created_at?: string
+          level_id: number
+          notes?: string | null
+          status?: Database["public"]["Enums"]["cert_status_enum"]
+          student_id: number
+          updated_at?: string
+        }
+        Update: {
+          award_id?: number
+          awarded_at?: string
+          certificate_code?: string | null
+          created_at?: string
+          level_id?: number
+          notes?: string | null
+          status?: Database["public"]["Enums"]["cert_status_enum"]
+          student_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cert_certifications_awarded_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "cert_certifications_awarded_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "cert_certifications_awarded_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cert_certifications_awarded_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cert_certifications_awarded_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cert_certifications_awarded_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      certificates: {
+        Row: {
+          certificate_number: string | null
+          course_id: string
+          id: string
+          issued_at: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          certificate_number?: string | null
+          course_id: string
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          certificate_number?: string | null
+          course_id?: string
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_profile_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -340,6 +692,113 @@ export type Database = {
           },
         ]
       }
+      com_forum_posts: {
+        Row: {
+          author_membership_id: string | null
+          content: string
+          created_at: string
+          parent_post_id: number | null
+          post_id: number
+          topic_id: number
+          updated_at: string
+        }
+        Insert: {
+          author_membership_id?: string | null
+          content: string
+          created_at?: string
+          parent_post_id?: number | null
+          post_id?: number
+          topic_id: number
+          updated_at?: string
+        }
+        Update: {
+          author_membership_id?: string | null
+          content?: string
+          created_at?: string
+          parent_post_id?: number | null
+          post_id?: number
+          topic_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "com_forum_posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "com_forum_posts"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "com_forum_posts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "com_forum_topics"
+            referencedColumns: ["topic_id"]
+          },
+        ]
+      }
+      com_forum_topics: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          level_id: number | null
+          title: string
+          topic_id: number
+          updated_at: string
+          week_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          level_id?: number | null
+          title: string
+          topic_id?: number
+          updated_at?: string
+          week_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          level_id?: number | null
+          title?: string
+          topic_id?: number
+          updated_at?: string
+          week_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "com_forum_topics_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "com_forum_topics_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "com_forum_topics_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "com_forum_topics_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
       continents: {
         Row: {
           code: string
@@ -404,6 +863,967 @@ export type Database = {
             columns: ["continent_id"]
             isOneToOne: false
             referencedRelation: "continents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          language: string | null
+          level: string | null
+          published: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          language?: string | null
+          level?: string | null
+          published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          language?: string | null
+          level?: string | null
+          published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      cur_certification_levels: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_days: number
+          duration_months: number
+          duration_weeks: number
+          fee_usd: number
+          level_id: number
+          level_name: string
+          level_type: Database["public"]["Enums"]["cur_level_type_enum"]
+          passing_score_percentage: number
+          sequence_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_days: number
+          duration_months: number
+          duration_weeks: number
+          fee_usd: number
+          level_id?: number
+          level_name: string
+          level_type: Database["public"]["Enums"]["cur_level_type_enum"]
+          passing_score_percentage: number
+          sequence_order: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_days?: number
+          duration_months?: number
+          duration_weeks?: number
+          fee_usd?: number
+          level_id?: number
+          level_name?: string
+          level_type?: Database["public"]["Enums"]["cur_level_type_enum"]
+          passing_score_percentage?: number
+          sequence_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      cur_exercise_logs: {
+        Row: {
+          completed_at: string | null
+          exercise_id: number
+          log_id: number
+          notes: string | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["stu_progress_status_enum"] | null
+          student_id: number
+        }
+        Insert: {
+          completed_at?: string | null
+          exercise_id: number
+          log_id?: number
+          notes?: string | null
+          started_at?: string | null
+          status?:
+            | Database["public"]["Enums"]["stu_progress_status_enum"]
+            | null
+          student_id: number
+        }
+        Update: {
+          completed_at?: string | null
+          exercise_id?: number
+          log_id?: number
+          notes?: string | null
+          started_at?: string | null
+          status?:
+            | Database["public"]["Enums"]["stu_progress_status_enum"]
+            | null
+          student_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_exercise_logs_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "cur_practical_exercises"
+            referencedColumns: ["exercise_id"]
+          },
+          {
+            foreignKeyName: "cur_exercise_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cur_exercise_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cur_exercise_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "cur_exercise_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      cur_level_requirements: {
+        Row: {
+          created_at: string
+          level_id: number
+          prerequisite: string | null
+          required_hours: number | null
+          requirement_id: number
+          requirement_text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          level_id: number
+          prerequisite?: string | null
+          required_hours?: number | null
+          requirement_id?: number
+          requirement_text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          level_id?: number
+          prerequisite?: string | null
+          required_hours?: number | null
+          requirement_id?: number
+          requirement_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_level_requirements_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "cur_level_requirements_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      cur_months: {
+        Row: {
+          description: string | null
+          level_id: number
+          month_id: number
+          month_number: number
+          month_title: string
+        }
+        Insert: {
+          description?: string | null
+          level_id: number
+          month_id?: number
+          month_number: number
+          month_title: string
+        }
+        Update: {
+          description?: string | null
+          level_id?: number
+          month_id?: number
+          month_number?: number
+          month_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_months_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "cur_months_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      cur_practical_exercises: {
+        Row: {
+          difficulty_level: Database["public"]["Enums"]["cur_difficulty_level_enum"]
+          estimated_duration_hours: number | null
+          exercise_description: string | null
+          exercise_id: number
+          exercise_order: number
+          exercise_title: string
+          week_id: number
+        }
+        Insert: {
+          difficulty_level: Database["public"]["Enums"]["cur_difficulty_level_enum"]
+          estimated_duration_hours?: number | null
+          exercise_description?: string | null
+          exercise_id?: number
+          exercise_order: number
+          exercise_title: string
+          week_id: number
+        }
+        Update: {
+          difficulty_level?: Database["public"]["Enums"]["cur_difficulty_level_enum"]
+          estimated_duration_hours?: number | null
+          exercise_description?: string | null
+          exercise_id?: number
+          exercise_order?: number
+          exercise_title?: string
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_practical_exercises_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "cur_practical_exercises_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      cur_reading_materials: {
+        Row: {
+          added_at: string | null
+          kind: string | null
+          material_id: number
+          title: string
+          url: string | null
+          week_id: number
+        }
+        Insert: {
+          added_at?: string | null
+          kind?: string | null
+          material_id?: number
+          title: string
+          url?: string | null
+          week_id: number
+        }
+        Update: {
+          added_at?: string | null
+          kind?: string | null
+          material_id?: number
+          title?: string
+          url?: string | null
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_reading_materials_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "cur_reading_materials_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      cur_session_recordings: {
+        Row: {
+          created_at: string
+          duration_minutes: number | null
+          recording_id: number
+          session_id: string
+          updated_at: string
+          uploaded_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number | null
+          recording_id?: number
+          session_id: string
+          updated_at?: string
+          uploaded_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number | null
+          recording_id?: number
+          session_id?: string
+          updated_at?: string
+          uploaded_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_session_recordings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "cur_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cur_sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_at: string | null
+          id: string
+          start_at: string
+          title: string | null
+          updated_at: string
+          week_id: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          id?: string
+          start_at: string
+          title?: string | null
+          updated_at?: string
+          week_id: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          id?: string
+          start_at?: string
+          title?: string | null
+          updated_at?: string
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_sessions_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "cur_sessions_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      cur_topics: {
+        Row: {
+          is_core_topic: boolean | null
+          topic_description: string | null
+          topic_id: number
+          topic_order: number
+          topic_title: string
+          week_id: number
+        }
+        Insert: {
+          is_core_topic?: boolean | null
+          topic_description?: string | null
+          topic_id?: number
+          topic_order: number
+          topic_title: string
+          week_id: number
+        }
+        Update: {
+          is_core_topic?: boolean | null
+          topic_description?: string | null
+          topic_id?: number
+          topic_order?: number
+          topic_title?: string
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_topics_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "cur_topics_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      cur_week_resources: {
+        Row: {
+          created_at: string
+          id: number
+          ordering: number | null
+          resource_id: number
+          updated_at: string
+          week_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          ordering?: number | null
+          resource_id: number
+          updated_at?: string
+          week_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          ordering?: number | null
+          resource_id?: number
+          updated_at?: string
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_week_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "res_resources"
+            referencedColumns: ["resource_id"]
+          },
+          {
+            foreignKeyName: "cur_week_resources_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "cur_week_resources_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      cur_weeks: {
+        Row: {
+          description: string | null
+          month_id: number
+          practical_hours: number | null
+          self_study_hours: number | null
+          theory_hours: number | null
+          week_end: number
+          week_id: number
+          week_start: number
+          week_title: string
+        }
+        Insert: {
+          description?: string | null
+          month_id: number
+          practical_hours?: number | null
+          self_study_hours?: number | null
+          theory_hours?: number | null
+          week_end: number
+          week_id?: number
+          week_start: number
+          week_title: string
+        }
+        Update: {
+          description?: string | null
+          month_id?: number
+          practical_hours?: number | null
+          self_study_hours?: number | null
+          theory_hours?: number | null
+          week_end?: number
+          week_id?: number
+          week_start?: number
+          week_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cur_weeks_month_id_fkey"
+            columns: ["month_id"]
+            isOneToOne: false
+            referencedRelation: "cur_months"
+            referencedColumns: ["month_id"]
+          },
+          {
+            foreignKeyName: "cur_weeks_month_id_fkey"
+            columns: ["month_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["month_id"]
+          },
+        ]
+      }
+      enrollments: {
+        Row: {
+          completed: boolean | null
+          course_id: string
+          id: string
+          progress_percent: number | null
+          started_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          course_id: string
+          id?: string
+          progress_percent?: number | null
+          started_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          course_id?: string
+          id?: string
+          progress_percent?: number | null
+          started_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_profile_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fac_assignments: {
+        Row: {
+          assigned_at: string | null
+          faculty_id: number
+          id: string
+          role: string | null
+          week_id: number
+        }
+        Insert: {
+          assigned_at?: string | null
+          faculty_id: number
+          id?: string
+          role?: string | null
+          week_id: number
+        }
+        Update: {
+          assigned_at?: string | null
+          faculty_id?: number
+          id?: string
+          role?: string | null
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fac_assignments_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "fac_faculty"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "fac_assignments_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "vw_faculty_week_load"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "fac_assignments_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "fac_assignments_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      fac_faculty: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          email: string
+          faculty_id: number
+          first_name: string
+          is_guest_faculty: boolean | null
+          is_lead_faculty: boolean | null
+          last_name: string
+          phone: string | null
+          profile_image_url: string | null
+          published_works: string | null
+          specialization: string | null
+          traditional_lineage: string | null
+          updated_at: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          email: string
+          faculty_id?: number
+          first_name: string
+          is_guest_faculty?: boolean | null
+          is_lead_faculty?: boolean | null
+          last_name: string
+          phone?: string | null
+          profile_image_url?: string | null
+          published_works?: string | null
+          specialization?: string | null
+          traditional_lineage?: string | null
+          updated_at?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          email?: string
+          faculty_id?: number
+          first_name?: string
+          is_guest_faculty?: boolean | null
+          is_lead_faculty?: boolean | null
+          last_name?: string
+          phone?: string | null
+          profile_image_url?: string | null
+          published_works?: string | null
+          specialization?: string | null
+          traditional_lineage?: string | null
+          updated_at?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
+      fac_mentor_assignments: {
+        Row: {
+          active: boolean
+          assignment_id: number
+          created_at: string
+          end_date: string | null
+          mentor_id: number
+          notes: string | null
+          start_date: string
+          student_id: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          assignment_id?: number
+          created_at?: string
+          end_date?: string | null
+          mentor_id: number
+          notes?: string | null
+          start_date: string
+          student_id: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          assignment_id?: number
+          created_at?: string
+          end_date?: string | null
+          mentor_id?: number
+          notes?: string | null
+          start_date?: string
+          student_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fac_mentor_assignments_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "fac_faculty"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_assignments_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "vw_faculty_week_load"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_assignments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_assignments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_assignments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_assignments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      fac_mentor_requirements: {
+        Row: {
+          description: string | null
+          level_id: number
+          mentor_type: string
+          requirement_id: number
+          student_ratio: string
+        }
+        Insert: {
+          description?: string | null
+          level_id: number
+          mentor_type: string
+          requirement_id?: number
+          student_ratio: string
+        }
+        Update: {
+          description?: string | null
+          level_id?: number
+          mentor_type?: string
+          requirement_id?: number
+          student_ratio?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fac_mentor_requirements_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "fac_mentor_requirements_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      fac_mentorship_sessions: {
+        Row: {
+          assignment_id: number
+          created_at: string
+          duration_minutes: number | null
+          notes: string | null
+          recording_url: string | null
+          session_at: string
+          session_id: number
+          updated_at: string
+        }
+        Insert: {
+          assignment_id: number
+          created_at?: string
+          duration_minutes?: number | null
+          notes?: string | null
+          recording_url?: string | null
+          session_at: string
+          session_id?: number
+          updated_at?: string
+        }
+        Update: {
+          assignment_id?: number
+          created_at?: string
+          duration_minutes?: number | null
+          notes?: string | null
+          recording_url?: string | null
+          session_at?: string
+          session_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fac_mentorship_sessions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "fac_mentor_assignments"
+            referencedColumns: ["assignment_id"]
+          },
+        ]
+      }
+      lesson_completions: {
+        Row: {
+          completed_at: string
+          id: string
+          lesson_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          lesson_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          lesson_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_completions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_profile_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          content: string | null
+          course_id: string
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          order_index: number
+          published: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          course_id: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          order_index?: number
+          published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          course_id?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          order_index?: number
+          published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
             referencedColumns: ["id"]
           },
         ]
@@ -573,6 +1993,109 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      pkg_course_packages: {
+        Row: {
+          description: string | null
+          duration_months: number
+          hours_per_week: number | null
+          is_active: boolean | null
+          package_id: number
+          package_name: string
+          package_type: Database["public"]["Enums"]["pkg_package_type_enum"]
+          payment_installments: number | null
+          payment_plan_available: boolean | null
+          savings_usd: number | null
+          total_fee_usd: number
+        }
+        Insert: {
+          description?: string | null
+          duration_months: number
+          hours_per_week?: number | null
+          is_active?: boolean | null
+          package_id?: number
+          package_name: string
+          package_type: Database["public"]["Enums"]["pkg_package_type_enum"]
+          payment_installments?: number | null
+          payment_plan_available?: boolean | null
+          savings_usd?: number | null
+          total_fee_usd: number
+        }
+        Update: {
+          description?: string | null
+          duration_months?: number
+          hours_per_week?: number | null
+          is_active?: boolean | null
+          package_id?: number
+          package_name?: string
+          package_type?: Database["public"]["Enums"]["pkg_package_type_enum"]
+          payment_installments?: number | null
+          payment_plan_available?: boolean | null
+          savings_usd?: number | null
+          total_fee_usd?: number
+        }
+        Relationships: []
+      }
+      pkg_inclusions: {
+        Row: {
+          inclusion_id: number
+          inclusion_item: string
+          inclusion_order: number
+          package_id: number
+        }
+        Insert: {
+          inclusion_id?: number
+          inclusion_item: string
+          inclusion_order: number
+          package_id: number
+        }
+        Update: {
+          inclusion_id?: number
+          inclusion_item?: string
+          inclusion_order?: number
+          package_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pkg_inclusions_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "pkg_course_packages"
+            referencedColumns: ["package_id"]
+          },
+        ]
+      }
+      pkg_pricing_tiers: {
+        Row: {
+          description: string | null
+          package_id: number
+          price_usd: number
+          tier_id: number
+          tier_name: string
+        }
+        Insert: {
+          description?: string | null
+          package_id: number
+          price_usd: number
+          tier_id?: number
+          tier_name: string
+        }
+        Update: {
+          description?: string | null
+          package_id?: number
+          price_usd?: number
+          tier_id?: number
+          tier_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pkg_pricing_tiers_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "pkg_course_packages"
+            referencedColumns: ["package_id"]
           },
         ]
       }
@@ -791,6 +2314,194 @@ export type Database = {
           },
         ]
       }
+      qa_student_feedback: {
+        Row: {
+          comments: string | null
+          created_at: string
+          enrollment_id: number | null
+          feedback_id: number
+          level_id: number | null
+          organization_id: string | null
+          rating_content: number | null
+          rating_instructor: number | null
+          rating_overall: number | null
+          rating_support: number | null
+          student_id: number
+          submitted_at: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          comments?: string | null
+          created_at?: string
+          enrollment_id?: number | null
+          feedback_id?: number
+          level_id?: number | null
+          organization_id?: string | null
+          rating_content?: number | null
+          rating_instructor?: number | null
+          rating_overall?: number | null
+          rating_support?: number | null
+          student_id: number
+          submitted_at?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comments?: string | null
+          created_at?: string
+          enrollment_id?: number | null
+          feedback_id?: number
+          level_id?: number | null
+          organization_id?: string | null
+          rating_content?: number | null
+          rating_instructor?: number | null
+          rating_overall?: number | null
+          rating_support?: number | null
+          student_id?: number
+          submitted_at?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_student_feedback_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "stu_enrollments"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "qa_student_feedback_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      res_resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          metadata: Json | null
+          resource_id: number
+          title: string
+          type_id: number
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          metadata?: Json | null
+          resource_id?: number
+          title: string
+          type_id: number
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          metadata?: Json | null
+          resource_id?: number
+          title?: string
+          type_id?: number
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "res_resources_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "res_types"
+            referencedColumns: ["type_id"]
+          },
+        ]
+      }
+      res_types: {
+        Row: {
+          type_id: number
+          type_name: string
+        }
+        Insert: {
+          type_id?: number
+          type_name: string
+        }
+        Update: {
+          type_id?: number
+          type_name?: string
+        }
+        Relationships: []
+      }
       role_permissions: {
         Row: {
           actions: string[]
@@ -860,6 +2571,627 @@ export type Database = {
             columns: ["country_id"]
             isOneToOne: false
             referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stu_assessments: {
+        Row: {
+          assessment_date: string | null
+          assessment_id: number
+          attempt_number: number | null
+          evaluated_by: number | null
+          evaluated_date: string | null
+          feedback: string | null
+          marks_obtained: number | null
+          max_marks: number | null
+          passed: boolean | null
+          percentage: number | null
+          student_assessment_id: number
+          student_id: number
+        }
+        Insert: {
+          assessment_date?: string | null
+          assessment_id: number
+          attempt_number?: number | null
+          evaluated_by?: number | null
+          evaluated_date?: string | null
+          feedback?: string | null
+          marks_obtained?: number | null
+          max_marks?: number | null
+          passed?: boolean | null
+          percentage?: number | null
+          student_assessment_id?: number
+          student_id: number
+        }
+        Update: {
+          assessment_date?: string | null
+          assessment_id?: number
+          attempt_number?: number | null
+          evaluated_by?: number | null
+          evaluated_date?: string | null
+          feedback?: string | null
+          marks_obtained?: number | null
+          max_marks?: number | null
+          passed?: boolean | null
+          percentage?: number | null
+          student_assessment_id?: number
+          student_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_assessments_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "asm_assessments"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_evaluated_by_fkey"
+            columns: ["evaluated_by"]
+            isOneToOne: false
+            referencedRelation: "fac_faculty"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_evaluated_by_fkey"
+            columns: ["evaluated_by"]
+            isOneToOne: false
+            referencedRelation: "vw_faculty_week_load"
+            referencedColumns: ["faculty_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_assessments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      stu_attendance: {
+        Row: {
+          created_at: string
+          id: string
+          membership_id: string
+          notes: string | null
+          session_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          membership_id: string
+          notes?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          membership_id?: string
+          notes?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_attendance_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "academy_memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stu_attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "cur_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stu_certifications: {
+        Row: {
+          blockchain_hash: string | null
+          certificate_number: string
+          certification_id: number
+          is_active: boolean | null
+          issue_date: string
+          level_id: number
+          student_id: number
+          verification_url: string | null
+        }
+        Insert: {
+          blockchain_hash?: string | null
+          certificate_number: string
+          certification_id?: number
+          is_active?: boolean | null
+          issue_date: string
+          level_id: number
+          student_id: number
+          verification_url?: string | null
+        }
+        Update: {
+          blockchain_hash?: string | null
+          certificate_number?: string
+          certification_id?: number
+          is_active?: boolean | null
+          issue_date?: string
+          level_id?: number
+          student_id?: number
+          verification_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_certifications_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_certifications_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_certifications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_certifications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_certifications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_certifications_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      stu_enrollments: {
+        Row: {
+          actual_completion_date: string | null
+          enrollment_date: string
+          enrollment_id: number
+          expected_completion_date: string | null
+          level_id: number
+          organization_id: string | null
+          package_id: number
+          payment_status: Database["public"]["Enums"]["stu_payment_status_enum"]
+          start_date: string | null
+          status: Database["public"]["Enums"]["stu_enrollment_status_enum"]
+          student_id: number
+          tenant_id: string | null
+        }
+        Insert: {
+          actual_completion_date?: string | null
+          enrollment_date: string
+          enrollment_id?: number
+          expected_completion_date?: string | null
+          level_id: number
+          organization_id?: string | null
+          package_id: number
+          payment_status?: Database["public"]["Enums"]["stu_payment_status_enum"]
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["stu_enrollment_status_enum"]
+          student_id: number
+          tenant_id?: string | null
+        }
+        Update: {
+          actual_completion_date?: string | null
+          enrollment_date?: string
+          enrollment_id?: number
+          expected_completion_date?: string | null
+          level_id?: number
+          organization_id?: string | null
+          package_id?: number
+          payment_status?: Database["public"]["Enums"]["stu_payment_status_enum"]
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["stu_enrollment_status_enum"]
+          student_id?: number
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_enrollments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "pkg_course_packages"
+            referencedColumns: ["package_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stu_payment_installments: {
+        Row: {
+          amount_usd: number
+          created_at: string
+          due_date: string
+          enrollment_id: number
+          installment_id: number
+          installment_number: number
+          notes: string | null
+          paid_date: string | null
+          status: Database["public"]["Enums"]["installment_status_enum"]
+          updated_at: string
+        }
+        Insert: {
+          amount_usd: number
+          created_at?: string
+          due_date: string
+          enrollment_id: number
+          installment_id?: number
+          installment_number: number
+          notes?: string | null
+          paid_date?: string | null
+          status?: Database["public"]["Enums"]["installment_status_enum"]
+          updated_at?: string
+        }
+        Update: {
+          amount_usd?: number
+          created_at?: string
+          due_date?: string
+          enrollment_id?: number
+          installment_id?: number
+          installment_number?: number
+          notes?: string | null
+          paid_date?: string | null
+          status?: Database["public"]["Enums"]["installment_status_enum"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_payment_installments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "stu_enrollments"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "stu_payment_installments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "stu_payment_installments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["enrollment_id"]
+          },
+        ]
+      }
+      stu_payments: {
+        Row: {
+          amount_usd: number
+          enrollment_id: number
+          external_ref: string | null
+          notes: string | null
+          payment_date: string | null
+          payment_id: string
+          status: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Insert: {
+          amount_usd: number
+          enrollment_id: number
+          external_ref?: string | null
+          notes?: string | null
+          payment_date?: string | null
+          payment_id?: string
+          status?: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Update: {
+          amount_usd?: number
+          enrollment_id?: number
+          external_ref?: string | null
+          notes?: string | null
+          payment_date?: string | null
+          payment_id?: string
+          status?: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_payments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "stu_enrollments"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "stu_payments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["enrollment_id"]
+          },
+          {
+            foreignKeyName: "stu_payments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["enrollment_id"]
+          },
+        ]
+      }
+      stu_progress: {
+        Row: {
+          completed_date: string | null
+          completion_percentage: number | null
+          notes: string | null
+          organization_id: string | null
+          progress_id: number
+          started_date: string | null
+          status: Database["public"]["Enums"]["stu_progress_status_enum"] | null
+          student_id: number
+          tenant_id: string | null
+          week_id: number
+        }
+        Insert: {
+          completed_date?: string | null
+          completion_percentage?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          progress_id?: number
+          started_date?: string | null
+          status?:
+            | Database["public"]["Enums"]["stu_progress_status_enum"]
+            | null
+          student_id: number
+          tenant_id?: string | null
+          week_id: number
+        }
+        Update: {
+          completed_date?: string | null
+          completion_percentage?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          progress_id?: number
+          started_date?: string | null
+          status?:
+            | Database["public"]["Enums"]["stu_progress_status_enum"]
+            | null
+          student_id?: number
+          tenant_id?: string | null
+          week_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_progress_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stu_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "stu_students"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_active_students_progress"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_enrollment_overview"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "vw_student_performance_metrics"
+            referencedColumns: ["student_id"]
+          },
+          {
+            foreignKeyName: "stu_progress_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stu_progress_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "stu_progress_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      stu_students: {
+        Row: {
+          country: string | null
+          created_at: string | null
+          current_level_id: number | null
+          email: string
+          enrollment_date: string
+          first_name: string
+          is_active: boolean | null
+          last_name: string
+          organization_id: string | null
+          phone: string | null
+          sos_astro_account_id: string | null
+          student_id: number
+          tenant_id: string | null
+          updated_at: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string | null
+          current_level_id?: number | null
+          email: string
+          enrollment_date: string
+          first_name: string
+          is_active?: boolean | null
+          last_name: string
+          organization_id?: string | null
+          phone?: string | null
+          sos_astro_account_id?: string | null
+          student_id?: number
+          tenant_id?: string | null
+          updated_at?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string | null
+          current_level_id?: number | null
+          email?: string
+          enrollment_date?: string
+          first_name?: string
+          is_active?: boolean | null
+          last_name?: string
+          organization_id?: string | null
+          phone?: string | null
+          sos_astro_account_id?: string | null
+          student_id?: number
+          tenant_id?: string | null
+          updated_at?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_students_current_level_id_fkey"
+            columns: ["current_level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_students_current_level_id_fkey"
+            columns: ["current_level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_students_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stu_students_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -947,6 +3279,69 @@ export type Database = {
             columns: ["country_id"]
             isOneToOne: false
             referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topic_to_lesson_mappings: {
+        Row: {
+          certification_level: string
+          course_id: string | null
+          created_at: string
+          id: string
+          language: string | null
+          lesson_id: string | null
+          lesson_slug: string | null
+          month_number: number | null
+          topic_key: string | null
+          topic_text: string
+          updated_at: string
+          week_end: number | null
+          week_start: number | null
+        }
+        Insert: {
+          certification_level: string
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          language?: string | null
+          lesson_id?: string | null
+          lesson_slug?: string | null
+          month_number?: number | null
+          topic_key?: string | null
+          topic_text: string
+          updated_at?: string
+          week_end?: number | null
+          week_start?: number | null
+        }
+        Update: {
+          certification_level?: string
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          language?: string | null
+          lesson_id?: string | null
+          lesson_slug?: string | null
+          month_number?: number | null
+          topic_key?: string | null
+          topic_text?: string
+          updated_at?: string
+          week_end?: number | null
+          week_start?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_to_lesson_mappings_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_to_lesson_mappings_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
             referencedColumns: ["id"]
           },
         ]
@@ -1148,24 +3543,152 @@ export type Database = {
           },
         ]
       }
+      vw_active_students_progress: {
+        Row: {
+          avg_completion_percentage: number | null
+          email: string | null
+          enrollment_id: number | null
+          enrollment_status:
+            | Database["public"]["Enums"]["stu_enrollment_status_enum"]
+            | null
+          first_name: string | null
+          last_activity_at: string | null
+          last_name: string | null
+          level_id: number | null
+          level_name: string | null
+          payment_status:
+            | Database["public"]["Enums"]["stu_payment_status_enum"]
+            | null
+          student_id: number | null
+          weeks_completed: number | null
+          weeks_in_progress: number | null
+          weeks_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_students_current_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_students_current_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      vw_curriculum_outline: {
+        Row: {
+          level_id: number | null
+          level_name: string | null
+          month_id: number | null
+          month_number: number | null
+          month_title: string | null
+          topic_id: number | null
+          topic_order: number | null
+          topic_title: string | null
+          week_end: number | null
+          week_id: number | null
+          week_start: number | null
+          week_title: string | null
+        }
+        Relationships: []
+      }
+      vw_faculty_week_load: {
+        Row: {
+          faculty_id: number | null
+          first_name: string | null
+          last_name: string | null
+          week_end: number | null
+          week_id: number | null
+          week_start: number | null
+          week_title: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fac_assignments_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "cur_weeks"
+            referencedColumns: ["week_id"]
+          },
+          {
+            foreignKeyName: "fac_assignments_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["week_id"]
+          },
+        ]
+      }
+      vw_revenue_analysis: {
+        Row: {
+          installment_count: number | null
+          month: string | null
+          paid_amount: number | null
+          pending_amount: number | null
+        }
+        Relationships: []
+      }
+      vw_student_enrollment_overview: {
+        Row: {
+          enrollment_date: string | null
+          enrollment_id: number | null
+          first_name: string | null
+          last_name: string | null
+          level_id: number | null
+          level_name: string | null
+          package_name: string | null
+          payment_status:
+            | Database["public"]["Enums"]["stu_payment_status_enum"]
+            | null
+          status:
+            | Database["public"]["Enums"]["stu_enrollment_status_enum"]
+            | null
+          student_id: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stu_enrollments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "cur_certification_levels"
+            referencedColumns: ["level_id"]
+          },
+          {
+            foreignKeyName: "stu_enrollments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "vw_curriculum_outline"
+            referencedColumns: ["level_id"]
+          },
+        ]
+      }
+      vw_student_performance_metrics: {
+        Row: {
+          assessments_taken: number | null
+          avg_score: number | null
+          first_name: string | null
+          last_name: string | null
+          level_name: string | null
+          passed_count: number | null
+          student_id: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      generate_secure_share_token: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_current_user_organization_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_secure_share_token: { Args: never; Returns: string }
+      get_current_user_organization_id: { Args: never; Returns: string }
       get_current_user_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
-      get_current_user_tenant_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_current_user_tenant_id: { Args: never; Returns: string }
       get_profile_sensitive_data: {
         Args: { profile_id: string }
         Returns: {
@@ -1180,13 +3703,42 @@ export type Database = {
         Args: { action: string; resource: string }
         Returns: boolean
       }
-      hash_session_token: {
-        Args: { token: string }
-        Returns: string
-      }
+      hash_session_token: { Args: { token: string }; Returns: string }
     }
     Enums: {
+      academy_role: "student" | "faculty" | "admin"
+      cert_status_enum: "awarded" | "revoked"
+      cur_difficulty_level_enum:
+        | "Beginner"
+        | "Intermediate"
+        | "Advanced"
+        | "Master"
+      cur_level_type_enum:
+        | "Foundation"
+        | "Practitioner"
+        | "Professional"
+        | "Master"
+      fac_session_type_enum:
+        | "One-on-One"
+        | "Group"
+        | "Emergency"
+        | "Project Review"
+      installment_status_enum: "pending" | "paid" | "overdue"
       organization_type: "headquarters" | "franchise" | "branch" | "partner"
+      payment_status_enum: "pending" | "paid" | "refunded"
+      pkg_package_type_enum: "Complete" | "Level-by-Level" | "Fast-Track"
+      stu_enrollment_status_enum:
+        | "Enrolled"
+        | "In Progress"
+        | "Completed"
+        | "Dropped"
+        | "On Hold"
+      stu_payment_status_enum: "Pending" | "Partial" | "Paid" | "Refunded"
+      stu_progress_status_enum:
+        | "Not Started"
+        | "In Progress"
+        | "Completed"
+        | "Skipped"
       subscription_tier: "basic" | "professional" | "enterprise" | "custom"
       tenant_status: "active" | "suspended" | "inactive" | "trial"
       user_role:
@@ -1324,7 +3876,44 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      academy_role: ["student", "faculty", "admin"],
+      cert_status_enum: ["awarded", "revoked"],
+      cur_difficulty_level_enum: [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "Master",
+      ],
+      cur_level_type_enum: [
+        "Foundation",
+        "Practitioner",
+        "Professional",
+        "Master",
+      ],
+      fac_session_type_enum: [
+        "One-on-One",
+        "Group",
+        "Emergency",
+        "Project Review",
+      ],
+      installment_status_enum: ["pending", "paid", "overdue"],
       organization_type: ["headquarters", "franchise", "branch", "partner"],
+      payment_status_enum: ["pending", "paid", "refunded"],
+      pkg_package_type_enum: ["Complete", "Level-by-Level", "Fast-Track"],
+      stu_enrollment_status_enum: [
+        "Enrolled",
+        "In Progress",
+        "Completed",
+        "Dropped",
+        "On Hold",
+      ],
+      stu_payment_status_enum: ["Pending", "Partial", "Paid", "Refunded"],
+      stu_progress_status_enum: [
+        "Not Started",
+        "In Progress",
+        "Completed",
+        "Skipped",
+      ],
       subscription_tier: ["basic", "professional", "enterprise", "custom"],
       tenant_status: ["active", "suspended", "inactive", "trial"],
       user_role: [
