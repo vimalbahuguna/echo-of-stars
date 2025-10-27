@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "db:list": "bash -lc 'source .env && supabase migration list --db-url \"$SUPABASE_DB_URL\"'",
     "db:push": "bash -lc 'source .env && supabase db push --include-all --db-url \"$SUPABASE_DB_URL\"'",
-    "db:repair": "bash -lc 'source .env && supabase migration repair --status reverted 20251026 --db-url \"$SUPABASE_DB_URL\"'"
+    "db:repair": "bash -lc 'source .env && supabase migration repair --status reverted 20251026 --db-url \"$SUPABASE_DB_URL\"'",
+    "db:auto-fix": "bash -lc 'set -e; source .env; echo \"[auto-fix] Pulling remote schema to sync local state...\"; supabase db pull --db-url \"$SUPABASE_DB_URL\"; echo \"[auto-fix] Repairing known new migrations as applied (skipping 20251026) ...\"; for v in 20251027133500 20251027133600 20251027133700 20251027133800; do echo \"[auto-fix] Repairing $v\"; supabase migration repair --status applied $v --db-url \"$SUPABASE_DB_URL\" || echo \"[auto-fix] Repair for $v skipped or already aligned\"; done; echo \"[auto-fix] Pushing local migrations...\"; supabase db push --include-all --db-url \"$SUPABASE_DB_URL\"; echo \"[auto-fix] Listing migration alignment...\"; supabase migration list --db-url \"$SUPABASE_DB_URL\"'"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",

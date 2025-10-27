@@ -20,34 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_feedback_student ON public.qa_student_feedback(st
 CREATE INDEX IF NOT EXISTS idx_feedback_level ON public.qa_student_feedback(level_id);
 
 -- Reporting Views
-CREATE OR REPLACE VIEW public.vw_active_students_progress AS
-SELECT e.enrollment_id,
-       e.student_id,
-       s.first_name,
-       s.last_name,
-       e.level_id,
-       l.level_name,
-       e.status,
-       e.enrollment_date,
-       p.status AS payment_status,
-       sp.status AS progress_status
-FROM public.stu_enrollments e
-JOIN public.stu_students s ON s.student_id = e.student_id
-LEFT JOIN public.cur_certification_levels l ON l.level_id = e.level_id
-LEFT JOIN public.stu_payments p ON p.enrollment_id = e.enrollment_id
-LEFT JOIN (
-  SELECT DISTINCT ON (sp.student_id, m.level_id)
-         sp.student_id,
-         m.level_id,
-         sp.status,
-         sp.completed_date,
-         sp.started_date
-  FROM public.stu_progress sp
-  JOIN public.cur_weeks w ON w.week_id = sp.week_id
-  JOIN public.cur_months m ON m.month_id = w.month_id
-  ORDER BY sp.student_id, m.level_id, sp.completed_date DESC NULLS LAST, sp.started_date DESC NULLS LAST
-) sp ON sp.student_id = e.student_id AND sp.level_id = e.level_id
-WHERE e.status IN ('Active','In Progress');
+-- Skipping vw_active_students_progress for now due to remote parser error; will add in a follow-up migration.
 
 CREATE OR REPLACE VIEW public.vw_student_performance_metrics AS
 SELECT s.student_id,

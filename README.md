@@ -60,6 +60,11 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Documentation
+
+- Multi-Tenancy & Franchise Architecture: `Resources/Multi-Tenancy_and_Franchise_Architecture.md`
+
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/721d6be9-c13c-40b2-b6c0-0d47ae060ee7) and click on Share -> Publish.
