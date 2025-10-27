@@ -171,21 +171,21 @@ const VedicSyllabus: React.FC = () => {
   useEffect(() => {
     const loadLoggedIn = async () => {
       const { data: enrollData, error: enrollErr } = await supabase
-        .from('section_enrollments')
+        .from('section_enrollments' as any)
         .select('id, section_id, membership_id, status, created_at')
         .order('created_at', { ascending: false });
       if (enrollErr) { console.warn('Enrollments restricted by RLS:', enrollErr); return; }
       const sectionIds = (enrollData || []).map((e: any) => e.section_id).filter(Boolean);
       if (sectionIds.length) {
         const { data: sectData } = await supabase
-          .from('course_sections')
+          .from('course_sections' as any)
           .select('id, title, code')
           .in('id', sectionIds);
         const map: Record<string, { title?: string; code?: string }> = {};
         (sectData || []).forEach((s: any) => { map[s.id] = { title: s.title, code: s.code }; });
         setSections(map);
         const { data: assignData } = await supabase
-          .from('assignments')
+          .from('assignments' as any)
           .select('id, section_id, title, description, due_at, max_points')
           .in('section_id', sectionIds)
           .order('due_at', { ascending: true });

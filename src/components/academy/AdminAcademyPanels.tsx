@@ -32,12 +32,12 @@ export const AdminAcademyPanels: React.FC = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const { data: memData } = await supabase.from("academy_memberships").select("id, user_id, tenant_id, role").order("tenant_id");
-        setMemberships(memData || []);
-        const { data: cohortData } = await supabase.from("stu_cohorts").select("id, tenant_id, name").order("name");
-        setCohorts(cohortData || []);
-        const { data: cmData } = await supabase.from("stu_cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
-        setCohortMembers(cmData || []);
+        const { data: memData } = await supabase.from("academy_memberships" as any).select("id, user_id, tenant_id, role").order("tenant_id");
+        setMemberships((memData as any) || []);
+        const { data: cohortData } = await supabase.from("stu_cohorts" as any).select("id, tenant_id, name").order("name");
+        setCohorts((cohortData as any) || []);
+        const { data: cmData } = await supabase.from("stu_cohort_members" as any).select("id, cohort_id, membership_id").order("cohort_id");
+        setCohortMembers((cmData as any) || []);
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
     };
@@ -45,16 +45,16 @@ export const AdminAcademyPanels: React.FC = () => {
   }, []);
 
   const refreshMemberships = async () => {
-    const { data } = await supabase.from("academy_memberships").select("id, user_id, tenant_id, role").order("tenant_id");
-    setMemberships(data || []);
+    const { data } = await supabase.from("academy_memberships" as any).select("id, user_id, tenant_id, role").order("tenant_id");
+    setMemberships((data as any) || []);
   };
   const refreshCohorts = async () => {
-    const { data } = await supabase.from("stu_cohorts").select("id, tenant_id, name").order("name");
-    setCohorts(data || []);
+    const { data } = await supabase.from("stu_cohorts" as any).select("id, tenant_id, name").order("name");
+    setCohorts((data as any) || []);
   };
   const refreshCohortMembers = async () => {
-    const { data } = await supabase.from("stu_cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
-    setCohortMembers(data || []);
+    const { data } = await supabase.from("stu_cohort_members" as any).select("id, cohort_id, membership_id").order("cohort_id");
+    setCohortMembers((data as any) || []);
   };
 
   const getActualTableName = (table: string) => {
@@ -64,17 +64,17 @@ export const AdminAcademyPanels: React.FC = () => {
   };
 
   const handleInsert = async (table: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).insert(values);
+    const { error } = await supabase.from(getActualTableName(table) as any).insert(values);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleUpdate = async (table: string, id: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).update(values).eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table) as any).update(values).eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleDelete = async (table: string, id: string, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).delete().eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table) as any).delete().eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };

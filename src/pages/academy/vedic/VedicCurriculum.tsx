@@ -58,7 +58,7 @@ const VedicCurriculum: React.FC = () => {
       const courseIds = (courseData || []).map((c: any) => c.id);
       if (courseIds.length) {
         const { data: sectionData, error: sectionErr } = await supabase
-          .from('course_sections')
+          .from('course_sections' as any)
           .select('id, course_id, code, title, status')
           .in('course_id', courseIds)
           .eq('status', 'active');

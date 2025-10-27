@@ -65,11 +65,11 @@ export const StudentAcademyPanels: React.FC = () => {
       try {
         // 1) Fetch section enrollments (RLS restricts to own memberships)
         const { data: enrollData, error: enrollErr } = await supabase
-          .from("section_enrollments")
+          .from("section_enrollments" as any)
           .select("id, membership_id, status, created_at, updated_at, section_id")
           .order("created_at", { ascending: false });
         if (enrollErr) throw enrollErr;
-        setEnrollments(enrollData || []);
+        setEnrollments((enrollData as any) || []);
 
         const sectionIds = (enrollData || [])
           .map(e => (e as any).section_id)
@@ -78,12 +78,12 @@ export const StudentAcademyPanels: React.FC = () => {
         // 2) Fetch section summaries to show context
         if (sectionIds.length) {
           const { data: sectData, error: sectErr } = await supabase
-            .from("course_sections")
+            .from("course_sections" as any)
             .select("id, code, title")
             .in("id", sectionIds);
           if (sectErr) throw sectErr;
           const map: Record<string, CourseSectionSummary> = {};
-          (sectData || []).forEach(s => { map[s.id] = s; });
+          ((sectData as any) || []).forEach((s: any) => { map[s.id] = s; });
           setSections(map);
         } else {
           setSections({});
@@ -91,19 +91,19 @@ export const StudentAcademyPanels: React.FC = () => {
 
         // 3) Fetch assignments (RLS returns only for enrolled sections)
         const { data: assignData, error: assignErr } = await supabase
-          .from("assignments")
+          .from("assignments" as any)
           .select("id, section_id, title, description, due_at, max_points, created_at, updated_at")
           .order("due_at", { ascending: true });
         if (assignErr) throw assignErr;
-        setAssignments(assignData || []);
+        setAssignments((assignData as any) || []);
 
         // 4) Fetch own submissions (RLS returns only for own membership_ids)
         const { data: subData, error: subErr } = await supabase
-          .from("assignment_submissions")
+          .from("assignment_submissions" as any)
           .select("id, assignment_id, membership_id, submitted_at, grade_points, feedback, updated_at")
           .order("updated_at", { ascending: false });
         if (subErr) throw subErr;
-        setSubmissions(subData || []);
+        setSubmissions((subData as any) || []);
       } catch (e) {
         console.error("Student panels load error:", e);
       } finally {

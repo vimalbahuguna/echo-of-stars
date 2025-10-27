@@ -38,14 +38,14 @@ export const FacultyAcademyPanels: React.FC = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const { data: secData } = await supabase.from("cur_sections").select("id, code, name").order("name");
-        setSections(secData || []);
-        const { data: assignData } = await supabase.from("cur_assignments").select("id, section_id, title, description, due_date, max_points").order("due_date");
-        setAssignments(assignData || []);
-        const { data: annData } = await supabase.from("com_announcements").select("id, title, content, published_at").order("published_at", { ascending: false });
-        setAnnouncements(annData || []);
-        const { data: resData } = await supabase.from("res_section_resources").select("id, section_id, title, url").order("title");
-        setResources(resData || []);
+        const { data: secData } = await supabase.from("cur_sections" as any).select("id, code, name").order("name");
+        setSections((secData as any) || []);
+        const { data: assignData } = await supabase.from("cur_assignments" as any).select("id, section_id, title, description, due_date, max_points").order("due_date");
+        setAssignments((assignData as any) || []);
+        const { data: annData } = await supabase.from("com_announcements" as any).select("id, title, content, published_at").order("published_at", { ascending: false });
+        setAnnouncements((annData as any) || []);
+        const { data: resData } = await supabase.from("res_section_resources" as any).select("id, section_id, title, url").order("title");
+        setResources((resData as any) || []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -56,20 +56,20 @@ export const FacultyAcademyPanels: React.FC = () => {
   }, [user?.id]);
 
   const refreshSections = async () => {
-    const { data } = await supabase.from("cur_sections").select("id, code, name").order("name");
-    setSections(data || []);
+    const { data } = await supabase.from("cur_sections" as any).select("id, code, name").order("name");
+    setSections((data as any) || []);
   };
   const refreshAssignments = async () => {
-    const { data } = await supabase.from("cur_assignments").select("id, section_id, title, description, due_date, max_points").order("due_date");
-    setAssignments(data || []);
+    const { data } = await supabase.from("cur_assignments" as any).select("id, section_id, title, description, due_date, max_points").order("due_date");
+    setAssignments((data as any) || []);
   };
   const refreshAnnouncements = async () => {
-    const { data } = await supabase.from("com_announcements").select("id, title, content, published_at").order("published_at", { ascending: false });
-    setAnnouncements(data || []);
+    const { data } = await supabase.from("com_announcements" as any).select("id, title, content, published_at").order("published_at", { ascending: false });
+    setAnnouncements((data as any) || []);
   };
   const refreshResources = async () => {
-    const { data } = await supabase.from("res_section_resources").select("id, section_id, title, url").order("title");
-    setResources(data || []);
+    const { data } = await supabase.from("res_section_resources" as any).select("id, section_id, title, url").order("title");
+    setResources((data as any) || []);
   };
 
   const getActualTableName = (table: string) => {
@@ -82,17 +82,17 @@ export const FacultyAcademyPanels: React.FC = () => {
 
   // Generic helpers
   const handleInsert = async (table: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).insert(values);
+    const { error } = await supabase.from(getActualTableName(table) as any).insert(values);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleUpdate = async (table: string, id: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).update(values).eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table) as any).update(values).eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleDelete = async (table: string, id: string, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(getActualTableName(table)).delete().eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table) as any).delete().eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };
