@@ -253,6 +253,16 @@
     100% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
   }
   
+  @keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes spin-reverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+  }
+  
   @keyframes twinkle {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(0.95); }
@@ -330,6 +340,18 @@
   
   .animate-orbit-reverse {
     animation: orbit-reverse 20s linear infinite;
+  }
+  
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+  
+  .animate-spin-reverse {
+    animation: spin-reverse 15s linear infinite;
+  }
+  
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
   }
   
   .animate-twinkle {

@@ -26,6 +26,13 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
     xl: 'w-20 h-20'
   };
 
+  const logoSizes = {
+    sm: 'w-24 h-24',
+    md: 'w-40 h-40',
+    lg: 'w-56 h-56',
+    xl: 'w-72 h-72 md:w-96 md:h-96'
+  };
+
   return (
     <div className={`relative flex flex-col items-center ${className}`}>
       {/* Animated Cosmic Background Glow */}
@@ -36,7 +43,7 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
 
       {/* Main Logo Container */}
       <div className="relative group">
-        {/* Orbiting Elements */}
+        {/* Orbiting Celestial Elements */}
         <div className="absolute inset-0 animate-orbit pointer-events-none">
           <Stars className={`absolute -top-2 -left-2 ${iconSizes[size]} text-yellow-400 animate-twinkle drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]`} />
         </div>
@@ -50,61 +57,102 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
           <Sun className={`absolute -bottom-4 -right-2 ${iconSizes[size]} text-yellow-500 animate-pulse drop-shadow-[0_0_15px_rgba(234,179,8,0.9)]`} />
         </div>
 
-        {/* 3D Embossed Logo Text */}
-        <div className="relative px-8 py-6">
-          <h1 
-            className={`
-              ${sizeClasses[size]}
-              font-extrabold 
-              text-center
-              relative
-              golden-embossed-text
-              animate-glow-pulse
-              tracking-wider
-              select-none
-              transition-all
-              duration-500
-              group-hover:scale-105
-              cursor-default
-            `}
+        {/* Central Divine Symbol Container */}
+        <div className={`relative ${logoSizes[size]} flex items-center justify-center transition-all duration-500 group-hover:scale-105`}>
+          
+          {/* Outer Zodiac Ring */}
+          <div className="absolute inset-0 rounded-full border-4 border-yellow-400/40 animate-spin-slow"
+               style={{
+                 boxShadow: '0 0 30px rgba(250,204,21,0.4), inset 0 0 30px rgba(250,204,21,0.2)',
+                 filter: 'drop-shadow(0 0 20px rgba(250,204,21,0.6))'
+               }}>
+            {/* Zodiac Symbols */}
+            {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, idx) => (
+              <div
+                key={idx}
+                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                style={{
+                  top: '50%',
+                  left: '50%',
+                  transform: `rotate(${angle}deg) translateX(${size === 'xl' ? '140px' : size === 'lg' ? '100px' : size === 'md' ? '70px' : '40px'}) translateY(-50%)`,
+                  boxShadow: '0 0 10px rgba(250,204,21,0.8)'
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Middle Ring with Sacred Geometry */}
+          <div className="absolute inset-8 rounded-full border-2 border-amber-500/60 animate-spin-reverse"
+               style={{
+                 boxShadow: '0 0 20px rgba(251,191,36,0.5), inset 0 0 20px rgba(251,191,36,0.3)'
+               }}>
+          </div>
+
+          {/* Inner Glow Circle */}
+          <div className="absolute inset-12 rounded-full bg-gradient-radial from-yellow-400/30 via-amber-500/20 to-transparent animate-pulse-glow"></div>
+
+          {/* Central Om Symbol (Divine) */}
+          <svg
+            viewBox="0 0 200 200"
+            className="absolute inset-0 w-full h-full p-12 transition-transform duration-500 group-hover:rotate-12"
             style={{
-              textShadow: `
-                0 1px 0 #c99a48,
-                0 2px 0 #b8893f,
-                0 3px 0 #a77836,
-                0 4px 0 #96672d,
-                0 5px 0 #855624,
-                0 6px 0 #74451b,
-                0 7px 0 #633412,
-                0 8px 0 #522309,
-                0 9px 8px rgba(0,0,0,0.4),
-                0 10px 15px rgba(0,0,0,0.3),
-                0 15px 25px rgba(0,0,0,0.2),
-                0 0 30px rgba(250,204,21,0.5),
-                0 0 50px rgba(251,191,36,0.3)
-              `,
-              background: 'linear-gradient(180deg, #ffd700 0%, #ffed4e 20%, #ffd700 40%, #c9a853 60%, #a77836 80%, #855624 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 20px rgba(250,204,21,0.6))'
+              filter: 'drop-shadow(0 0 30px rgba(250,204,21,0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.5))'
             }}
           >
-            SOS ASTRAL
-          </h1>
-          
-          {/* Embossed Highlight Overlay */}
-          <div 
-            className="absolute inset-0 pointer-events-none opacity-30"
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, transparent 50%)',
-              mixBlendMode: 'overlay'
-            }}
-          />
-        </div>
+            <defs>
+              <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style={{ stopColor: '#ffd700', stopOpacity: 1 }} />
+                <stop offset="20%" style={{ stopColor: '#ffed4e', stopOpacity: 1 }} />
+                <stop offset="40%" style={{ stopColor: '#ffd700', stopOpacity: 1 }} />
+                <stop offset="60%" style={{ stopColor: '#c9a853', stopOpacity: 1 }} />
+                <stop offset="80%" style={{ stopColor: '#a77836', stopOpacity: 1 }} />
+                <stop offset="100%" style={{ stopColor: '#855624', stopOpacity: 1 }} />
+              </linearGradient>
+              <filter id="emboss">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                <feOffset dx="0" dy="4" result="offsetblur" />
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.5" />
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            
+            {/* Om Symbol Path */}
+            <path
+              d="M 100 40 C 85 40, 75 50, 75 65 C 75 75, 80 82, 90 85 L 85 100 C 82 110, 85 120, 95 120 C 105 120, 110 112, 108 102 L 105 90 C 115 88, 125 80, 125 65 C 125 50, 115 40, 100 40 Z M 130 70 C 135 65, 145 65, 150 70 C 155 75, 155 85, 150 90 C 145 95, 135 95, 130 90 C 125 85, 125 75, 130 70 Z M 60 130 Q 70 125, 85 130 T 110 135 Q 125 138, 140 135 M 80 145 C 80 155, 90 160, 100 160 C 110 160, 120 155, 120 145"
+              fill="url(#goldGradient)"
+              stroke="#c9a853"
+              strokeWidth="2"
+              filter="url(#emboss)"
+              className="animate-glow-pulse"
+            />
+            
+            {/* Decorative Dots */}
+            <circle cx="100" cy="25" r="4" fill="url(#goldGradient)" filter="url(#emboss)" />
+            <circle cx="150" cy="55" r="3" fill="url(#goldGradient)" filter="url(#emboss)" />
+            <circle cx="50" cy="55" r="3" fill="url(#goldGradient)" filter="url(#emboss)" />
+          </svg>
 
-        {/* Glowing Aura Effect */}
-        <div className="absolute inset-0 rounded-lg opacity-50 group-hover:opacity-70 transition-opacity duration-500 blur-xl bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse-glow" style={{ zIndex: -1 }}></div>
+          {/* Lotus Petals Base */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3/4 h-8">
+            <svg viewBox="0 0 100 20" className="w-full h-full" style={{ filter: 'drop-shadow(0 5px 15px rgba(250,204,21,0.6))' }}>
+              <path
+                d="M 10,15 Q 20,5 30,15 Q 40,5 50,15 Q 60,5 70,15 Q 80,5 90,15"
+                fill="none"
+                stroke="url(#goldGradient)"
+                strokeWidth="2"
+                className="animate-pulse"
+              />
+            </svg>
+          </div>
+
+          {/* Glowing Aura Effect */}
+          <div className="absolute inset-0 rounded-full opacity-50 group-hover:opacity-70 transition-opacity duration-500 blur-2xl bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse-glow" style={{ zIndex: -1 }}></div>
+        </div>
       </div>
 
       {/* Tagline */}
