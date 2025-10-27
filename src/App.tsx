@@ -49,6 +49,7 @@ import VedicCurriculum from "./pages/academy/vedic/VedicCurriculum";
 import VedicSyllabus from "./pages/academy/vedic/VedicSyllabus";
 import VedicLessonViewer from "./pages/academy/vedic/VedicLessonViewer";
 import VedicCourseIndex from "./pages/academy/vedic/VedicCourseIndex";
+import BrandingShowcase from "./pages/BrandingShowcase";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => {
             <Routes>
               <Route path="/auth" element={<Auth />} />
               <Route path="/" element={<Index />} />
+              <Route path="/branding-showcase" element={<BrandingShowcase />} />
               <Route path="/admin" element={
                 <ProtectedRoute adminOnly>
                   <AdminDashboard />
