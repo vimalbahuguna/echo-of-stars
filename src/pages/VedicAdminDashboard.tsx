@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, Settings, Users, Building2 } from 'lucide-react';
+import AdminAcademyPanels from "@/components/academy/AdminAcademyPanels";
 
 const VedicAdminDashboard: React.FC = () => {
   const { t } = useTranslation();
@@ -25,21 +26,24 @@ const VedicAdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
             <h3 className="text-lg font-semibold mb-2">Roles & Memberships</h3>
-            <p className="text-sm text-muted-foreground">Assign student/faculty roles and manage cohorts.</p>
-            <Users className="w-16 h-16 text-primary mt-2" />
+            <p className="text-sm text-muted-foreground">Manage user roles within the academy.</p>
+            <Users className="w-16 h-16 text-accent mt-2" />
           </Card>
-
           <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
             <h3 className="text-lg font-semibold mb-2">Academy Settings</h3>
-            <p className="text-sm text-muted-foreground">Configure terms, policies, and localization.</p>
-            <Settings className="w-16 h-16 text-secondary mt-2" />
+            <p className="text-sm text-muted-foreground">Cohorts and access policies.</p>
+            <Settings className="w-16 h-16 text-accent mt-2" />
           </Card>
-
           <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
             <h3 className="text-lg font-semibold mb-2">Organizations</h3>
-            <p className="text-sm text-muted-foreground">Link academy to tenant/organizations (enterprise).</p>
-            <Building2 className="w-16 h-16 text-foreground mt-2" />
+            <p className="text-sm text-muted-foreground">Manage tenants and org metadata.</p>
+            <ShieldCheck className="w-16 h-16 text-accent mt-2" />
           </Card>
+        </div>
+
+        {/* New admin CRUD panels */}
+        <div className="mt-8">
+          <AdminAcademyPanels />
         </div>
       </main>
       <CosmicFooter />

@@ -1,0 +1,2 @@
+-- Placeholder migration to reconcile legacy remote-only entry 20251026.
+-- This file intentionally contains no SQL changes.

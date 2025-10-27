@@ -9,7 +9,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:list": "bash -lc 'source .env && supabase migration list --db-url \"$SUPABASE_DB_URL\"'",
+    "db:push": "bash -lc 'source .env && supabase db push --include-all --db-url \"$SUPABASE_DB_URL\"'",
+    "db:repair": "bash -lc 'source .env && supabase migration repair --status reverted 20251026 --db-url \"$SUPABASE_DB_URL\"'"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",

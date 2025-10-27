@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -43,6 +43,12 @@ import VedicAcademyHome from "./pages/VedicAcademyHome";
 import VedicStudentDashboard from "./pages/VedicStudentDashboard";
 import VedicFacultyDashboard from "./pages/VedicFacultyDashboard";
 import VedicAdminDashboard from "./pages/VedicAdminDashboard";
+import VedicAcademyAbout from "./pages/academy/vedic/VedicAcademyAbout";
+import VedicAcademyVision from "./pages/academy/vedic/VedicAcademyVision";
+import VedicCurriculum from "./pages/academy/vedic/VedicCurriculum";
+import VedicSyllabus from "./pages/academy/vedic/VedicSyllabus";
+import VedicLessonViewer from "./pages/academy/vedic/VedicLessonViewer";
+import VedicCourseIndex from "./pages/academy/vedic/VedicCourseIndex";
 
 const queryClient = new QueryClient();
 
@@ -199,11 +205,15 @@ const App = () => {
                   <AcademyScriptures />
                 </ProtectedRoute>
               } />
-              <Route path="/academy/vedic" element={
-                <ProtectedRoute>
-                  <VedicAcademyHome />
-                </ProtectedRoute>
-              } />
+              <Route path="/academy/astrology/vedic" element={<VedicAcademyHome />} />
+              <Route path="/academy/astrology/vedic/about" element={<VedicAcademyAbout />} />
+            <Route path="/academy/astrology/vedic/vision" element={<VedicAcademyVision />} />
+            <Route path="/academy/astrology/vedic/curriculum" element={<VedicCurriculum />} />
+            <Route path="/academy/astrology/vedic/syllabus" element={<VedicSyllabus />} />
+             <Route path="/academy/astrology/vedic/courses" element={<VedicCourseIndex />} />
+             <Route path="/academy/astrology/vedic/lesson/:slug" element={<VedicLessonViewer />} />
+             <Route path="/academy/astrology/vedic/course/:courseSlug/lesson/:slug" element={<VedicLessonViewer />} />
+              <Route path="/academy/vedic" element={<Navigate to="/academy/astrology/vedic" replace />} />
               <Route path="/academy/vedic/student" element={
                 <ProtectedRoute>
                   <VedicStudentDashboard />

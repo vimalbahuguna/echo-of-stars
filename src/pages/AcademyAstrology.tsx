@@ -29,12 +29,24 @@ const AcademyAstrology = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">Vedic Astrology</CardTitle>
-                    <CardDescription>Nakshatra, Dasha, Panchang</CardDescription>
+                    <CardTitle className="text-lg">Vedic Academy</CardTitle>
+                    <CardDescription>Home, About, Vision, Curriculum, Syllabus</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-2">
                     <Button asChild variant="outline" className="w-full">
-                      <Link to="/astrology">Open Practice Section</Link>
+                      <Link to="/academy/astrology/vedic">Vedic Home</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start">
+                      <Link to="/academy/astrology/vedic/about">About</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start">
+                      <Link to="/academy/astrology/vedic/vision">Vision</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start">
+                      <Link to="/academy/astrology/vedic/curriculum">Curriculum</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start">
+                      <Link to="/academy/astrology/vedic/syllabus">Syllabus</Link>
                     </Button>
                   </CardContent>
                 </Card>

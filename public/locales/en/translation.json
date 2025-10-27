@@ -431,5 +431,14 @@
       "title": "Settings Menu",
       "themes": "Themes"
     }
+  },
+  "academy": {
+    "labels": {
+      "cohort": "Cohort",
+      "section": "Section",
+      "assignment": "Assignment",
+      "resource": "Resource",
+      "membership": "Membership"
+    }
   }
 }

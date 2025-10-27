@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import CosmicHeader from '@/components/CosmicHeader';
 import CosmicFooter from '@/components/CosmicFooter';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Stars, GraduationCap, Users, LayoutDashboard, BookOpen } from 'lucide-react';
+import AcademyBreadcrumbs from '@/components/academy/Breadcrumbs';
 // import ProtectedRoute from '@/components/ProtectedRoute';
 
 const VedicAcademyHome: React.FC = () => {
@@ -17,6 +18,7 @@ const VedicAcademyHome: React.FC = () => {
     <div className="min-h-screen bg-gradient-cosmic">
       <CosmicHeader />
       <main className="container mx-auto px-4 py-8">
+        <AcademyBreadcrumbs />
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Sparkles className="w-8 h-8 text-accent" />
@@ -25,6 +27,7 @@ const VedicAcademyHome: React.FC = () => {
             </h1>
           </div>
           <p className="text-muted-foreground max-w-2xl">
+            To create world-class Vedic astrologers who combine traditional wisdom with modern understanding, ethical practice, and technological proficiency using the SOS Astro platform.
             Professional, enterprise-grade academy for Vedic Astrology learners and educators.
             Explore courses, track progress, manage cohorts, and collaborate with faculty.
           </p>
@@ -110,6 +113,53 @@ const VedicAcademyHome: React.FC = () => {
               <Badge>Assignments</Badge>
               <Badge>Announcements</Badge>
             </div>
+          </Card>
+        </div>
+
+        {/* Certification Level Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <CardHeader>
+              <CardTitle>Foundation</CardTitle>
+              <CardDescription>3 months · Beginner</CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-3">
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/curriculum?level=foundation">View Curriculum</Link></Button>
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/syllabus?level=foundation">View Syllabus</Link></Button>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <CardHeader>
+              <CardTitle>Practitioner</CardTitle>
+              <CardDescription>6 months · Intermediate</CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-3">
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/curriculum?level=practitioner">View Curriculum</Link></Button>
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/syllabus?level=practitioner">View Syllabus</Link></Button>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <CardHeader>
+              <CardTitle>Professional</CardTitle>
+              <CardDescription>9 months · Advanced</CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-3">
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/curriculum?level=professional">View Curriculum</Link></Button>
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/syllabus?level=professional">View Syllabus</Link></Button>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <CardHeader>
+              <CardTitle>Master</CardTitle>
+              <CardDescription>12 months · Advanced</CardDescription>
+            </CardHeader>
+            <CardContent className="flex gap-3">
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/curriculum?level=master">View Curriculum</Link></Button>
+              <Button asChild variant="outline" size="sm"><Link to="/academy/astrology/vedic/syllabus?level=master">View Syllabus</Link></Button>
+            </CardContent>
           </Card>
         </div>
       </main>

@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { LineChart, Award, BookOpen, CalendarDays } from 'lucide-react';
+import StudentAcademyPanels from "@/components/academy/StudentAcademyPanels";
 
 const VedicStudentDashboard: React.FC = () => {
   const { t } = useTranslation();
@@ -57,6 +58,11 @@ const VedicStudentDashboard: React.FC = () => {
             <h3 className="text-lg font-semibold mb-2">Announcements</h3>
             <p className="text-sm text-muted-foreground">Faculty and academy-wide updates.</p>
           </Card>
+        </div>
+
+        {/* New student panels hooked to Supabase tables */}
+        <div className="mt-8">
+          <StudentAcademyPanels />
         </div>
       </main>
       <CosmicFooter />
