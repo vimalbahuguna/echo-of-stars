@@ -31,6 +31,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import GoldenLogo3D from "@/components/GoldenLogo3D";
 
 const CosmicHeader = () => {
   const { i18n, t } = useTranslation();
@@ -281,23 +282,11 @@ const CosmicHeader = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex flex-col gap-2 py-2">
-        {/* Top Row: Logo & Title on left, User Section on right */}
+        {/* Top Row: Logo & Branding on left, User Section on right */}
         <div className="flex items-center justify-between">
-          {/* Logo & Title */}
+          {/* Logo & Branding */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg border border-primary/20">
-              <Stars className="h-7 w-7 text-primary animate-pulse-glow" />
-              <div className="absolute top-1 right-1">
-                <Sparkles className="h-4 w-4 text-accent animate-twinkle" />
-              </div>
-            </div>
-            <div className="flex flex-col">
-              {/* Prominent title: Vedic Astrology Oracle */}
-              <h1 className="text-heading-xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
-                {t("header.appSubtitle")}
-              </h1>
-              <p className="text-body-md text-muted-foreground">{t("header.appTitle")}</p>
-            </div>
+            <GoldenLogo3D size="sm" showTagline={true} className="scale-75 lg:scale-90" />
           </div>
 
           {/* User Section */}
