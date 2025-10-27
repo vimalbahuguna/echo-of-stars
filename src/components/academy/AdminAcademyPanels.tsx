@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Users, ShieldCheck, Settings, Save, Trash2, Plus } from "lucide-react";
 
 interface Membership { id: string; user_id: string; tenant_id: string; role: string; }
-interface Cohort { id: string; tenant_id: string; name: string; description?: string; }
+interface Cohort { id: string; tenant_id: string; name: string; }
 interface CohortMember { id: string; cohort_id: string; membership_id: string; }
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -34,9 +34,9 @@ export const AdminAcademyPanels: React.FC = () => {
       try {
         const { data: memData } = await supabase.from("academy_memberships").select("id, user_id, tenant_id, role").order("tenant_id");
         setMemberships(memData || []);
-        const { data: cohortData } = await supabase.from("academy_cohorts").select("id, tenant_id, name, description").order("name");
+        const { data: cohortData } = await supabase.from("stu_cohorts").select("id, tenant_id, name").order("name");
         setCohorts(cohortData || []);
-        const { data: cmData } = await supabase.from("cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
+        const { data: cmData } = await supabase.from("stu_cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
         setCohortMembers(cmData || []);
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
@@ -49,26 +49,32 @@ export const AdminAcademyPanels: React.FC = () => {
     setMemberships(data || []);
   };
   const refreshCohorts = async () => {
-    const { data } = await supabase.from("academy_cohorts").select("id, tenant_id, name, description").order("name");
+    const { data } = await supabase.from("stu_cohorts").select("id, tenant_id, name").order("name");
     setCohorts(data || []);
   };
   const refreshCohortMembers = async () => {
-    const { data } = await supabase.from("cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
+    const { data } = await supabase.from("stu_cohort_members").select("id, cohort_id, membership_id").order("cohort_id");
     setCohortMembers(data || []);
   };
 
+  const getActualTableName = (table: string) => {
+    if (table === "academy_cohorts") return "stu_cohorts";
+    if (table === "cohort_members") return "stu_cohort_members";
+    return table;
+  };
+
   const handleInsert = async (table: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(table).insert(values);
+    const { error } = await supabase.from(getActualTableName(table)).insert(values);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleUpdate = async (table: string, id: string, values: Record<string, any>, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(table).update(values).eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table)).update(values).eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };
   const handleDelete = async (table: string, id: string, refresh: () => Promise<void>) => {
-    const { error } = await supabase.from(table).delete().eq("id", id);
+    const { error } = await supabase.from(getActualTableName(table)).delete().eq("id", id);
     if (error) { console.error(error); return; }
     await refresh();
   };
@@ -117,16 +123,14 @@ export const AdminAcademyPanels: React.FC = () => {
               <div className="space-y-3">
                 <Field label="Tenant ID"><Input value={newCohort.tenant_id || ""} onChange={e => setNewCohort(c => ({ ...c, tenant_id: e.target.value }))} /></Field>
                 <Field label="Name"><Input value={newCohort.name || ""} onChange={e => setNewCohort(c => ({ ...c, name: e.target.value }))} /></Field>
-                <Field label="Description"><Input value={newCohort.description || ""} onChange={e => setNewCohort(c => ({ ...c, description: e.target.value }))} /></Field>
                 <Button size="sm" onClick={() => handleInsert("academy_cohorts", newCohort as any, refreshCohorts)} className="mt-2"><Plus className="w-4 h-4 mr-1" /> Create</Button>
               </div>
               <div className="space-y-3">
                 {cohorts.map(c => (
                   <div key={c.id} className="border rounded p-3 space-y-2">
                     <div className="text-sm font-medium">{c.name} • {c.tenant_id}</div>
-                    <div className="text-xs text-muted-foreground">{c.description}</div>
                     <div className="flex items-center gap-2">
-                      <Button size="sm" variant="secondary" onClick={() => handleUpdate("academy_cohorts", c.id, { name: c.name, description: c.description }, refreshCohorts)}><Save className="w-4 h-4 mr-1" /> Save</Button>
+                      <Button size="sm" variant="secondary" onClick={() => handleUpdate("academy_cohorts", c.id, { name: c.name }, refreshCohorts)}><Save className="w-4 h-4 mr-1" /> Save</Button>
                       <Button size="sm" variant="destructive" onClick={() => handleDelete("academy_cohorts", c.id, refreshCohorts)}><Trash2 className="w-4 h-4 mr-1" /> Delete</Button>
                     </div>
                   </div>
