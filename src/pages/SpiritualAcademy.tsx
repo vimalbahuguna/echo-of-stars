@@ -26,7 +26,12 @@ const SpiritualAcademy = () => {
               A unified learning sanctuary for Astrology, Meditation, Sanskrit, and Scriptures — guided by Echo AI.
             </p>
           </div>
-          <Badge variant="outline" className="animate-shimmer">Beta</Badge>
+          <div className="flex items-center gap-3">
+            <Button asChild variant="outline">
+              <Link to="/">Back to Platform</Link>
+            </Button>
+            <Badge variant="outline" className="animate-shimmer">Beta</Badge>
+          </div>
         </div>
 
         <Card className="mb-8">

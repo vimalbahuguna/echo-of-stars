@@ -28,7 +28,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import GoldenLogo3D from "@/components/GoldenLogo3D";
@@ -37,8 +37,11 @@ const CosmicHeader = () => {
   const { i18n, t } = useTranslation();
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const inAcademy = location.pathname.startsWith('/academy');
 
   const handleSignOut = async () => {
     try {
@@ -132,13 +135,17 @@ const CosmicHeader = () => {
             variant="ghost" 
             size="default" 
             className="hover:bg-accent/10 hover:text-accent text-base"
-            onClick={() => navigate("/academy")}
           >
             <Sparkles className="w-5 h-5 mr-2" />
             {t("header.navigation.spiritualAcademy")}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
+          <DropdownMenuItem onClick={() => navigate("/academy")}>
+            <Sparkles className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.spiritualAcademy")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/academy/astrology")}>
             <Stars className="w-4 h-4 mr-2" />
             <span>{t("header.navigation.academyAstrology")}</span>
@@ -240,13 +247,17 @@ const CosmicHeader = () => {
             variant="ghost" 
             size="default" 
             className="hover:bg-accent/10 hover:text-accent text-base"
-            onClick={() => navigate("/academy")}
           >
             <Sparkles className="w-5 h-5 mr-2" />
             {t("header.navigation.spiritualAcademy")}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
+          <DropdownMenuItem onClick={() => navigate("/academy")}>
+            <Sparkles className="w-4 h-4 mr-2" />
+            <span>{t("header.navigation.spiritualAcademy")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/academy/astrology")}>
             <Stars className="w-4 h-4 mr-2" />
             <span>{t("header.navigation.academyAstrology")}</span>
@@ -300,6 +311,20 @@ const CosmicHeader = () => {
 
           {/* User Section */}
           <div className="absolute right-0 flex items-center gap-3">
+            {/* Persistent CTAs: Academy access or Back to Platform */}
+            <div className="hidden sm:flex items-center">
+              {inAcademy ? (
+                <Button variant="outline" size="default" onClick={() => navigate("/")}>
+                  <Home className="w-4 h-4 mr-0 md:mr-2" />
+                  <span className="hidden md:inline">{t("header.navigation.home")}</span>
+                </Button>
+              ) : user ? (
+                <Button variant="default" size="default" onClick={() => navigate("/academy")}>
+                  <Sparkles className="w-4 h-4 mr-0 md:mr-2" />
+                  <span className="hidden md:inline">{t("header.navigation.spiritualAcademy")}</span>
+                </Button>
+              ) : null}
+            </div>
           {/* Admin access moved to end of header nav row */}
           {/* Language Switcher */}
           <DropdownMenu>

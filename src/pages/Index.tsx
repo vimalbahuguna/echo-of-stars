@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CosmicHeader from "@/components/CosmicHeader";
 import HeroSection from "@/components/HeroSection";
@@ -36,9 +36,18 @@ const Index = () => {
       
       {/* Hero Section - Only show on dashboard */}
       {activeTab === "dashboard" && <HeroSection />}
+
+      {/* Quick Access to Spiritual Academy */}
+      <div className="container pt-6">
+        <div className="flex justify-end mb-4">
+          <Button asChild variant="default">
+            <Link to="/academy">Go to Spiritual Academy</Link>
+          </Button>
+        </div>
+      </div>
       
       {/* Main Content */}
-      <div className="container py-8">
+      <div className="container pb-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 lg:w-fit lg:grid-cols-4 mb-8 bg-card/50 border border-border/20">
             <TabsTrigger 
