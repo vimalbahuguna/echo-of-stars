@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { DashboardLayout } from '@/components/academy/DashboardLayout';
+import CosmicHeader from '@/components/CosmicHeader';
+import CosmicFooter from '@/components/CosmicFooter';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { 
-  Award, BookOpen, CalendarDays,
-  TrendingUp, Clock, Target, CheckCircle,
-  Video, MessageSquare, FileText, BarChart3,
-  ChevronRight, Play, Bell
-} from 'lucide-react';
+import { LineChart, Award, BookOpen, CalendarDays } from 'lucide-react';
+import StudentAcademyPanels from "@/components/academy/StudentAcademyPanels";
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { updateWeekProgress } from '@/integrations/supabase/academyProgress';
 
 type ActiveStudentProgress = {
   student_id: number;
@@ -30,244 +26,229 @@ type ActiveStudentProgress = {
 
 const VedicStudentDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [kpi, setKpi] = useState<ActiveStudentProgress | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Form state for updating progress
+  const [weekId, setWeekId] = useState<number | ''>('');
+  const [status, setStatus] = useState<'not_started' | 'in_progress' | 'completed' | 'skipped'>('in_progress');
+  const [completion, setCompletion] = useState<number>(50);
+  const [notes, setNotes] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       if (!user) return;
       setLoading(true);
+      setError(null);
       try {
+        // RLS should scope rows by user/tenant; grab the latest activity row
         const { data, error } = await (supabase as any)
           .from('vw_active_students_progress' as any)
-          .select('*')
+          .select('student_id, student_name, enrollment_id, level_id, level_name, weeks_total, weeks_completed, weeks_in_progress, avg_completion_percentage, last_activity_at')
           .order('last_activity_at', { ascending: false })
           .limit(1);
         if (error) throw error;
         const rows = (Array.isArray(data) ? data : [data]).filter(Boolean) as unknown as ActiveStudentProgress[];
-        setKpi(rows[0] ?? null);
-      } catch (e) {
-        console.error('Progress load error:', e);
+        const row = rows[0] ?? null;
+        setKpi(row);
+      } catch (e: any) {
+        setError(e.message || 'Failed to load progress');
+        console.error('Progress KPI load error:', e);
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [user?.id]);
+  }, [user?.id, profile?.tenant_id]);
 
-  const completionPercent = kpi?.avg_completion_percentage ?? 0;
-  const weeksCompleted = kpi?.weeks_completed ?? 0;
-  const weeksTotal = kpi?.weeks_total ?? 1;
-  const progressPercent = Math.round((weeksCompleted / weeksTotal) * 100);
+  const refreshKpi = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await (supabase as any)
+        .from('vw_active_students_progress' as any)
+        .select('student_id, student_name, enrollment_id, level_id, level_name, weeks_total, weeks_completed, weeks_in_progress, avg_completion_percentage, last_activity_at')
+        .order('last_activity_at', { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      const rows = (Array.isArray(data) ? data : [data]).filter(Boolean) as unknown as ActiveStudentProgress[];
+      setKpi(rows[0] ?? null);
+    } catch (e) {
+      console.error('Refresh KPI failed:', e);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!weekId || typeof weekId !== 'number') {
+      setError('Please enter a valid Week ID');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await updateWeekProgress({
+        week_id: weekId,
+        status,
+        completion_percentage: completion,
+        notes: notes || undefined,
+      });
+      if (!res.ok) {
+        throw new Error(res.message || 'Failed to update progress');
+      }
+      await refreshKpi();
+      setNotes('');
+    } catch (e: any) {
+      setError(e?.message || 'Update failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
-    <DashboardLayout role="student">
-      <div>
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-3">
-            <BookOpen className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
-              {t('header.navigation.vedicStudentDashboard')}
-            </h1>
-          </div>
-          <p className="text-lg text-muted-foreground">Track your learning journey, access courses, and monitor your progress</p>
+    <div className="min-h-screen bg-gradient-cosmic">
+      <CosmicHeader />
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-6">
+          <BookOpen className="w-7 h-7 text-primary" />
+          <h1 className="text-3xl font-bold bg-gradient-stellar bg-clip-text text-transparent">
+            {t('header.navigation.vedicStudentDashboard')}
+          </h1>
         </div>
+        <p className="text-muted-foreground mb-6">Your courses, progress, assignments, and certificates.</p>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-          {[
-            { icon: Target, label: 'Level', value: kpi?.level_name || 'Not Enrolled', color: 'text-blue-500' },
-            { icon: CheckCircle, label: 'Weeks Completed', value: `${weeksCompleted}/${weeksTotal}`, color: 'text-green-500' },
-            { icon: TrendingUp, label: 'Progress', value: `${progressPercent}%`, color: 'text-purple-500' },
-            { icon: Clock, label: 'Last Activity', value: kpi?.last_activity_at ? new Date(kpi.last_activity_at).toLocaleDateString() : 'Never', color: 'text-orange-500' }
-          ].map((stat, i) => (
-            <Card key={i} className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all">
-              <div className="flex items-center gap-3 mb-2">
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                <span className="text-sm text-muted-foreground">{stat.label}</span>
-              </div>
-              <div className="text-2xl font-bold">{stat.value}</div>
-            </Card>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <h3 className="text-lg font-semibold mb-2">Enrolled Courses</h3>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline">Vedic Fundamentals</Badge>
+              <Badge variant="outline">Chart Analysis</Badge>
+              <Badge variant="outline">Dasha Systems</Badge>
+            </div>
+            <Button variant="outline" size="sm" className="mt-4">View Catalog</Button>
+          </Card>
 
-        {/* Main Progress Card */}
-        <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 border-border/50 mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Your Learning Progress</h2>
-              <p className="text-muted-foreground">Overall completion across all enrolled courses</p>
-            </div>
-            <BarChart3 className="w-12 h-12 text-primary" />
-          </div>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Course Progress</span>
-                <span className="text-sm font-bold">{Math.round(completionPercent)}%</span>
-              </div>
-              <Progress value={completionPercent} className="h-3" />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{weeksCompleted}</div>
-                <div className="text-xs text-muted-foreground">Weeks Completed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-secondary">{kpi?.weeks_in_progress ?? 0}</div>
-                <div className="text-xs text-muted-foreground">In Progress</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-accent">{weeksTotal - weeksCompleted}</div>
-                <div className="text-xs text-muted-foreground">Remaining</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{weeksTotal}</div>
-                <div className="text-xs text-muted-foreground">Total Weeks</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {[
-            {
-              icon: Video,
-              title: 'Live Sessions',
-              desc: 'Join upcoming classes',
-              link: '/academy/astrology/vedic/sessions',
-              color: 'from-blue-500/10 to-purple-500/10',
-              badge: '3 Upcoming'
-            },
-            {
-              icon: FileText,
-              title: 'Assignments',
-              desc: 'View and submit work',
-              link: '/academy/astrology/vedic/assignments',
-              color: 'from-purple-500/10 to-pink-500/10',
-              badge: '2 Pending'
-            },
-            {
-              icon: MessageSquare,
-              title: 'Forum',
-              desc: 'Engage with community',
-              link: '/academy/astrology/vedic/forum',
-              color: 'from-pink-500/10 to-orange-500/10',
-              badge: '12 New'
-            }
-          ].map((action, i) => (
-            <Card key={i} className={`p-6 bg-gradient-to-br ${action.color} border-border/50 hover:border-primary/50 transition-all hover:shadow-xl group`}>
-              <action.icon className="w-12 h-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-xl font-semibold">{action.title}</h3>
-                <Badge variant="secondary" className="text-xs">{action.badge}</Badge>
-              </div>
-              <p className="text-muted-foreground mb-4">{action.desc}</p>
-              <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                <Link to={action.link}>
-                  Open
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </Link>
-              </Button>
-            </Card>
-          ))}
-        </div>
-
-        {/* Enrolled Courses */}
-        <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50 mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Enrolled Courses</h2>
-              <p className="text-muted-foreground">Your active learning paths</p>
-            </div>
-            <Button asChild variant="outline">
-              <Link to="/academy/astrology/vedic/courses">
-                Browse All
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {['Vedic Fundamentals', 'Chart Analysis', 'Dasha Systems', 'Predictive Techniques'].map((course, i) => (
-              <Card key={i} className="p-6 bg-background/50 border-border/50 hover:border-primary/50 transition-all group">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-1">{course}</h3>
-                    <Badge variant="outline" className="mb-3">
-                      Level {Math.min(i + 1, 4)}
-                    </Badge>
-                  </div>
-                  <Play className="w-10 h-10 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <h3 className="text-lg font-semibold mb-2">Progress</h3>
+            {!loading && !error && kpi && (
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                <div>
+                  <div className="text-xs text-muted-foreground">Level</div>
+                  <div className="text-sm font-medium">{kpi.level_name || '—'}</div>
                 </div>
-                <Progress value={25 + (i * 15)} className="h-2 mb-2" />
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{25 + (i * 15)}% Complete</span>
-                  <Button asChild variant="ghost" size="sm" className="h-7">
-                    <Link to={`/academy/astrology/vedic/course/${i + 1}`}>
-                      Continue
-                      <ChevronRight className="w-3 h-3 ml-1" />
-                    </Link>
-                  </Button>
+                <div>
+                  <div className="text-xs text-muted-foreground">Weeks Total</div>
+                  <div className="text-sm font-medium">{kpi.weeks_total ?? '—'}</div>
                 </div>
-              </Card>
-            ))}
-          </div>
-        </Card>
-
-        {/* Certificates & Achievements */}
-        <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50 mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Certificates & Achievements</h2>
-              <p className="text-muted-foreground">Your earned credentials and milestones</p>
-            </div>
-            <Award className="w-12 h-12 text-primary" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {weeksCompleted > 0 ? (
-              <Card className="p-6 bg-primary/5 border-primary/30">
-                <Award className="w-10 h-10 text-primary mb-3" />
-                <h3 className="font-semibold mb-1">Foundation Progress</h3>
-                <p className="text-sm text-muted-foreground">Completed {weeksCompleted} weeks</p>
-              </Card>
-            ) : (
-              <div className="col-span-3 text-center py-8 text-muted-foreground">
-                Complete your first course to earn certificates
+                <div>
+                  <div className="text-xs text-muted-foreground">Completed</div>
+                  <div className="text-sm font-medium">{kpi.weeks_completed ?? 0}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">In Progress</div>
+                  <div className="text-sm font-medium">{kpi.weeks_in_progress ?? 0}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Avg Completion</div>
+                  <div className="text-sm font-medium">{typeof kpi.avg_completion_percentage === 'number' ? `${Math.round(kpi.avg_completion_percentage)}%` : '—'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Last Activity</div>
+                  <div className="text-sm font-medium">{kpi.last_activity_at ? new Date(kpi.last_activity_at).toLocaleString() : '—'}</div>
+                </div>
               </div>
             )}
-          </div>
-        </Card>
+            {loading && (
+              <p className="text-sm text-muted-foreground">Loading progress…</p>
+            )}
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
+            )}
+            <LineChart className="w-16 h-16 text-secondary mt-3" />
 
-        {/* Recent Notifications */}
-        <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50">
-          <div className="flex items-center gap-3 mb-6">
-            <Bell className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold">Recent Notifications</h2>
-          </div>
-          <div className="space-y-4">
-            {[
-              { type: 'success', message: 'Week 3 assignment graded - Score: 85/100', time: '2 hours ago' },
-              { type: 'info', message: 'New live session scheduled for tomorrow at 3 PM', time: '5 hours ago' },
-              { type: 'warning', message: 'Payment due in 3 days - $500', time: '1 day ago' }
-            ].map((notif, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 bg-background/50 rounded-lg border border-border/50">
-                <div className={`w-2 h-2 rounded-full mt-2 ${
-                  notif.type === 'success' ? 'bg-green-500' : 
-                  notif.type === 'info' ? 'bg-blue-500' : 'bg-yellow-500'
-                }`} />
-                <div className="flex-1">
-                  <p className="text-sm">{notif.message}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{notif.time}</p>
+            {/* Update progress form */}
+            <form onSubmit={onSubmit} className="mt-4 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground">Week ID</label>
+                  <input
+                    type="number"
+                    value={weekId === '' ? '' : weekId}
+                    onChange={(e) => setWeekId(e.target.value === '' ? '' : Number(e.target.value))}
+                    className="mt-1 w-full rounded-md border bg-background px-2 py-1 text-sm"
+                    placeholder="e.g. 12"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Status</label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as any)}
+                    className="mt-1 w-full rounded-md border bg-background px-2 py-1 text-sm"
+                  >
+                    <option value="not_started">Not Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="skipped">Skipped</option>
+                  </select>
                 </div>
               </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-    </DashboardLayout>
+              <div>
+                <label className="text-xs text-muted-foreground">Completion %</label>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={completion}
+                  onChange={(e) => setCompletion(Number(e.target.value))}
+                  className="mt-1 w-full"
+                />
+                <div className="text-xs text-muted-foreground mt-1">{completion}%</div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Notes (optional)</label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="mt-1 w-full rounded-md border bg-background px-2 py-1 text-sm"
+                  rows={2}
+                  placeholder="E.g., revised assignment, attended workshop"
+                />
+              </div>
+              <Button type="submit" variant="default" size="sm" disabled={submitting}>
+                {submitting ? 'Updating…' : 'Update Week Progress'}
+              </Button>
+            </form>
+          </Card>
+
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <h3 className="text-lg font-semibold mb-2">Certificates</h3>
+            <p className="text-sm text-muted-foreground">Completed course certificates appear here.</p>
+            <Award className="w-16 h-16 text-foreground mt-2" />
+          </Card>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <h3 className="text-lg font-semibold mb-2">Upcoming</h3>
+            <p className="text-sm text-muted-foreground">Next sessions and assignment deadlines.</p>
+            <CalendarDays className="w-16 h-16 text-accent mt-2" />
+          </Card>
+
+          <Card className="p-6 bg-card/80 backdrop-blur border-border/30">
+            <h3 className="text-lg font-semibold mb-2">Announcements</h3>
+            <p className="text-sm text-muted-foreground">Faculty and academy-wide updates.</p>
+          </Card>
+        </div>
+
+        {/* New student panels hooked to Supabase tables */}
+        <div className="mt-8">
+          <StudentAcademyPanels />
+        </div>
+      </main>
+      <CosmicFooter />
+    </div>
   );
 };
 

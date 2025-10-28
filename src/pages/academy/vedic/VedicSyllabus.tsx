@@ -170,25 +170,25 @@ const VedicSyllabus: React.FC = () => {
 
   useEffect(() => {
     const loadLoggedIn = async () => {
-      // Load sections from cur_sections table
-      const { data: sectData } = await supabase
-        .from('cur_sections')
-        .select('id, name, code')
-        .eq('status', 'active');
-      
-      if (sectData && sectData.length > 0) {
+      const { data: enrollData, error: enrollErr } = await supabase
+        .from('section_enrollments')
+        .select('id, section_id, membership_id, status, created_at')
+        .order('created_at', { ascending: false });
+      if (enrollErr) { console.warn('Enrollments restricted by RLS:', enrollErr); return; }
+      const sectionIds = (enrollData || []).map((e: any) => e.section_id).filter(Boolean);
+      if (sectionIds.length) {
+        const { data: sectData } = await supabase
+          .from('course_sections')
+          .select('id, title, code')
+          .in('id', sectionIds);
         const map: Record<string, { title?: string; code?: string }> = {};
-        sectData.forEach((s: any) => { map[s.id] = { title: s.name, code: s.code }; });
+        (sectData || []).forEach((s: any) => { map[s.id] = { title: s.title, code: s.code }; });
         setSections(map);
-        
-        const sectionIds = sectData.map((s: any) => s.id);
-        
-        // Load assignments from cur_assignments table
         const { data: assignData } = await supabase
-          .from('cur_assignments')
-          .select('id, section_id, title, description, due_date, max_points')
+          .from('assignments')
+          .select('id, section_id, title, description, due_at, max_points')
           .in('section_id', sectionIds)
-          .order('due_date', { ascending: true });
+          .order('due_at', { ascending: true });
         setAssignments(assignData || []);
       }
     };
