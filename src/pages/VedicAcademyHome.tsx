@@ -93,7 +93,7 @@ const VedicAcademyHome: React.FC = () => {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="shadow-lg">
-                <Link to="/academy/astrology/vedic/student-dashboard">
+                <Link to="/academy/vedic/student">
                   <Play className="w-4 h-4 mr-2" />
                   Start Learning
                 </Link>
@@ -209,7 +209,7 @@ const VedicAcademyHome: React.FC = () => {
                 icon: GraduationCap,
                 title: 'Student Dashboard',
                 desc: 'Track progress, access lessons, submit assignments, and engage with the community',
-                link: '/academy/astrology/vedic/student-dashboard',
+                link: '/academy/vedic/student',
                 color: 'from-blue-500/10 to-purple-500/10',
                 iconColor: 'text-blue-500'
               },
@@ -217,7 +217,7 @@ const VedicAcademyHome: React.FC = () => {
                 icon: Users,
                 title: 'Faculty Dashboard',
                 desc: 'Manage courses, sections, track student progress, and provide guidance',
-                link: '/academy/astrology/vedic/faculty-dashboard',
+                link: '/academy/vedic/faculty',
                 color: 'from-purple-500/10 to-pink-500/10',
                 iconColor: 'text-purple-500'
               },
@@ -225,7 +225,7 @@ const VedicAcademyHome: React.FC = () => {
                 icon: Settings,
                 title: 'Admin Dashboard',
                 desc: 'Administer academy settings, manage roles, memberships, and compliance',
-                link: '/academy/astrology/vedic/admin-dashboard',
+                link: '/academy/vedic/admin',
                 color: 'from-pink-500/10 to-orange-500/10',
                 iconColor: 'text-pink-500'
               }

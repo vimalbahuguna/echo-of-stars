@@ -205,14 +205,17 @@ const App = () => {
                   <AcademyScriptures />
                 </ProtectedRoute>
               } />
+              {/* Public Academy Pages */}
               <Route path="/academy/astrology/vedic" element={<VedicAcademyHome />} />
               <Route path="/academy/astrology/vedic/about" element={<VedicAcademyAbout />} />
-            <Route path="/academy/astrology/vedic/vision" element={<VedicAcademyVision />} />
-            <Route path="/academy/astrology/vedic/curriculum" element={<VedicCurriculum />} />
-            <Route path="/academy/astrology/vedic/syllabus" element={<VedicSyllabus />} />
-             <Route path="/academy/astrology/vedic/courses" element={<VedicCourseIndex />} />
-             <Route path="/academy/astrology/vedic/lesson/:slug" element={<VedicLessonViewer />} />
-             <Route path="/academy/astrology/vedic/course/:courseSlug/lesson/:slug" element={<VedicLessonViewer />} />
+              <Route path="/academy/astrology/vedic/vision" element={<VedicAcademyVision />} />
+              <Route path="/academy/astrology/vedic/curriculum" element={<VedicCurriculum />} />
+              <Route path="/academy/astrology/vedic/syllabus" element={<VedicSyllabus />} />
+              <Route path="/academy/astrology/vedic/courses" element={<VedicCourseIndex />} />
+              <Route path="/academy/astrology/vedic/lesson/:slug" element={<VedicLessonViewer />} />
+              <Route path="/academy/astrology/vedic/course/:courseSlug/lesson/:slug" element={<VedicLessonViewer />} />
+              
+              {/* Dashboard Routes (New Structure) */}
               <Route path="/academy/vedic" element={<Navigate to="/academy/astrology/vedic" replace />} />
               <Route path="/academy/vedic/student" element={
                 <ProtectedRoute>
@@ -229,6 +232,11 @@ const App = () => {
                   <VedicAdminDashboard />
                 </ProtectedRoute>
               } />
+              
+              {/* Legacy Route Redirects */}
+              <Route path="/academy/astrology/vedic/student-dashboard" element={<Navigate to="/academy/vedic/student" replace />} />
+              <Route path="/academy/astrology/vedic/faculty-dashboard" element={<Navigate to="/academy/vedic/faculty" replace />} />
+              <Route path="/academy/astrology/vedic/admin-dashboard" element={<Navigate to="/academy/vedic/admin" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

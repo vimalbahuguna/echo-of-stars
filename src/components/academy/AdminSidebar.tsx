@@ -19,19 +19,19 @@ import {
 } from '@/components/ui/sidebar';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/academy/astrology/vedic/admin-dashboard', icon: Home },
-  { title: 'Student Management', url: '/academy/astrology/vedic/admin/students', icon: Users },
-  { title: 'Curriculum Management', url: '/academy/astrology/vedic/admin/curriculum', icon: BookOpen },
-  { title: 'Faculty Management', url: '/academy/astrology/vedic/admin/faculty', icon: GraduationCap },
-  { title: 'Course Packages', url: '/academy/astrology/vedic/admin/packages', icon: Package },
-  { title: 'Assessment Management', url: '/academy/astrology/vedic/admin/assessments', icon: FileCheck },
-  { title: 'Resources Library', url: '/academy/astrology/vedic/admin/resources', icon: FolderOpen },
-  { title: 'Payment Management', url: '/academy/astrology/vedic/admin/payments', icon: CreditCard },
-  { title: 'Live Sessions', url: '/academy/astrology/vedic/admin/sessions', icon: Video },
-  { title: 'Reports & Analytics', url: '/academy/astrology/vedic/admin/reports', icon: BarChart3 },
-  { title: 'Quality Assurance', url: '/academy/astrology/vedic/admin/quality', icon: Star },
-  { title: 'Career Center', url: '/academy/astrology/vedic/admin/career', icon: Briefcase },
-  { title: 'System Settings', url: '/academy/astrology/vedic/admin/settings', icon: Settings },
+  { title: 'Dashboard', url: '/academy/vedic/admin', icon: Home },
+  { title: 'Student Management', url: '/academy/vedic/admin/students', icon: Users },
+  { title: 'Curriculum Management', url: '/academy/vedic/admin/curriculum', icon: BookOpen },
+  { title: 'Faculty Management', url: '/academy/vedic/admin/faculty', icon: GraduationCap },
+  { title: 'Course Packages', url: '/academy/vedic/admin/packages', icon: Package },
+  { title: 'Assessment Management', url: '/academy/vedic/admin/assessments', icon: FileCheck },
+  { title: 'Resources Library', url: '/academy/vedic/admin/resources', icon: FolderOpen },
+  { title: 'Payment Management', url: '/academy/vedic/admin/payments', icon: CreditCard },
+  { title: 'Live Sessions', url: '/academy/vedic/admin/sessions', icon: Video },
+  { title: 'Reports & Analytics', url: '/academy/vedic/admin/reports', icon: BarChart3 },
+  { title: 'Quality Assurance', url: '/academy/vedic/admin/quality', icon: Star },
+  { title: 'Career Center', url: '/academy/vedic/admin/career', icon: Briefcase },
+  { title: 'System Settings', url: '/academy/vedic/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar() {

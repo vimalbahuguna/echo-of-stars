@@ -18,15 +18,15 @@ import {
 } from '@/components/ui/sidebar';
 
 const menuItems = [
-  { title: 'Dashboard', url: '/academy/astrology/vedic/faculty-dashboard', icon: Home },
-  { title: 'My Students', url: '/academy/astrology/vedic/faculty/students', icon: Users },
-  { title: 'Mentorship Sessions', url: '/academy/astrology/vedic/faculty/mentorship', icon: GraduationCap },
-  { title: 'Assessment Grading', url: '/academy/astrology/vedic/faculty/grading', icon: FileCheck },
-  { title: 'Content Management', url: '/academy/astrology/vedic/faculty/content', icon: BookOpen },
-  { title: 'Live Sessions Schedule', url: '/academy/astrology/vedic/faculty/schedule', icon: Calendar },
-  { title: 'Analytics & Reports', url: '/academy/astrology/vedic/faculty/analytics', icon: BarChart3 },
-  { title: 'Messages', url: '/academy/astrology/vedic/faculty/messages', icon: MessageSquare },
-  { title: 'Profile', url: '/academy/astrology/vedic/faculty/profile', icon: Settings },
+  { title: 'Dashboard', url: '/academy/vedic/faculty', icon: Home },
+  { title: 'My Students', url: '/academy/vedic/faculty/students', icon: Users },
+  { title: 'Mentorship Sessions', url: '/academy/vedic/faculty/mentorship', icon: GraduationCap },
+  { title: 'Assessment Grading', url: '/academy/vedic/faculty/grading', icon: FileCheck },
+  { title: 'Content Management', url: '/academy/vedic/faculty/content', icon: BookOpen },
+  { title: 'Live Sessions Schedule', url: '/academy/vedic/faculty/schedule', icon: Calendar },
+  { title: 'Analytics & Reports', url: '/academy/vedic/faculty/analytics', icon: BarChart3 },
+  { title: 'Messages', url: '/academy/vedic/faculty/messages', icon: MessageSquare },
+  { title: 'Profile', url: '/academy/vedic/faculty/profile', icon: Settings },
 ];
 
 export function FacultySidebar() {
