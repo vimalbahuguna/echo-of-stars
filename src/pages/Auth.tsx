@@ -15,6 +15,9 @@ const Auth = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
+  const safeRedirect = redirect && redirect.startsWith('/') ? redirect : '/';
 
   // Form states
   const [signInEmail, setSignInEmail] = useState("");
@@ -32,7 +35,7 @@ const Auth = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
-        navigate("/");
+        navigate(safeRedirect);
       }
     });
 
@@ -40,7 +43,7 @@ const Auth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         setUser(session.user);
-        navigate("/");
+        navigate(safeRedirect);
       } else {
         setUser(null);
       }

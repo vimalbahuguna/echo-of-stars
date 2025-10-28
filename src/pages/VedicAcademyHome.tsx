@@ -13,9 +13,12 @@ import {
   TrendingUp, Globe, CheckCircle, Play,
   ChevronRight, Sparkles, Clock, DollarSign
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const VedicAcademyHome: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const withAuthRedirect = (target: string) => (user ? target : `/auth?redirect=${encodeURIComponent(target)}`);
 
   const certificationLevels = [
     { 
@@ -235,7 +238,7 @@ const VedicAcademyHome: React.FC = () => {
                 <h3 className="text-2xl font-semibold mb-3">{dash.title}</h3>
                 <p className="text-muted-foreground mb-8 leading-relaxed">{dash.desc}</p>
                 <Button asChild className="w-full shadow-lg group-hover:shadow-xl transition-shadow">
-                  <Link to={dash.link}>
+                  <Link to={withAuthRedirect(dash.link)}>
                     Access Dashboard
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </Link>
