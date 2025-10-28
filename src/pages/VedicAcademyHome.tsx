@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import CosmicHeader from '@/components/CosmicHeader';
-import CosmicFooter from '@/components/CosmicFooter';
+import VedicAcademyHeader from '@/components/academy/VedicAcademyHeader';
+import VedicAcademyFooter from '@/components/academy/VedicAcademyFooter';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -70,7 +70,7 @@ const VedicAcademyHome: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      <CosmicHeader />
+      <VedicAcademyHeader />
       
       <main className="container mx-auto px-4">
         {/* Hero Section */}
@@ -410,7 +410,7 @@ const VedicAcademyHome: React.FC = () => {
         </section>
       </main>
 
-      <CosmicFooter />
+      <VedicAcademyFooter />
     </div>
   );
 };
