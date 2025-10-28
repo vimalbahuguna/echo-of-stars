@@ -173,6 +173,17 @@ const CosmicHeader = () => {
   const NavigationFull = () => (
     <div className="hidden xl:flex items-center gap-4">
       <NavigationItems />
+      {isAdmin() && (
+        <Button 
+          variant="ghost" 
+          size="default" 
+          className="hover:bg-destructive/10 hover:text-destructive text-base"
+          onClick={() => navigate("/admin")}
+        >
+          <Shield className="w-5 h-5 mr-2" />
+          {t("header.userMenu.adminDashboard")}
+        </Button>
+      )}
     </div>
   );
 
@@ -219,6 +230,10 @@ const CosmicHeader = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base" onClick={() => navigate("/spiritual-practices")}>
+        <Leaf className="w-5 h-5 mr-2" />
+        {t("header.navigation.spiritualPractices")}
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
@@ -250,59 +265,42 @@ const CosmicHeader = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* More dropdown holds less critical items on lg */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="default" className="hover:bg-accent/10 hover:text-accent text-base">
-            <Menu className="w-5 h-5 mr-2" />
-            <span>More</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate("/spiritual-practices")}>
-            <Leaf className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.spiritualPractices")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/contact-us")}>
-            <Mail className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.contact")}</span>
-          </DropdownMenuItem>
-          {isAdmin() && (
-            <DropdownMenuItem onClick={() => navigate("/admin")}>
-              <Shield className="w-4 h-4 mr-2" />
-              <span>{t("header.userMenu.adminDashboard")}</span>
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button 
+        variant="ghost" 
+        size="default" 
+        className="hover:bg-accent/10 hover:text-accent text-base"
+        onClick={() => navigate("/contact-us")}
+      >
+        <Mail className="w-5 h-5 mr-2" />
+        {t("header.navigation.contact")}
+      </Button>
+      {isAdmin() && (
+        <Button 
+          variant="ghost" 
+          size="default" 
+          className="hover:bg-destructive/10 hover:text-destructive text-base"
+          onClick={() => navigate("/admin")}
+        >
+          <Shield className="w-5 h-5 mr-2" />
+          {t("header.userMenu.adminDashboard")}
+        </Button>
+      )}
     </div>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex flex-col gap-2 py-2">
-        {/* Top Row: Logo & Branding on left, User Section on right */}
-        <div className="flex items-center justify-between">
+        {/* Top Row: Logo & Branding centered, User Section on right */}
+        <div className="relative flex items-center">
           {/* Logo & Branding */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
             <GoldenLogo3D size="sm" showTagline={true} className="scale-75 lg:scale-90" />
           </div>
 
           {/* User Section */}
-          <div className="flex items-center gap-3">
-          {/* Prominent Admin access (always visible for admins) */}
-          {isAdmin() && (
-            <Button
-              variant="outline"
-              size="default"
-              className="hidden md:flex border-destructive/50 hover:bg-destructive/10 hover:text-destructive text-base"
-              onClick={() => navigate("/admin")}
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              {t("header.userMenu.adminDashboard")}
-            </Button>
-          )}
+          <div className="absolute right-0 flex items-center gap-3">
+          {/* Admin access moved to end of header nav row */}
           {/* Language Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -402,6 +400,12 @@ const CosmicHeader = () => {
                 <div className="text-xl font-semibold">{t("header.mobileMenu.navigation")}</div>
                 <div className="flex flex-col gap-2">
                   <NavigationItems />
+                  {isAdmin() && (
+                    <Button variant="ghost" className="justify-start text-base" onClick={() => navigate("/admin")}>
+                      <Shield className="mr-2 h-5 w-5" />
+                      {t("header.userMenu.adminDashboard")}
+                    </Button>
+                  )}
                 </div>
                 
                 {user && (
@@ -417,12 +421,7 @@ const CosmicHeader = () => {
                           <Settings className="mr-2 h-5 w-5" />
                           {t("header.userMenu.settings")}
                         </Button>
-                        {isAdmin() && (
-                          <Button variant="ghost" className="justify-start text-base" onClick={() => navigate("/admin")}>
-                            <Shield className="mr-2 h-5 w-5" />
-                            {t("header.userMenu.adminDashboard")}
-                          </Button>
-                        )}
+                        
                         <Button variant="ghost" className="justify-start text-destructive text-base" onClick={handleSignOut}>
                           <LogOut className="mr-2 h-5 w-5" />
                           {t("header.userMenu.signOut")}

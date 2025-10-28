@@ -34,7 +34,7 @@ const GoldenLogo3D: React.FC<GoldenLogo3DProps> = ({
   };
 
   return (
-    <div className={`relative flex flex-col items-center ${className}`}>
+    <div className={`relative flex flex-row items-center ${className}`}>
       {/* Animated Cosmic Background Glow */}
       <div className="absolute inset-0 animate-pulse-glow">
         <div className="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-r from-purple-500/30 to-indigo-500/30 rounded-full blur-3xl animate-float"></div>
