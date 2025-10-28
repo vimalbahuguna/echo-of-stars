@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import CosmicHeader from '@/components/CosmicHeader';
-import CosmicFooter from '@/components/CosmicFooter';
+import VedicAcademyHeader from '@/components/academy/VedicAcademyHeader';
+import VedicAcademyFooter from '@/components/academy/VedicAcademyFooter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -124,7 +124,7 @@ const VedicCourseRegistration: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      <CosmicHeader />
+      <VedicAcademyHeader />
       
       <main className="container mx-auto px-4 py-12">
         {/* Progress Indicator */}
@@ -481,7 +481,7 @@ const VedicCourseRegistration: React.FC = () => {
         )}
       </main>
 
-      <CosmicFooter />
+      <VedicAcademyFooter />
     </div>
   );
 };

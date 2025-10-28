@@ -23,9 +23,7 @@ import {
   HeartHandshake,
   Globe,
   Leaf,
-  Brain,
-  Flower,
-  BookOpen
+  GraduationCap
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -129,41 +127,6 @@ const CosmicHeader = () => {
         <Leaf className="w-5 h-5 mr-2" />
         {t("header.navigation.spiritualPractices")}
       </Button>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="default" 
-            className="hover:bg-accent/10 hover:text-accent text-base"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
-            {t("header.navigation.spiritualAcademy")}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate("/academy")}>
-            <Sparkles className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.spiritualAcademy")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/academy/astrology")}>
-            <Stars className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyAstrology")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/meditation")}>
-            <Brain className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyMeditation")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/sanskrit")}>
-            <Flower className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academySanskrit")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/scriptures")}>
-            <BookOpen className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyScriptures")}</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
       <Button 
         variant="ghost" 
         size="default" 
@@ -241,41 +204,6 @@ const CosmicHeader = () => {
         <Leaf className="w-5 h-5 mr-2" />
         {t("header.navigation.spiritualPractices")}
       </Button>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="default" 
-            className="hover:bg-accent/10 hover:text-accent text-base"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
-            {t("header.navigation.spiritualAcademy")}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate("/academy")}>
-            <Sparkles className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.spiritualAcademy")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/academy/astrology")}>
-            <Stars className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyAstrology")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/meditation")}>
-            <Brain className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyMeditation")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/sanskrit")}>
-            <Flower className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academySanskrit")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/academy/scriptures")}>
-            <BookOpen className="w-4 h-4 mr-2" />
-            <span>{t("header.navigation.academyScriptures")}</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
       <Button 
         variant="ghost" 
         size="default" 
@@ -311,19 +239,17 @@ const CosmicHeader = () => {
 
           {/* User Section */}
           <div className="absolute right-0 flex items-center gap-3">
-            {/* Persistent CTAs: Academy access or Back to Platform */}
+            {/* Vedic Academy Button */}
             <div className="hidden sm:flex items-center">
-              {inAcademy ? (
-                <Button variant="outline" size="default" onClick={() => navigate("/")}>
-                  <Home className="w-4 h-4 mr-0 md:mr-2" />
-                  <span className="hidden md:inline">{t("header.navigation.home")}</span>
-                </Button>
-              ) : user ? (
-                <Button variant="default" size="default" onClick={() => navigate("/academy")}>
-                  <Sparkles className="w-4 h-4 mr-0 md:mr-2" />
-                  <span className="hidden md:inline">{t("header.navigation.spiritualAcademy")}</span>
-                </Button>
-              ) : null}
+              <Button 
+                variant="outline" 
+                size="default" 
+                onClick={() => navigate("/academy/astrology/vedic")}
+                className="border-primary/50 hover:bg-primary/10"
+              >
+                <GraduationCap className="w-4 h-4 mr-0 md:mr-2" />
+                <span className="hidden md:inline">Vedic Academy</span>
+              </Button>
             </div>
           {/* Admin access moved to end of header nav row */}
           {/* Language Switcher */}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import CosmicHeader from '@/components/CosmicHeader';
-import CosmicFooter from '@/components/CosmicFooter';
+import VedicAcademyHeader from '@/components/academy/VedicAcademyHeader';
+import VedicAcademyFooter from '@/components/academy/VedicAcademyFooter';
 import AcademyBreadcrumbs from '@/components/academy/Breadcrumbs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ const VedicCourseIndex: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-cosmic">
-      <CosmicHeader />
+      <VedicAcademyHeader />
       <main className="container mx-auto px-4 py-8">
         <AcademyBreadcrumbs />
         <div className="flex items-center gap-3 mb-6">
@@ -91,7 +91,7 @@ const VedicCourseIndex: React.FC = () => {
           </Button>
         </div>
       </main>
-      <CosmicFooter />
+      <VedicAcademyFooter />
     </div>
   );
 };

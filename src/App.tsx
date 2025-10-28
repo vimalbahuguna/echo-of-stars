@@ -185,31 +185,12 @@ const App = () => {
                   <DashaSystemPage />
                 </ProtectedRoute>
               } />
-              <Route path="/academy" element={
-                <ProtectedRoute>
-                  <SpiritualAcademy />
-                </ProtectedRoute>
-              } />
-              <Route path="/academy/astrology" element={
-                <ProtectedRoute>
-                  <AcademyAstrology />
-                </ProtectedRoute>
-              } />
-              <Route path="/academy/meditation" element={
-                <ProtectedRoute>
-                  <AcademyMeditation />
-                </ProtectedRoute>
-              } />
-              <Route path="/academy/sanskrit" element={
-                <ProtectedRoute>
-                  <AcademySanskrit />
-                </ProtectedRoute>
-              } />
-              <Route path="/academy/scriptures" element={
-                <ProtectedRoute>
-                  <AcademyScriptures />
-                </ProtectedRoute>
-              } />
+              {/* Redirect old academy routes to Vedic Academy */}
+              <Route path="/academy" element={<Navigate to="/academy/astrology/vedic" replace />} />
+              <Route path="/academy/astrology" element={<Navigate to="/academy/astrology/vedic" replace />} />
+              <Route path="/academy/meditation" element={<Navigate to="/academy/astrology/vedic" replace />} />
+              <Route path="/academy/sanskrit" element={<Navigate to="/academy/astrology/vedic" replace />} />
+              <Route path="/academy/scriptures" element={<Navigate to="/academy/astrology/vedic" replace />} />
               {/* Public Academy Pages */}
               <Route path="/academy/astrology/vedic" element={<VedicAcademyHome />} />
               <Route path="/academy/astrology/vedic/about" element={<VedicAcademyAbout />} />
@@ -220,13 +201,38 @@ const App = () => {
               <Route path="/academy/astrology/vedic/lesson/:slug" element={<VedicLessonViewer />} />
               <Route path="/academy/astrology/vedic/course/:courseSlug/lesson/:slug" element={<VedicLessonViewer />} />
               
-              {/* Dashboard Routes (New Structure) */}
+              {/* Vedic Academy Registration */}
+              <Route path="/academy/astrology/vedic/register" element={<VedicCourseRegistration />} />
+              
+              {/* Student Portal Routes */}
               <Route path="/academy/vedic" element={<Navigate to="/academy/astrology/vedic" replace />} />
               <Route path="/academy/vedic/student" element={
                 <ProtectedRoute>
                   <VedicStudentDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/academy/vedic/student/week/:weekId" element={
+                <ProtectedRoute>
+                  <VedicWeekViewer />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/student/live-sessions" element={
+                <ProtectedRoute>
+                  <VedicLiveSessions />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/student/assessments" element={
+                <ProtectedRoute>
+                  <VedicAssessments />
+                </ProtectedRoute>
+              } />
+              <Route path="/academy/vedic/student/payments" element={
+                <ProtectedRoute>
+                  <VedicPayments />
+                </ProtectedRoute>
+              } />
+              
+              {/* Faculty & Admin Routes */}
               <Route path="/academy/vedic/faculty" element={
                 <ProtectedRoute>
                   <VedicFacultyDashboard />

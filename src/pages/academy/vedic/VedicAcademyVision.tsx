@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import CosmicHeader from '@/components/CosmicHeader';
-import CosmicFooter from '@/components/CosmicFooter';
+import VedicAcademyHeader from '@/components/academy/VedicAcademyHeader';
+import VedicAcademyFooter from '@/components/academy/VedicAcademyFooter';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Compass, Target, Lightbulb } from 'lucide-react';
@@ -12,7 +12,7 @@ const VedicAcademyVision: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-cosmic">
-      <CosmicHeader />
+      <VedicAcademyHeader />
       <main className="container mx-auto px-4 py-8">
         <AcademyBreadcrumbs />
         <div className="flex items-center gap-3 mb-6">
@@ -61,7 +61,7 @@ const VedicAcademyVision: React.FC = () => {
           </Card>
         </div>
       </main>
-      <CosmicFooter />
+      <VedicAcademyFooter />
     </div>
   );
 };
