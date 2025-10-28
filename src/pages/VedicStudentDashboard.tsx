@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import CosmicHeader from '@/components/CosmicHeader';
-import CosmicFooter from '@/components/CosmicFooter';
+import { DashboardLayout } from '@/components/academy/DashboardLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
-  LineChart, Award, BookOpen, CalendarDays,
+  Award, BookOpen, CalendarDays,
   TrendingUp, Clock, Target, CheckCircle,
   Video, MessageSquare, FileText, BarChart3,
-  ChevronRight, Play
+  ChevronRight, Play, Bell
 } from 'lucide-react';
-import StudentAcademyPanels from "@/components/academy/StudentAcademyPanels";
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -64,9 +62,8 @@ const VedicStudentDashboard: React.FC = () => {
   const progressPercent = Math.round((weeksCompleted / weeksTotal) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      <CosmicHeader />
-      <main className="container mx-auto px-4 py-8">
+    <DashboardLayout role="student">
+      <div>
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-3">
@@ -244,14 +241,33 @@ const VedicStudentDashboard: React.FC = () => {
           </div>
         </Card>
 
-        {/* Detailed Panels */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-6">Course Management</h2>
-          <StudentAcademyPanels />
-        </div>
-      </main>
-      <CosmicFooter />
-    </div>
+        {/* Recent Notifications */}
+        <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50">
+          <div className="flex items-center gap-3 mb-6">
+            <Bell className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold">Recent Notifications</h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              { type: 'success', message: 'Week 3 assignment graded - Score: 85/100', time: '2 hours ago' },
+              { type: 'info', message: 'New live session scheduled for tomorrow at 3 PM', time: '5 hours ago' },
+              { type: 'warning', message: 'Payment due in 3 days - $500', time: '1 day ago' }
+            ].map((notif, i) => (
+              <div key={i} className="flex items-start gap-3 p-4 bg-background/50 rounded-lg border border-border/50">
+                <div className={`w-2 h-2 rounded-full mt-2 ${
+                  notif.type === 'success' ? 'bg-green-500' : 
+                  notif.type === 'info' ? 'bg-blue-500' : 'bg-yellow-500'
+                }`} />
+                <div className="flex-1">
+                  <p className="text-sm">{notif.message}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{notif.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </DashboardLayout>
   );
 };
 
