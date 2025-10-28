@@ -122,6 +122,56 @@ const VedicAcademyHome: React.FC = () => {
           </div>
         </section>
 
+        {/* Vision & Mission */}
+        <section className="py-20">
+          <div className="text-center mb-16">
+            <Badge className="mb-4" variant="outline">
+              <Target className="w-3 h-3 mr-1" />
+              Our Purpose
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Vision & Mission</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Empowering a global community of skilled Vedic Astrologers through authentic education, 
+              modern technology, and traditional wisdom
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <Card className="p-10 bg-gradient-to-br from-primary/10 to-secondary/10 border-border/50">
+              <Target className="w-16 h-16 text-primary mb-6" />
+              <h3 className="text-2xl font-bold mb-4">Our Vision</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To become the world's leading institution for Vedic Astrology education, 
+                creating a bridge between ancient wisdom and modern understanding. We envision 
+                a future where Jyotish is recognized as a profound science and spiritual practice, 
+                accessible to all seekers worldwide through exceptional teaching and cutting-edge technology.
+              </p>
+            </Card>
+            <Card className="p-10 bg-gradient-to-br from-secondary/10 to-accent/10 border-border/50">
+              <Award className="w-16 h-16 text-secondary mb-6" />
+              <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To provide comprehensive, ethical, and practical Vedic Astrology education 
+                rooted in traditional texts and enhanced by modern pedagogy. We are committed 
+                to nurturing competent practitioners who honor the lineage while serving 
+                contemporary society with integrity, compassion, and depth of knowledge.
+              </p>
+            </Card>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: '5000+', label: 'Students Worldwide' },
+              { value: '50+', label: 'Countries' },
+              { value: '1000+', label: 'Hours Content' },
+              { value: '95%', label: 'Satisfaction Rate' }
+            ].map((metric, i) => (
+              <Card key={i} className="p-6 text-center bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{metric.value}</div>
+                <div className="text-sm text-muted-foreground">{metric.label}</div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
         {/* Features Grid */}
         <section className="py-20">
           <div className="text-center mb-16">
@@ -192,6 +242,98 @@ const VedicAcademyHome: React.FC = () => {
                       <ChevronRight className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Success Stories */}
+        <section className="py-20 bg-gradient-to-b from-primary/5 to-transparent">
+          <div className="text-center mb-16">
+            <Badge className="mb-4" variant="outline">
+              <Star className="w-3 h-3 mr-1" />
+              Student Success
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Success Stories</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Hear from our alumni who transformed their passion into professional practice
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: 'Priya Sharma',
+                level: 'Master Astrologer',
+                photo: '👩‍🎓',
+                rating: 5,
+                testimonial: 'The depth of knowledge and practical training exceeded my expectations. I now run a successful consultation practice serving clients globally.',
+                outcome: 'Full-time Professional Astrologer'
+              },
+              {
+                name: 'Michael Chen',
+                level: 'Professional Certificate',
+                photo: '👨‍💼',
+                rating: 5,
+                testimonial: 'The curriculum is comprehensive and the faculty are true masters. The SOS Astro platform integration makes learning incredibly practical and engaging.',
+                outcome: 'Corporate Astrology Consultant'
+              },
+              {
+                name: 'Aisha Patel',
+                level: 'Practitioner Diploma',
+                photo: '👩‍💻',
+                rating: 5,
+                testimonial: 'Life-changing experience! The mentorship program and live sessions provided invaluable guidance. I can confidently create and interpret charts now.',
+                outcome: 'Part-time Consultant & Teacher'
+              }
+            ].map((story, i) => (
+              <Card key={i} className="p-8 bg-card/80 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all hover:shadow-xl group">
+                <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">{story.photo}</div>
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({length: story.rating}).map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                  ))}
+                </div>
+                <p className="text-muted-foreground italic mb-4 leading-relaxed">"{story.testimonial}"</p>
+                <div className="pt-4 border-t border-border/50">
+                  <div className="font-semibold text-lg">{story.name}</div>
+                  <Badge variant="secondary" className="mt-2 mb-2">{story.level}</Badge>
+                  <div className="text-sm text-muted-foreground">{story.outcome}</div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Faculty Section */}
+        <section className="py-20">
+          <div className="text-center mb-16">
+            <Badge className="mb-4" variant="outline">
+              <Users className="w-3 h-3 mr-1" />
+              Expert Guidance
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Meet Our Faculty</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Learn from master astrologers with decades of practice and teaching experience
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              { name: 'Pt. Rajesh Kumar', role: 'Lead Faculty', experience: '25+ Years', specialty: 'Classical Jyotish', avatar: '🧙‍♂️' },
+              { name: 'Dr. Meera Desai', role: 'Senior Faculty', experience: '18+ Years', specialty: 'Medical Astrology', avatar: '👩‍⚕️' },
+              { name: 'Prof. Arun Singh', role: 'Faculty', experience: '15+ Years', specialty: 'Muhurta & Prashna', avatar: '👨‍🏫' },
+              { name: 'Swami Ananda', role: 'Guest Faculty', experience: '30+ Years', specialty: 'Spiritual Astrology', avatar: '🕉️' }
+            ].map((faculty, i) => (
+              <Card key={i} className="p-6 text-center bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all hover:shadow-xl group">
+                <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">{faculty.avatar}</div>
+                <h3 className="text-lg font-bold mb-1">{faculty.name}</h3>
+                <Badge variant="outline" className="mb-3">{faculty.role}</Badge>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2">
+                    <Award className="w-4 h-4 text-primary" />
+                    <span>{faculty.experience}</span>
+                  </div>
+                  <div className="font-medium text-foreground">{faculty.specialty}</div>
                 </div>
               </Card>
             ))}

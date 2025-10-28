@@ -49,6 +49,11 @@ import VedicCurriculum from "./pages/academy/vedic/VedicCurriculum";
 import VedicSyllabus from "./pages/academy/vedic/VedicSyllabus";
 import VedicLessonViewer from "./pages/academy/vedic/VedicLessonViewer";
 import VedicCourseIndex from "./pages/academy/vedic/VedicCourseIndex";
+import VedicCourseRegistration from "./pages/academy/vedic/VedicCourseRegistration";
+import VedicWeekViewer from "./pages/academy/vedic/VedicWeekViewer";
+import VedicLiveSessions from "./pages/academy/vedic/VedicLiveSessions";
+import VedicAssessments from "./pages/academy/vedic/VedicAssessments";
+import VedicPayments from "./pages/academy/vedic/VedicPayments";
 
 const queryClient = new QueryClient();
 
